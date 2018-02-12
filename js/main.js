@@ -1,4 +1,4 @@
-var threejsWorld = {
+var threejsWorld = { //singleton object, to make it easier to identify in other .js files
     camera:{},
     scene:{},
     renderer:{},
@@ -6,10 +6,8 @@ var threejsWorld = {
     controls:{},
     
 }
-
     init();
     animate();
-
 
     function init() {
         //basic threejs init
@@ -18,15 +16,14 @@ var threejsWorld = {
 
         threejsWorld.camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 10000 );        
         threejsWorld.controls = new THREE.OrbitControls(threejsWorld.camera);
-        threejsWorld.camera.position.z = 200;
+        threejsWorld.camera.position.z = 1000;
         threejsWorld.camera.position.y = 100;
-        threejsWorld.camera.rotation.z=0;
         threejsWorld.controls.update();
         
         //CALL INIT OBJECT METHODS FROM HERE
         initGround()
 
-        //more general init
+        //more threejs init
         threejsWorld.renderer = new THREE.WebGLRenderer({alpha:true});
         threejsWorld.renderer.setSize( window.innerWidth, window.innerHeight );
 
@@ -34,6 +31,7 @@ var threejsWorld = {
         window.addEventListener('resize', windowResize, false);
     }
     
+    //********** initing objects methods **********//
     function initGround(){
         var geometry = new THREE.PlaneGeometry(2000,2000,5)
         var material = new THREE.MeshBasicMaterial( { color: 0x68c3c0 , side: THREE.DoubleSide} );
@@ -42,17 +40,17 @@ var threejsWorld = {
         threejsWorld.groundMesh.rotateX(-0.5 * Math.PI);
         threejsWorld.scene.add( threejsWorld.groundMesh );
     }
-
     
-    //general functions
+    //********** general methods ********** //
     function animate() {
+        //per frame change
         requestAnimationFrame( animate );
         threejsWorld.controls.update();
         threejsWorld.renderer.render( threejsWorld.scene, threejsWorld.camera );
     }
     
     function windowResize() {
-	// update camera
+        // update camera
         var height = window.innerHeight;
         var width = window.innerWidth;
         threejsWorld.renderer.setSize(width, height);
