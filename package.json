@@ -1,0 +1,33 @@
+{
+  "name": "procedural-city-generation",
+  "version": "1.0.0",
+  "description": "City generating",
+  "main": "webpack.config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "webpack": "webpack --mode development",
+    "watch": "webpack --mode development --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nenanen/2IMV10-project6.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nenanen/2IMV10-project6/issues"
+  },
+  "homepage": "https://github.com/nenanen/2IMV10-project6#readme",
+  "dependencies": {
+    "css-loader": "^0.28.10",
+    "node-sass": "^4.7.2",
+    "path": "^0.12.7",
+    "sass-loader": "^6.0.6",
+    "style-loader": "^0.20.2",
+    "three": "^0.90.0"
+  },
+  "devDependencies": {
+    "webpack": "^4.0.1",
+    "webpack-cli": "^2.0.9"
+  }
+}
