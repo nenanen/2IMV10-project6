@@ -2,6 +2,17 @@ import * as THREE from 'three'
 import OrbitControls from './vendor/OrbitControls'
 import './sass/main.scss'
 
+import SimplexNoise from "simplex-noise"
+import * as math from "mathjs"
+import * as _ from "lodash"
+
+let simplex = new SimplexNoise("seed");
+let value2d = simplex.noise2D(10, 20);
+
+console.log(value2d);
+console.log(math.sqrt(-4));
+console.log(_.partition([1, 2, 3, 4], n => n % 2));
+
 // Singleton object, to make it easier to identify in other .js files
 let threejsWorld = {
     camera: {},
@@ -40,6 +51,8 @@ function init() {
 function initGround() {
     const geometry = new THREE.PlaneGeometry(2000, 2000, 5);
     const material = new THREE.MeshBasicMaterial({color: 0x68c3c0, side: THREE.DoubleSide});
+
+    console.log(geometry);
 
     threejsWorld.groundMesh = new THREE.Mesh(geometry, material);
     threejsWorld.groundMesh.rotateX(-0.5 * Math.PI);
