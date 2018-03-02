@@ -1,4 +1,4 @@
-class RoadSegment {
+export class RoadSegment {
     constructor(timeDelay, geometry, metadata) {
 
         // The time delay until the segment is placed in the world

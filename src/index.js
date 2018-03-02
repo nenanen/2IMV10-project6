@@ -5,6 +5,7 @@ import './sass/main.scss'
 import SimplexNoise from "simplex-noise"
 import * as math from "mathjs"
 import * as _ from "lodash"
+import {Road} from "./road/road"
 
 let simplex = new SimplexNoise("seed");
 let value2d = simplex.noise2D(10, 20);
@@ -38,6 +39,7 @@ function init() {
 
     // CALL INIT OBJECT METHODS FROM HERE
     initGround();
+    initRoad();
 
     // More ThreeJS initialization
     threejsWorld.renderer = new THREE.WebGLRenderer({alpha: true});
@@ -57,6 +59,15 @@ function initGround() {
     threejsWorld.groundMesh = new THREE.Mesh(geometry, material);
     threejsWorld.groundMesh.rotateX(-0.5 * Math.PI);
     threejsWorld.scene.add(threejsWorld.groundMesh);
+}
+
+function initRoad() {
+    let network = new Road();
+    network.initialize();
+    network.generate();
+    for(let item of network.segmentList) {
+        threejsWorld.scene.add(item.geometry)
+    }
 }
 
 //********** general methods ********** //

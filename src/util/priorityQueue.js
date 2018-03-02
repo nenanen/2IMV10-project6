@@ -1,6 +1,6 @@
 import * as _ from "lodash"
 
-class PriorityQueue {
+export class PriorityQueue {
     constructor() {
         this.list = []
     }
