@@ -4,6 +4,13 @@ import {ROADS} from "./Config"
 import * as math from "mathjs";
 
 export class RoadSegment {
+    /**
+     * A road segment.
+     * @param {Point} start - The starting point of the segment.
+     * @param {Point} end - The end point of the segment.
+     * @param {number} time - The time at which the segment is inserted.
+     * @param {object} metadata - Additional metadata.
+     */
     constructor(start, end, time, metadata) {
 
         // Start and end points
@@ -21,14 +28,33 @@ export class RoadSegment {
 
     }
 
+    /**
+     * Calculates the length of the road segment.
+     * @returns {number}
+     */
     length() {
-        let startVector = this.start.vector();
-        let endVector = this.end.vector();
+        let startVector = this.start.toVector();
+        let endVector = this.end.toVector();
         let vector = math.subtract(endVector, startVector);
         vector = _.map(vector, (n) => Math.pow(n, 2));
         return Math.sqrt(vector);
     }
 
+    /**
+     * Gets the geometry of the road segment.
+     * @returns {{start: Point, end: Point}}
+     */
+    get geometry() {
+        return {
+            start: this.start,
+            end: this.end
+        }
+    }
+
+    /**
+     * ThreeJS representation of the line.
+     * @returns {Line}
+     */
     representation() {
         let material = new THREE.LineBasicMaterial({
             color: 0x0000ff
