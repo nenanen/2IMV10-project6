@@ -81,11 +81,11 @@ export class MapGen {
 
             // Continue straight or with angle
             if (popAngle > popStraight) {
-                let r = SegmentFactory.createRoad(continueStraight, config.DEFAULT_SEGMENT_LENGTH, config.ROADS.HIGHWAY);
+                let r = SegmentFactory.createRoad(continueStraight, config.HIGHWAY_SEGMENT_LENGTH, config.ROADS.HIGHWAY);
                 newBranches.push(r);
                 popRoad = popStraight;
             } else {
-                let r = SegmentFactory.createRoad(continueAngle, config.DEFAULT_SEGMENT_LENGTH, config.ROADS.HIGHWAY);
+                let r = SegmentFactory.createRoad(continueAngle, config.HIGHWAY_SEGMENT_LENGTH, config.ROADS.HIGHWAY);
                 newBranches.push(r);
                 popRoad = popAngle;
             }
@@ -97,16 +97,40 @@ export class MapGen {
                 if (Math.random() > config.DEFAULT_BRANCH_PROBABILITY) {
                     let angle = Util.randomAngle(config.BRANCH_ANGLE_LIMIT);
                     let leftBranch = SegmentFactory.branchLeft(segment, angle, config.DEFAULT_SEGMENT_LENGTH);
-                    newBranches.push(leftBranch)
+                    let r = SegmentFactory.createRoad(leftBranch, config.DEFAULT_SEGMENT_LENGTH, config.ROADS.URBAN);
+                    newBranches.push(r)
                 }
 
                 // Create right branch with some probability
                 if (Math.random() > config.DEFAULT_BRANCH_PROBABILITY) {
                     let angle = Util.randomAngle(config.BRANCH_ANGLE_LIMIT);
                     let rightBranch = SegmentFactory.branchRight(segment, angle, config.DEFAULT_SEGMENT_LENGTH);
-                    newBranches.push(rightBranch)
+                    let r = SegmentFactory.createRoad(rightBranch, config.DEFAULT_SEGMENT_LENGTH, config.ROADS.URBAN);
+                    newBranches.push(r)
                 }
 
+            }
+        }
+
+        // Handle urban roads
+        if (roadSegment.metadata.type === config.ROADS.URBAN) {
+            if (popStraight > config.URBAN_BRANCH_POPULATION_THRESHOLD) {
+
+                // Left branch
+                if (Math.random() > config.DEFAULT_BRANCH_PROBABILITY) {
+                    let angle = Util.randomAngle(config.BRANCH_ANGLE_LIMIT);
+                    let leftBranch = SegmentFactory.branchLeft(segment, angle, config.DEFAULT_SEGMENT_LENGTH);
+                    let r = SegmentFactory.createRoad(leftBranch, config.DEFAULT_SEGMENT_LENGTH, config.ROADS.URBAN);
+                    newBranches.push(r)
+                }
+
+                // Right branch
+                if (Math.random() > config.DEFAULT_BRANCH_PROBABILITY) {
+                    let angle = Util.randomAngle(config.BRANCH_ANGLE_LIMIT);
+                    let leftBranch = SegmentFactory.branchLeft(segment, angle, config.DEFAULT_SEGMENT_LENGTH);
+                    let r = SegmentFactory.createRoad(leftBranch, config.DEFAULT_SEGMENT_LENGTH, config.ROADS.URBAN);
+                    newBranches.push(r)
+                }
             }
         }
 
