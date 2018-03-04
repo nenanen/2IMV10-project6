@@ -39,7 +39,7 @@ export default class RoadSegment {
 
         geometry.vertices.push(
             new THREE.Vector3(gem.start.x, gem.start.y, gem.start.z),
-            new THREE.Vector3(gem.end.x, gem.end.y, gem.start.z)
+            new THREE.Vector3(gem.end.x, gem.end.y, gem.end.z)
         );
 
         return new THREE.Line(geometry, material)
