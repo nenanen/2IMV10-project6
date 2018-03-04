@@ -1,21 +1,18 @@
 import * as THREE from "three";
 import * as _ from "lodash";
 import {ROADS} from "./Config"
-import * as math from "mathjs";
 
-export class RoadSegment {
+export default class RoadSegment {
     /**
      * A road segment.
-     * @param {Point} start - The starting point of the segment.
-     * @param {Point} end - The end point of the segment.
+     * @param {Segment} geometry - A segment that determines the geometry.
      * @param {number} time - The time at which the segment is inserted.
      * @param {object} metadata - Additional metadata.
      */
-    constructor(start, end, time, metadata) {
+    constructor(geometry, time, metadata) {
 
-        // Start and end points
-        this.start = start;
-        this.end = end;
+        // Geometry of the road segment
+        this.geometry = geometry;
 
         // Time delay until insertion
         this.time = time;
@@ -29,29 +26,6 @@ export class RoadSegment {
     }
 
     /**
-     * Calculates the length of the road segment.
-     * @returns {number}
-     */
-    length() {
-        let startVector = this.start.toVector();
-        let endVector = this.end.toVector();
-        let vector = math.subtract(endVector, startVector);
-        vector = _.map(vector, (n) => Math.pow(n, 2));
-        return Math.sqrt(vector);
-    }
-
-    /**
-     * Gets the geometry of the road segment.
-     * @returns {{start: Point, end: Point}}
-     */
-    get geometry() {
-        return {
-            start: this.start,
-            end: this.end
-        }
-    }
-
-    /**
      * ThreeJS representation of the line.
      * @returns {Line}
      */
@@ -61,10 +35,11 @@ export class RoadSegment {
         });
 
         let geometry = new THREE.Geometry();
+        let gem = this.geometry;
 
         geometry.vertices.push(
-            new THREE.Vector3(this.start.x, this.start.y, this.start.z),
-            new THREE.Vector3(this.end.x, this.end.y, this.start.z)
+            new THREE.Vector3(gem.start.x, gem.start.y, gem.start.z),
+            new THREE.Vector3(gem.end.x, gem.end.y, gem.start.z)
         );
 
         return new THREE.Line(geometry, material)
