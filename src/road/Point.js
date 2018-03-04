@@ -1,4 +1,4 @@
-export class Point {
+export default class Point {
     /**
      * A point in 3D space.
      * @param {number} x - The x-coordinate.

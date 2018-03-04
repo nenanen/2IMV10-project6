@@ -1,14 +1,14 @@
 let SimplexNoise = require('simplex-noise');
 
-export class Heatmap {
+export default class Heatmap {
     constructor() {
         const seed = Math.random().toString();
         this.noise = new SimplexNoise(seed)
     }
 
     populationOnRoad(road) {
-        let start = self.populationAt(road.start.x, road.start.y);
-        let end = self.populationAt(road.end.x, road.end.y);
+        let start = this.populationAt(road.start.x, road.start.y);
+        let end = this.populationAt(road.end.x, road.end.y);
         return (start + end) / 2
     }
 
