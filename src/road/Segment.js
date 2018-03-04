@@ -1,5 +1,6 @@
 import * as _ from "lodash";
 import * as math from "mathjs";
+import Util from "./Util";
 
 export default class Segment {
     /**
@@ -23,7 +24,8 @@ export default class Segment {
         let endVector = this.end.toVector();
         let vector = math.subtract(endVector, startVector);
         vector = _.map(vector, (n) => Math.pow(n, 2));
-        return Math.sqrt(vector);
+        const sum = _.sum(vector);
+        return Math.sqrt(sum);
     }
 
     /**
@@ -31,7 +33,11 @@ export default class Segment {
      * @returns {number}
      */
     direction() {
-        let vector = math.subtractPoints(this.end.toVector(), this.start.toVector());
-        return -1 * math.sign(math.crossProduct({x: 0, y: 1}), vector) * math.angleBetween({x: 0, y: 1}, vector)
+        let startVector = this.start.toVector();
+        let endVector = this.end.toVector();
+        let vector = math.subtract(startVector, endVector);
+        let sign = math.sign(vector[0]);
+        let angle = Util.angleBetween([0, 0, 1], vector);
+        return -1 * sign * angle;
     }
 }
