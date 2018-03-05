@@ -9,7 +9,7 @@ export default class PriorityQueue {
         return this.length() === 0;
     }
 
-    put(item, priority) {
+    put(priority, item) {
         const newPair = {
             item: item,
             priority: priority
