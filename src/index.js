@@ -3,6 +3,12 @@ import OrbitControls from './vendor/OrbitControls'
 import './sass/main.scss'
 import MapGen from "./road/MapGen"
 
+import * as math from "mathjs";
+
+console.log("Intersection", math.intersect(
+    [0, -200], [0, 200], [0, -600], [300, -600]
+));
+
 // Singleton object, to make it easier to identify in other .js files
 let threejsWorld = {
     camera: {},

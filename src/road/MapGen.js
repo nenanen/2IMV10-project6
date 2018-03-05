@@ -15,8 +15,8 @@ export default class MapGen {
     }
 
     initialize() {
-        let start = new Point(0, 1, 0);
-        let end = new Point(0, 1, config.HIGHWAY_SEGMENT_LENGTH);
+        let start = new Point(0, 1, -1000);
+        let end = new Point(0, 1, config.HIGHWAY_SEGMENT_LENGTH - 1000);
         let segment = new Segment(start, end);
         let initial = SegmentFactory.createRoad(segment, 0, config.ROADS.HIGHWAY);
         this.queue.push(initial);
@@ -40,16 +40,26 @@ export default class MapGen {
     }
 
     localConstraints(segment) {
-        let intersections = findIntersectingRoads(this.segmentList.concat(segment));
-        console.log(intersections);
-        intersections = _.filter(intersections, (o) => !o.touchingEndPoint && o.type === "intersection");
+        let intersection = false;
+        for (let seg of this.segmentList) {
+            let point = Util.doRoadsIntersect(segment, seg);
+            if (point) {
+                intersection = true;
+                break;
+            }
+        }
+
+        // let intersections = findIntersectingRoads(this.segmentList.concat(segment));
+        // console.log(intersections);
+        // intersections = _.filter(intersections, (o) => !o.touchingEndPoint && o.type === "intersection");
 
         // if "two streets intersect" then "generate a crossing".
         // if "ends close to an existing crossing" then "extend street, to reach the crossing".
         // if "close to intersecting" then "extend street to form intersection".
 
         return {
-            accepted: intersections.length === 0,
+            // accepted: intersections.length === 0,
+            accepted: !intersection,
             segment: segment
         }
     }
