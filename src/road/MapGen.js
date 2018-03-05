@@ -24,7 +24,7 @@ export default class MapGen {
 
     generate() {
         console.log("generate");
-        let limit = 10;
+        let limit = 100;
         let count = 0;
         while (!this.queue.empty()) {
             let segment = this.queue.get();
@@ -135,7 +135,7 @@ export default class MapGen {
                 // Right branch
                 if (Math.random() > config.DEFAULT_BRANCH_PROBABILITY) {
                     let angle = Util.randomAngle(config.BRANCH_ANGLE_LIMIT);
-                    let leftBranch = SegmentFactory.branchLeft(segment, angle, config.DEFAULT_SEGMENT_LENGTH);
+                    let leftBranch = SegmentFactory.branchRight(segment, angle, config.DEFAULT_SEGMENT_LENGTH);
                     let r = SegmentFactory.createRoad(leftBranch, delay, config.ROADS.URBAN);
                     newBranches.push(r)
                 }
