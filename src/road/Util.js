@@ -29,7 +29,7 @@ export default class Util {
         let end2 = r2.geometry.end.toVector2D();
 
         if (_.isEqual(start1, start2) || _.isEqual(start1, end2) || _.isEqual(end1, start2) || _.isEqual(end1, end2)) {
-            return null
+            return false
         }
 
         return Util.segmentsIntersect(start1[0], start1[1], end1[0], end1[1], start2[0], start2[1], end2[0], end2[1])
@@ -37,12 +37,16 @@ export default class Util {
 
 
     static doSegmentsIntersect(r1, r2) {
-        let start1 = r1.start.toVector3D();
-        let end1 = r1.end.toVector3D();
-        let start2 = r2.start.toVector3D();
-        let end2 = r2.end.toVector3D();
+        let start1 = r1.start.toVector2D();
+        let end1 = r1.end.toVector2D();
+        let start2 = r2.start.toVector2D();
+        let end2 = r2.end.toVector2D();
 
-        return math.doLineSegmentsIntersect(start1, end1, start2, end2, true)
+        if (_.isEqual(start1, start2) || _.isEqual(start1, end2) || _.isEqual(end1, start2) || _.isEqual(end1, end2)) {
+            return false
+        }
+
+        return Util.segmentsIntersect(start1[0], start1[1], end1[0], end1[1], start2[0], start2[1], end2[0], end2[1])
     }
 
     static randomAngle(limit) {
