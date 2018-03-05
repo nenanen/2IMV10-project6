@@ -3,11 +3,11 @@ import RoadSegment from "./RoadSegment"
 import * as config from "./Config"
 import Point from "./Point";
 import Heatmap from "./Heatmap";
-import Util from "./util";
+import Util from "./Util";
 import SegmentFactory from "./SegmentFactory";
 import Segment from "./Segment";
 
-export class MapGen {
+export default class MapGen {
     constructor() {
         this.queue = new PriorityQueue();
         this.segmentList = [];
@@ -16,27 +16,33 @@ export class MapGen {
 
     initialize() {
         let start = new Point(0, 1, 0);
-        let end = new Point(0, 1, 10);
+        let end = new Point(0, 1, config.HIGHWAY_SEGMENT_LENGTH);
         let segment = new Segment(start, end);
-        let initial = SegmentFactory.createRoad(segment, config.HIGHWAY_SEGMENT_LENGTH, config.ROADS.HIGHWAY);
-        this.segmentList.push(initial);
+        let initial = SegmentFactory.createRoad(segment, 0, config.ROADS.HIGHWAY);
+        this.queue.put(0, initial);
     }
 
     generate() {
+        console.log("generate");
+        let limit = 10;
+        let count = 0;
         while (!this.queue.empty()) {
-            let segment = this.queue.pop();
+            let segment = this.queue.get();
             let local = this.localConstraints(segment);
-            if (local.accepted) {
+            count += 1;
+            console.log(count);
+            if (local.accepted && count < limit) {
                 this.segmentList.push(local.segment);
                 let newSegments = this.globalGoals(local.segment);
+                console.log("Segments added", newSegments);
                 for (let seg of newSegments) {
-                    this.queue.push(seg.timeDelay, seg)
+                    this.queue.put(seg.time, seg)
                 }
             }
         }
     }
 
-    static localConstraints(segment) {
+    localConstraints(segment) {
         // if "two streets intersect" then "generate a crossing".
         // if "ends close to an existing crossing" then "extend street, to reach the crossing".
         // if "close to intersecting" then "extend street to form intersection".
@@ -73,7 +79,7 @@ export class MapGen {
         let popAngle = this.heatmap.populationOnRoad(continueAngle);
 
         // Determine time delay of insertion of segment
-        let delay = roadSegment.meta.type === config.ROADS.HIGHWAY ? config.HIGHWAY_BRANCH_DELAY : 0;
+        let delay = roadSegment.metadata.type === config.ROADS.HIGHWAY ? config.HIGHWAY_BRANCH_DELAY : 0;
 
         // Handle highways
         if (roadSegment.metadata.type === config.ROADS.HIGHWAY) {
