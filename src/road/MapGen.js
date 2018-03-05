@@ -6,12 +6,14 @@ import Util from "./Util";
 import SegmentFactory from "./SegmentFactory";
 import Segment from "./Segment";
 import {findIntersectingRoads} from "../sweeplineAlg/findIntersections";
+import Vertex from "./Vertex";
 
 export default class MapGen {
     constructor() {
         this.queue = new PriorityQueue();
         this.segmentList = [];
         this.heatmap = new Heatmap();
+        this.vertices = [];
     }
 
     initialize() {
@@ -44,7 +46,16 @@ export default class MapGen {
         for (let seg of this.segmentList) {
             let point = Util.doRoadsIntersect(segment, seg);
             if (point) {
-                intersection = true;
+                let end = segment.geometry.end;
+                this.vertices.push(new Vertex(point[0], end.y, point[1]));
+                segment.metadata.severed = true;
+                // console.log("Segments intersect");
+                // console.log(seg, "and", segment, "intersect at", point);
+                // console.log("Segment endpoint corrected to");
+                // console.log(segment.geometry.start, new Point(point[0], end.y, point[1]));
+                // // console.log(point[0], end.y, point[1]);
+                segment.geometry.end = new Point(point[0], end.y, point[1]);
+                intersection = false;
                 break;
             }
         }
@@ -82,8 +93,8 @@ export default class MapGen {
         let randomContinuationAngle = Util.randomAngle(config.FORWARD_ANGLE_LIMIT);
 
         // Initialize continuations on the previous segment
-        let continueStraight = SegmentFactory.continue(segment);
-        let continueAngle = SegmentFactory.continue(segment, randomContinuationAngle);
+        let continueStraight = SegmentFactory.continue(segment, 0, roadSegment.metadata.type.LENGTH);
+        let continueAngle = SegmentFactory.continue(segment, randomContinuationAngle, roadSegment.metadata.type.LENGTH);
 
         // Determine population on road if we continue straight
         let popStraight = this.heatmap.populationOnRoad(continueStraight);

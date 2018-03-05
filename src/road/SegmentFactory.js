@@ -23,10 +23,10 @@ export default class SegmentFactory {
         return new Segment(start, end);
     }
 
-    static continue(segment, angle=0) {
+    static continue(segment, angle, length) {
         let start = segment.end;
         let direction = segment.direction() + angle;
-        return this.direction(start, direction, segment.length())
+        return this.direction(start, direction, length)
     }
 
     static branchLeft(segment, angle=0, length=null) {

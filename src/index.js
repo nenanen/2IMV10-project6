@@ -60,6 +60,11 @@ function initRoad() {
     for(let item of mapGen.segmentList) {
         threejsWorld.scene.add(item.representation())
     }
+
+    for(let item of mapGen.vertices) {
+        let representation = item.representation();
+        threejsWorld.scene.add(representation);
+    }
 }
 
 //********** general methods ********** //
