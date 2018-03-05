@@ -6,6 +6,10 @@ export default class Heatmap {
         this.noise = new SimplexNoise(seed)
     }
 
+    populationAtEnd(road) {
+        return this.populationAt(road.end.x, road.end.y)
+    }
+
     populationOnRoad(road) {
         let start = this.populationAt(road.start.x, road.start.y);
         let end = this.populationAt(road.end.x, road.end.y);

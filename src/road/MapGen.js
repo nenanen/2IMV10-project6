@@ -13,6 +13,7 @@ export default class MapGen {
         this.segmentList = [];
         this.heatmap = new Heatmap();
         this.vertices = [];
+        this.time = 0;
     }
 
     initialize() {
@@ -28,6 +29,7 @@ export default class MapGen {
         let count = 0;
         while (!this.queue.isEmpty()) {
             let segment = this.queue.pop();
+            this.time = segment.time;
             let local = this.localConstraints(segment);
             count += 1;
             if (local.accepted && count < limit) {
@@ -96,11 +98,8 @@ export default class MapGen {
         let continueAngle = SegmentFactory.continue(segment, randomContinuationAngle, roadSegment.metadata.type.LENGTH);
 
         // Determine population on road if we continue straight
-        let popStraight = this.heatmap.populationOnRoad(continueStraight);
-        let popAngle = this.heatmap.populationOnRoad(continueAngle);
-
-        // Determine time delay of insertion of segment
-        let delay = roadSegment.metadata.type === config.ROADS.HIGHWAY ? config.ROADS.HIGHWAY.BRANCH_DELAY : 0;
+        let popStraight = this.heatmap.populationAtEnd(continueStraight);
+        let popAngle = this.heatmap.populationAtEnd(continueAngle);
 
         // Handle highways
         if (roadSegment.metadata.type === config.ROADS.HIGHWAY) {
@@ -110,11 +109,11 @@ export default class MapGen {
 
             // Continue straight or with angle
             if (popAngle > popStraight) {
-                let r = SegmentFactory.createRoad(continueStraight, delay, config.ROADS.HIGHWAY);
+                let r = SegmentFactory.createRoad(continueStraight, this.time + 1, config.ROADS.HIGHWAY);
                 newBranches.push(r);
                 popRoad = popStraight;
             } else {
-                let r = SegmentFactory.createRoad(continueAngle, delay, config.ROADS.HIGHWAY);
+                let r = SegmentFactory.createRoad(continueAngle, this.time + 1, config.ROADS.HIGHWAY);
                 newBranches.push(r);
                 popRoad = popAngle;
             }
@@ -126,7 +125,7 @@ export default class MapGen {
                 if (Math.random() > config.ROADS.HIGHWAY.BRANCH_PROBABILITY) {
                     let angle = Util.randomAngle(config.BRANCH_ANGLE_LIMIT);
                     let leftBranch = SegmentFactory.branchLeft(segment, angle, config.ROADS.URBAN.LENGTH);
-                    let r = SegmentFactory.createRoad(leftBranch, delay, config.ROADS.URBAN);
+                    let r = SegmentFactory.createRoad(leftBranch, this.time + 2, config.ROADS.URBAN);
                     newBranches.push(r)
                 }
 
@@ -134,7 +133,7 @@ export default class MapGen {
                 if (Math.random() > config.ROADS.HIGHWAY.BRANCH_PROBABILITY) {
                     let angle = Util.randomAngle(config.BRANCH_ANGLE_LIMIT);
                     let rightBranch = SegmentFactory.branchRight(segment, angle, config.ROADS.URBAN.LENGTH);
-                    let r = SegmentFactory.createRoad(rightBranch, delay, config.ROADS.URBAN);
+                    let r = SegmentFactory.createRoad(rightBranch, this.time + 2, config.ROADS.URBAN);
                     newBranches.push(r)
                 }
 
@@ -149,7 +148,7 @@ export default class MapGen {
                 if (Math.random() > config.ROADS.URBAN.BRANCH_PROBABILITY) {
                     let angle = Util.randomAngle(config.BRANCH_ANGLE_LIMIT);
                     let leftBranch = SegmentFactory.branchLeft(segment, angle, config.ROADS.URBAN.LENGTH);
-                    let r = SegmentFactory.createRoad(leftBranch, delay, config.ROADS.URBAN);
+                    let r = SegmentFactory.createRoad(leftBranch, this.time + 1, config.ROADS.URBAN);
                     newBranches.push(r)
                 }
 
@@ -157,7 +156,7 @@ export default class MapGen {
                 if (Math.random() > config.ROADS.URBAN.BRANCH_PROBABILITY) {
                     let angle = Util.randomAngle(config.BRANCH_ANGLE_LIMIT);
                     let leftBranch = SegmentFactory.branchRight(segment, angle, config.ROADS.URBAN.LENGTH);
-                    let r = SegmentFactory.createRoad(leftBranch, delay, config.ROADS.URBAN);
+                    let r = SegmentFactory.createRoad(leftBranch, this.time + 1, config.ROADS.URBAN);
                     newBranches.push(r)
                 }
             }
