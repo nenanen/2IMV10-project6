@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import * as _ from "lodash";
-import {ROADS} from "./Config"
+import * as config from "./Config"
 
 export default class RoadSegment {
     /**
@@ -19,7 +19,7 @@ export default class RoadSegment {
 
         // Store metadata and fill in defaults if not set
         this.metadata = _.defaults(metadata, {
-            type: ROADS.URBAN,
+            type: config.ROADS.URBAN,
             severed: false
         })
 
@@ -30,8 +30,17 @@ export default class RoadSegment {
      * @returns {Line}
      */
     representation() {
+        let linewidth = config.DEFAULT_SEGMENT_WIDTH;
+        let color = 0x0000ff;
+
+        if (this.metadata.type === config.ROADS.HIGHWAY) {
+            linewidth = config.HIGHWAY_SEGMENT_WIDTH;
+            color = 0xff0000;
+        }
+
         let material = new THREE.LineBasicMaterial({
-            color: 0x0000ff
+            color: color,
+            linewidth: linewidth,
         });
 
         let geometry = new THREE.Geometry();
