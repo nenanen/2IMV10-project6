@@ -1,5 +1,4 @@
 import PriorityQueue from "../util/priorityQueue"
-import RoadSegment from "./RoadSegment"
 import * as config from "./Config"
 import Point from "./Point";
 import Heatmap from "./Heatmap";
@@ -19,24 +18,21 @@ export default class MapGen {
         let end = new Point(0, 1, config.HIGHWAY_SEGMENT_LENGTH);
         let segment = new Segment(start, end);
         let initial = SegmentFactory.createRoad(segment, 0, config.ROADS.HIGHWAY);
-        this.queue.put(0, initial);
+        this.queue.push(initial);
     }
 
     generate() {
-        console.log("generate");
         let limit = 100;
         let count = 0;
-        while (!this.queue.empty()) {
-            let segment = this.queue.get();
+        while (!this.queue.isEmpty()) {
+            let segment = this.queue.pop();
             let local = this.localConstraints(segment);
             count += 1;
-            console.log(count);
             if (local.accepted && count < limit) {
                 this.segmentList.push(local.segment);
                 let newSegments = this.globalGoals(local.segment);
-                console.log("Segments added", newSegments);
                 for (let seg of newSegments) {
-                    this.queue.put(seg.time, seg)
+                    this.queue.push(seg)
                 }
             }
         }

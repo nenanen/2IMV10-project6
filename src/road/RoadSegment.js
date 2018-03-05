@@ -25,6 +25,10 @@ export default class RoadSegment {
 
     }
 
+    get priority() {
+        return this.time;
+    }
+
     /**
      * ThreeJS representation of the line.
      * @returns {Line}
