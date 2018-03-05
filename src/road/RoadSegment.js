@@ -34,17 +34,11 @@ export default class RoadSegment {
      * @returns {Line}
      */
     representation() {
-        let linewidth = config.DEFAULT_SEGMENT_WIDTH;
-        let color = 0x0000ff;
-
-        if (this.metadata.type === config.ROADS.HIGHWAY) {
-            linewidth = config.HIGHWAY_SEGMENT_WIDTH;
-            color = 0xff0000;
-        }
+        let road = this.metadata.type;
 
         let material = new THREE.LineBasicMaterial({
-            color: color,
-            linewidth: linewidth,
+            color: road.COLOR,
+            linewidth: road.SEGMENT_WIDTH,
         });
 
         let geometry = new THREE.Geometry();
