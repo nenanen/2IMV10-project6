@@ -2,11 +2,12 @@ var utils = require('./geometry/geometry');
 import AVLTree from "avl";
 import Point from "./point";
 import Sweepline from "./sweepline";
+import _ from "lodash";
 
 /**
 * @param {Array} segments set of segments intersecting sweepline [[[x1, y1], [x2, y2]] ... [[xm, ym], [xn, yn]]]
 */
-export default function findIntersections(segments) {
+export function findIntersections(segments) {
     var sweepline = new Sweepline('before'),
         queue = new AVLTree(utils.comparePoints, true),
         status = new AVLTree(utils.compareSegments.bind(sweepline), true),
@@ -20,6 +21,34 @@ export default function findIntersections(segments) {
         queue.insert(begin, begin);
         begin = queue.find(begin).key;
         begin.segments.push(segment);
+
+        queue.insert(end, end);
+    });
+
+    while (!queue.isEmpty()) {
+        var point = queue.pop();
+        handleEventPoint(point.key, status, output, queue, sweepline);
+    }
+
+    return output.keys()
+}
+
+export function findIntersectingRoads(segments) {
+    var sweepline = new Sweepline('before'),
+        queue = new AVLTree(utils.comparePoints, true),
+        status = new AVLTree(utils.compareSegments.bind(sweepline), true),
+        output = new AVLTree(utils.comparePoints, true);
+
+    segments.forEach(function (segment) {
+        let s = segment.geometry.start.toVector2D();
+        let e = segment.geometry.end.toVector2D();
+        let segm = [s, e].sort(utils.comparePoints);
+        var begin = new Point(segm[0], 'begin'),
+            end = new Point(segm[1], 'end');
+
+        queue.insert(begin, begin);
+        begin = queue.find(begin).key;
+        begin.segments.push(segm);
 
         queue.insert(end, end);
     });
@@ -122,15 +151,19 @@ function findNewEvent(sl, sr, point, output, queue) {
     var intersectionCoords = utils.findSegmentsIntersection(sl, sr),
         intersectionPoint;
 
+    let touch = (_.isEqual(sl[0], sr[0]) || _.isEqual(sl[0], sr[1]) || _.isEqual(sl[1], sr[0]) || _.isEqual(sl[1], sr[1]));
+
     if (intersectionCoords) {
         intersectionPoint = new Point(intersectionCoords, 'intersection');
         intersectionPoint.intersectingSegments.push(sl);
         intersectionPoint.intersectingSegments.push(sr);
+        intersectionPoint.touchingEndPoint = touch;
 
         if (!output.contains(intersectionPoint)) {
             queue.insert(intersectionPoint, intersectionPoint);
         }
 
         output.insert(intersectionPoint, intersectionPoint);
+
     }
 }

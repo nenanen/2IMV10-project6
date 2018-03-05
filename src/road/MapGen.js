@@ -5,6 +5,7 @@ import Heatmap from "./Heatmap";
 import Util from "./Util";
 import SegmentFactory from "./SegmentFactory";
 import Segment from "./Segment";
+import {findIntersectingRoads} from "../sweeplineAlg/findIntersections";
 
 export default class MapGen {
     constructor() {
@@ -39,12 +40,16 @@ export default class MapGen {
     }
 
     localConstraints(segment) {
+        let intersections = findIntersectingRoads(this.segmentList.concat(segment));
+        console.log(intersections);
+        intersections = _.filter(intersections, (o) => !o.touchingEndPoint && o.type === "intersection");
+
         // if "two streets intersect" then "generate a crossing".
         // if "ends close to an existing crossing" then "extend street, to reach the crossing".
         // if "close to intersecting" then "extend street to form intersection".
 
         return {
-            accepted: true,
+            accepted: intersections.length === 0,
             segment: segment
         }
     }

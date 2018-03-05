@@ -15,7 +15,11 @@ export default class Point {
      * Vector representation of the point.
      * @returns {*[]}
      */
-    toVector() {
+    toVector3D() {
         return [this.x, this.y, this.z];
+    }
+
+    toVector2D() {
+        return [this.x, this.z];
     }
 }

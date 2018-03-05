@@ -5,5 +5,6 @@ export default class Point {
         this.type = type;
         this.segments = [];
         this.intersectingSegments = [];
+        this.touchingEndPoint = false;
     }
 }

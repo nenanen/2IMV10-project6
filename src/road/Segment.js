@@ -20,8 +20,8 @@ export default class Segment {
      * @returns {number}
      */
     length() {
-        let startVector = this.start.toVector();
-        let endVector = this.end.toVector();
+        let startVector = this.start.toVector3D();
+        let endVector = this.end.toVector3D();
         let vector = math.subtract(endVector, startVector);
         vector = _.map(vector, (n) => Math.pow(n, 2));
         const sum = _.sum(vector);
@@ -33,8 +33,8 @@ export default class Segment {
      * @returns {number}
      */
     direction() {
-        let startVector = this.start.toVector();
-        let endVector = this.end.toVector();
+        let startVector = this.start.toVector3D();
+        let endVector = this.end.toVector3D();
         let vector = math.subtract(endVector, startVector);
         let sign = math.sign(vector[0]);
         let angle = Util.angleBetween([0, 0, 1], vector);
