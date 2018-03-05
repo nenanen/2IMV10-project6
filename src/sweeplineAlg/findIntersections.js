@@ -1,7 +1,7 @@
 var Sweepline = require('./sweepline'),
-    Point = require('./point'),
     utils = require('./geometry/geometry');
 import AVLTree from "avl";
+import Point from "./point";
 
 /**
 * @param {Array} segments set of segments intersecting sweepline [[[x1, y1], [x2, y2]] ... [[xm, ym], [xn, yn]]]
