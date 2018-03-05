@@ -1,13 +1,14 @@
-function Sweepline(position) {
-    this.x = null;
-    this.position = position;
-}
+export default class Sweepline {
+    constructor(position) {
+        this.x = null;
+        this.position = position;
+    }
 
-Sweepline.prototype.setPosition = function (position) {
-    this.position = position;
-}
-Sweepline.prototype.setX = function (x) {
-    this.x = x;
-}
+    setPosition(position) {
+        this.position = position;
+    }
 
-module.exports = Sweepline;
+    setX(x) {
+        this.x = x;
+    }
+}
