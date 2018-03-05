@@ -29,9 +29,7 @@ export default function findIntersections(segments) {
         handleEventPoint(point.key, status, output, queue, sweepline);
     }
 
-    return output.keys().map(function(key){
-        return [key.x, key.y];
-    });
+    return output.keys()
 }
 
 function handleEventPoint(point, status, output, queue, sweepline) {
@@ -40,7 +38,7 @@ function handleEventPoint(point, status, output, queue, sweepline) {
 
     var Up = point.segments, // segments, for which this is the left end
         Lp = [],             // segments, for which this is the right end
-        Cp = [];             // // segments, for which this is an inner point
+        Cp = [];             // segments, for which this is an inner point
 
     // step 2
     status.forEach(function(node) {
@@ -126,6 +124,8 @@ function findNewEvent(sl, sr, point, output, queue) {
 
     if (intersectionCoords) {
         intersectionPoint = new Point(intersectionCoords, 'intersection');
+        intersectionPoint.intersectingSegments.push(sl);
+        intersectionPoint.intersectingSegments.push(sr);
 
         if (!output.contains(intersectionPoint)) {
             queue.insert(intersectionPoint, intersectionPoint);

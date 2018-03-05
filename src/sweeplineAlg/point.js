@@ -4,5 +4,6 @@ export default class Point {
         this.y = coords[1];
         this.type = type;
         this.segments = [];
+        this.intersectingSegments = [];
     }
 }
