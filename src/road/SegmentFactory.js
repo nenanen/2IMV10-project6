@@ -7,7 +7,7 @@ import * as _ from "lodash";
 export default class SegmentFactory {
 
     static createRoad(segment, time, type) {
-         let metadata = _.defaults(metadata, {
+         let metadata = _.defaults({
             type: type,
             severed: false
         });
@@ -16,9 +16,10 @@ export default class SegmentFactory {
     }
 
     static direction(start, direction, length) {
-        let x = start.x + length * math.sinDegrees(direction);
-        let y = start.y + length * math.cosDegrees(direction);
-        let end = Point(x, y);
+        const x = start.x + length * math.sin(math.unit(direction, 'deg'));
+        const z = start.z + length * math.cos(math.unit(direction, 'deg'));
+        const y = start.y;
+        let end = new Point(x, y, z);
         return new Segment(start, end);
     }
 
