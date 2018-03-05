@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/nenanen/2IMV10-project6#readme",
   "dependencies": {
+    "avl": "^1.4.1",
     "css-loader": "^0.28.10",
     "fast-simplex-noise": "^3.2.0",
     "lodash": "^4.17.5",
