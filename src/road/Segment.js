@@ -37,7 +37,7 @@ export default class Segment {
         let angle = Util.angleBetween([0, 0, 1], vector);
 
         // Put the angle on the circle between 0 and 360.
-        let degrees = (-1 * sign * angle) % 360;
+        let degrees = (-1 * angle) % 360;
         return (degrees < 0) ? degrees + 360 : degrees;
     }
 }
