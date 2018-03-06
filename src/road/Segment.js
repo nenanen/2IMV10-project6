@@ -55,15 +55,10 @@ export default class Segment {
      * @returns {number}
      */
     direction() {
-        let startVector = this.start.toVector3D();
-        let endVector = this.end.toVector3D();
+        let startVector = this.start.toVector2D();
+        let endVector = this.end.toVector2D();
         let vector = math.subtract(endVector, startVector);
-        let sign = math.sign(vector[0]);
-        let angle = Util.angleBetween([0, 0, 1], vector);
-
-        // Put the angle on the circle between 0 and 360.
-        let degrees = (-1 * angle) % 360;
-        return (degrees < 0) ? degrees + 360 : degrees;
+        return Util.direction(vector);
     }
 
     limits() {

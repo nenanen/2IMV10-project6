@@ -73,18 +73,39 @@ export default class Util {
         return this.vectorLength(math.subtract(v2, v1));
     }
 
+    /**
+     * Calculate the length of the vector.
+     * @param {Array} vector - N-dimensional vector
+     * @returns {number} - The length of the vector
+     */
     static vectorLength(vector) {
-        vector = _.map(vector, (n) => Math.pow(n, 2));
-        const sum = _.sum(vector);
+        let vector2 = vector.map((n) => Math.pow(n, 2));
+        let sum = vector2.reduce((a, b) => a + b, 0);
         return Math.sqrt(sum);
     }
 
-    static angleBetween(v1, v2, x = 0, y = 2) {
-        const v1x = v1[x];
-        const v1y = v1[y];
-        const v2x = v2[x];
-        const v2y = v2[y];
+    /**
+     * Calculate the angle between two two-dimensional vectors.
+     * @param {Array} v1 - Two-dimensional vector
+     * @param {Array} v2 - Two-dimensional vector
+     * @returns {number} - The angle in degrees
+     */
+    static angleBetween(v1, v2) {
+        const v1x = v1[0];
+        const v1y = v1[1];
+        const v2x = v2[0];
+        const v2y = v2[1];
         const angleRad = Math.acos((v1x * v2x + v1y * v2y) / (this.vectorLength(v1) * this.vectorLength(v2)));
         return angleRad * 180 / Math.PI
+    }
+
+    /**
+     * Calculates clockwise direction of vector.
+     * @param {Array} vec - Two-dimensional vector
+     * @returns {number} - The clockwise angle in degrees
+     */
+    static direction(vec) {
+        let direction = Util.angleBetween([0, 1], vec);
+        return Math.sign(vec[0]) * direction
     }
 }

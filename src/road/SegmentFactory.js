@@ -29,17 +29,15 @@ export default class SegmentFactory {
         return this.direction(start, direction, length)
     }
 
-    static branchLeft(segment, angle=0, length=null) {
+    static branchLeft(segment, angle=0, length) {
         let start = segment.end;
         let direction = segment.direction() - 90 + angle;
-        length = _.defaultTo(length, segment.length());
         return this.direction(start, direction, length)
     }
 
-    static branchRight(segment, angle=0, length=null) {
+    static branchRight(segment, angle=0, length) {
         let start = segment.end;
         let direction = segment.direction() + 90 + angle;
-        length = _.defaultTo(length, segment.length());
         return this.direction(start, direction, length)
     }
 

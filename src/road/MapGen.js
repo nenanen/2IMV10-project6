@@ -115,10 +115,6 @@ export default class MapGen {
         // Handle highways
         if (roadSegment.metadata.type === config.ROADS.HIGHWAY) {
 
-            if (popAngle > popStraight) {
-                console.log("Use angle:", randomContinuationAngle);
-            }
-
             // Initialize population of the new road
             let popRoad = 0;
 
@@ -138,17 +134,19 @@ export default class MapGen {
 
                 // Create left branch with some probability
                 if (Math.random() > config.ROADS.HIGHWAY.BRANCH_PROBABILITY) {
+                    let type = Math.random() > 0.9? config.ROADS.HIGHWAY : config.ROADS.URBAN;
                     let angle = Util.randomAngle(config.BRANCH_ANGLE_LIMIT);
-                    let leftBranch = SegmentFactory.branchLeft(segment, angle, config.ROADS.URBAN.LENGTH);
-                    let r = SegmentFactory.createRoad(leftBranch, this.time + 5, config.ROADS.URBAN);
+                    let leftBranch = SegmentFactory.branchLeft(segment, angle, type.LENGTH);
+                    let r = SegmentFactory.createRoad(leftBranch, this.time + type.BRANCH_DELAY, type);
                     newBranches.push(r)
                 }
 
                 // Create right branch with some probability
                 if (Math.random() > config.ROADS.HIGHWAY.BRANCH_PROBABILITY) {
+                    let type = Math.random() > 0.9? config.ROADS.HIGHWAY : config.ROADS.URBAN;
                     let angle = Util.randomAngle(config.BRANCH_ANGLE_LIMIT);
-                    let rightBranch = SegmentFactory.branchRight(segment, angle, config.ROADS.URBAN.LENGTH);
-                    let r = SegmentFactory.createRoad(rightBranch, this.time + 5, config.ROADS.URBAN);
+                    let rightBranch = SegmentFactory.branchRight(segment, angle, type.LENGTH);
+                    let r = SegmentFactory.createRoad(rightBranch, this.time + type.BRANCH_DELAY, type);
                     newBranches.push(r)
                 }
 
@@ -163,7 +161,7 @@ export default class MapGen {
                 if (Math.random() > config.ROADS.URBAN.BRANCH_PROBABILITY) {
                     let angle = Util.randomAngle(config.BRANCH_ANGLE_LIMIT);
                     let leftBranch = SegmentFactory.branchLeft(segment, angle, config.ROADS.URBAN.LENGTH);
-                    let r = SegmentFactory.createRoad(leftBranch, this.time + 1, config.ROADS.URBAN);
+                    let r = SegmentFactory.createRoad(leftBranch, this.time + config.ROADS.URBAN.BRANCH_DELAY, config.ROADS.URBAN);
                     newBranches.push(r)
                 }
 
@@ -171,7 +169,7 @@ export default class MapGen {
                 if (Math.random() > config.ROADS.URBAN.BRANCH_PROBABILITY) {
                     let angle = Util.randomAngle(config.BRANCH_ANGLE_LIMIT);
                     let leftBranch = SegmentFactory.branchRight(segment, angle, config.ROADS.URBAN.LENGTH);
-                    let r = SegmentFactory.createRoad(leftBranch, this.time + 1, config.ROADS.URBAN);
+                    let r = SegmentFactory.createRoad(leftBranch, this.time + config.ROADS.URBAN.BRANCH_DELAY, config.ROADS.URBAN);
                     newBranches.push(r)
                 }
             }

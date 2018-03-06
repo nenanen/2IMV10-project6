@@ -11,7 +11,7 @@ export const ROADS = {
         LENGTH: 100,
         BRANCH_PROBABILITY: 0.4,
         BRANCH_POPULATION_THRESHOLD: 0.1,
-        BRANCH_DELAY: 0,
+        BRANCH_DELAY: 1,
         SEGMENT_WIDTH: 3,
         COLOR: 0x0000ff
     },
