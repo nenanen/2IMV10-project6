@@ -17,6 +17,7 @@ export default class Heatmap {
     }
 
     populationAt(x, y) {
+        // return this.noise.noise2D(x, y);
         let a = (this.noise.noise2D(x / 10000, y / 10000) + 1) / 2;
         let b = (this.noise.noise2D(x / 20000, y / 20000 + 500) + 1) / 2;
         let c = (this.noise.noise2D(x / 20000, y / 20000 + 1000) + 1) / 2;

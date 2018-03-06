@@ -25,7 +25,7 @@ export default class MapGen {
     }
 
     generate() {
-        let limit = 100;
+        let limit = 1000;
         let count = 0;
         while (!this.queue.isEmpty()) {
             let segment = this.queue.pop();
@@ -43,35 +43,43 @@ export default class MapGen {
     }
 
     localConstraints(segment) {
-        let intersection = false;
+
+        // Find intersecting points
+        let intersections = [];
         for (let seg of this.segmentList) {
             let point = Util.doRoadsIntersect(segment, seg);
             if (point) {
-                let end = segment.geometry.end;
-                this.vertices.push(new Vertex(point[0], end.y, point[1]));
-                segment.metadata.severed = true;
-                // console.log("Segments intersect");
-                // console.log(seg, "and", segment, "intersect at", point);
-                // console.log("Segment endpoint corrected to");
-                // console.log(segment.geometry.start, new Point(point[0], end.y, point[1]));
-                // // console.log(point[0], end.y, point[1]);
-                segment.geometry.end = new Point(point[0], end.y, point[1]);
-                intersection = false;
-                break;
+                intersections.push(point);
             }
         }
 
-        // let intersections = findIntersectingRoads(this.segmentList.concat(segment));
-        // console.log(intersections);
-        // intersections = _.filter(intersections, (o) => !o.touchingEndPoint && o.type === "intersection");
+
+        if (intersections.length > 0) {
+
+            // Find first intersection
+            let firstIntersection = null;
+            let minDistance = Infinity;
+            for (let intersection of intersections) {
+                let distance = Util.distance(intersection, segment.geometry.start.toVector2D());
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    firstIntersection = intersection;
+                }
+            }
+
+            // Clip to first intersection
+            let end = segment.geometry.end;
+            segment.geometry.end = new Point(firstIntersection[0], end.y, firstIntersection[1]);
+            this.vertices.push(new Vertex(firstIntersection[0], end.y, firstIntersection[1]));
+            segment.metadata.severed = true
+        }
 
         // if "two streets intersect" then "generate a crossing".
         // if "ends close to an existing crossing" then "extend street, to reach the crossing".
         // if "close to intersecting" then "extend street to form intersection".
 
         return {
-            // accepted: intersections.length === 0,
-            accepted: !intersection,
+            accepted: true,
             segment: segment
         }
     }

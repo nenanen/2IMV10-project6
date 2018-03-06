@@ -22,10 +22,7 @@ export default class Segment {
     length() {
         let startVector = this.start.toVector3D();
         let endVector = this.end.toVector3D();
-        let vector = math.subtract(endVector, startVector);
-        vector = _.map(vector, (n) => Math.pow(n, 2));
-        const sum = _.sum(vector);
-        return Math.sqrt(sum);
+        return Util.distance(startVector, endVector);
     }
 
     /**

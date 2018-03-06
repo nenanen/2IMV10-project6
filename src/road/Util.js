@@ -69,6 +69,10 @@ export default class Util {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
+    static distance(v1, v2) {
+        return this.vectorLength(math.subtract(v2, v1));
+    }
+
     static vectorLength(vector) {
         vector = _.map(vector, (n) => Math.pow(n, 2));
         const sum = _.sum(vector);
