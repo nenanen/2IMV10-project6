@@ -27,6 +27,9 @@ export default class MapGen {
     }
 
     generate() {
+        let t0 = performance.now();
+
+
         let limit = 1000;
         while (!this.queue.isEmpty()) {
             let segment = this.queue.pop();
@@ -41,43 +44,82 @@ export default class MapGen {
                 }
             }
         }
+
+        let t1 = performance.now();
+        console.log("City generation " + (t1 - t0) + " milliseconds.")
     }
 
     localConstraints(road) {
 
         let matches = this.qTree.retrieve(road.limits());
+        let vertex = null;
+        let minDistance = Infinity;
+        let priority = 0;
 
-        // Find intersecting points
-        let intersections = [];
+        // Loop over matches
         for (let match of matches) {
             let point = Util.doRoadsIntersect(road, match.o);
+
             if (point) {
-                intersections.push(point);
-            }
-        }
+                // Calculate distance to intersection
+                let distance = Util.distance(road.geometry.start.toVector2D(), point);
 
+                // Update priority, so other mechanisms don't take over.
+                priority = 5;
 
-        if (intersections.length > 0) {
-
-            // Find first intersection
-            let firstIntersection = null;
-            let minDistance = Infinity;
-            for (let intersection of intersections) {
-                let distance = Util.distance(intersection, road.geometry.start.toVector2D());
+                // Clip road to first intersection
                 if (distance < minDistance) {
+                    road.geometry.end = new Point(point[0], road.geometry.end.y, point[1]);
+                    road.metadata.severed = true;
+                    vertex = new Vertex(point[0], road.geometry.end.y, point[1], 0xffffff);
                     minDistance = distance;
-                    firstIntersection = intersection;
                 }
             }
 
-            // Clip to first intersection
-            let end = road.geometry.end;
-            road.geometry.end = new Point(firstIntersection[0], end.y, firstIntersection[1]);
-            this.vertices.push(new Vertex(firstIntersection[0], end.y, firstIntersection[1]));
-            road.metadata.severed = true
+            if (priority < 5 && Util.areRoadsInRange(road, match.o, 20)){
+                let e = match.o.geometry.end;
+
+                road.geometry.end = new Point(e.x, e.y, e.z);
+                road.metadata.severed = true;
+                vertex = new Vertex(e.x, e.y, e.z, 0xffff00);
+            }
         }
 
-        // if "two streets intersect" then "generate a crossing".
+        // Store vertex if there was an intersection
+        if (vertex) {
+            this.vertices.push(vertex);
+        }
+        //
+        //
+        // if (intersections.length > 0) {
+        //
+        //     // Find first intersection
+        //     let firstIntersection = null;
+        //     let minDistance = Infinity;
+        //     for (let intersection of intersections) {
+        //         let distance = Util.distance(intersection, road.geometry.start.toVector2D());
+        //         if (distance < minDistance) {
+        //             minDistance = distance;
+        //             firstIntersection = intersection;
+        //         }
+        //     }
+        //
+        //     // Clip to first intersection
+        //     let end = road.geometry.end;
+        //     road.geometry.end = new Point(firstIntersection[0], end.y, firstIntersection[1]);
+        //     this.vertices.push(new Vertex(firstIntersection[0], end.y, firstIntersection[1]));
+        //     road.metadata.severed = true;
+
+        //     return {
+        //         accepted: true,
+        //         segment: road
+        //     }
+        // }
+
+        // Find ends that are close
+        // Util.distance();
+
+
         // if "ends close to an existing crossing" then "extend street, to reach the crossing".
         // if "close to intersecting" then "extend street to form intersection".
 

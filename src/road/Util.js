@@ -36,6 +36,13 @@ export default class Util {
         return Util.segmentsIntersect(start1[0], start1[1], end1[0], end1[1], start2[0], start2[1], end2[0], end2[1])
     }
 
+    static areRoadsInRange(r1, r2, range) {
+        let end1 = r1.geometry.end.toVector2D();
+        let end2 = r2.geometry.end.toVector2D();
+
+        return this.distance(end1, end2) < range;
+    }
+
 
     static doSegmentsIntersect(r1, r2) {
         let start1 = r1.start.toVector2D();
