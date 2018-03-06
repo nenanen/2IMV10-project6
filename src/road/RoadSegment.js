@@ -51,4 +51,10 @@ export default class RoadSegment {
 
         return new THREE.Line(geometry, material)
     }
+
+    limits() {
+        let limits = this.geometry.limits();
+        limits.o = this;
+        return limits;
+    }
 }

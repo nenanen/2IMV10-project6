@@ -6,6 +6,7 @@ import Util from "./Util";
 import SegmentFactory from "./SegmentFactory";
 import Segment from "./Segment";
 import Vertex from "./Vertex";
+import Quadtree from "../vendor/Quadtree";
 
 export default class MapGen {
     constructor() {
@@ -14,6 +15,7 @@ export default class MapGen {
         this.heatmap = new Heatmap();
         this.vertices = [];
         this.time = 0;
+        this.qTree = new Quadtree(config.QUADTREE_PARAMS, config.QUADTREE_MAX_OBJECTS, config.QUADTREE_MAX_LEVELS);
     }
 
     initialize() {
@@ -34,6 +36,7 @@ export default class MapGen {
             count += 1;
             if (local.accepted && count < limit) {
                 this.segmentList.push(local.segment);
+                this.qTree.insert(local.segment.limits());
                 let newSegments = this.globalGoals(local.segment);
                 for (let seg of newSegments) {
                     this.queue.push(seg)
@@ -42,12 +45,14 @@ export default class MapGen {
         }
     }
 
-    localConstraints(segment) {
+    localConstraints(road) {
+
+        let matches = this.qTree.retrieve(road.limits());
 
         // Find intersecting points
         let intersections = [];
-        for (let seg of this.segmentList) {
-            let point = Util.doRoadsIntersect(segment, seg);
+        for (let match of matches) {
+            let point = Util.doRoadsIntersect(road, match.o);
             if (point) {
                 intersections.push(point);
             }
@@ -60,7 +65,7 @@ export default class MapGen {
             let firstIntersection = null;
             let minDistance = Infinity;
             for (let intersection of intersections) {
-                let distance = Util.distance(intersection, segment.geometry.start.toVector2D());
+                let distance = Util.distance(intersection, road.geometry.start.toVector2D());
                 if (distance < minDistance) {
                     minDistance = distance;
                     firstIntersection = intersection;
@@ -68,10 +73,10 @@ export default class MapGen {
             }
 
             // Clip to first intersection
-            let end = segment.geometry.end;
-            segment.geometry.end = new Point(firstIntersection[0], end.y, firstIntersection[1]);
+            let end = road.geometry.end;
+            road.geometry.end = new Point(firstIntersection[0], end.y, firstIntersection[1]);
             this.vertices.push(new Vertex(firstIntersection[0], end.y, firstIntersection[1]));
-            segment.metadata.severed = true
+            road.metadata.severed = true
         }
 
         // if "two streets intersect" then "generate a crossing".
@@ -80,7 +85,7 @@ export default class MapGen {
 
         return {
             accepted: true,
-            segment: segment
+            segment: road
         }
     }
 
@@ -111,6 +116,10 @@ export default class MapGen {
 
         // Handle highways
         if (roadSegment.metadata.type === config.ROADS.HIGHWAY) {
+
+            if (popAngle > popStraight) {
+                console.log("Use angle:", randomContinuationAngle);
+            }
 
             // Initialize population of the new road
             let popRoad = 0;
