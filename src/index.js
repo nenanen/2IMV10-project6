@@ -3,17 +3,7 @@ import OrbitControls from './vendor/OrbitControls'
 import './sass/main.scss'
 import MapGen from "./road/MapGen"
 import Util from "./road/Util";
-
-
-// Singleton map generator object
-let mapGen = new MapGen();
-let planes = [];
-
-// The size of the terrain that is generated when the camera moves out
-const terrainSize = 5000;
-
-// When we are this many blocks away from the edge of the generated terrain, we generate new terrain
-const terrainOffset = 1000;
+import HeatmapVisualizer from "./road/HeatmapVisualizer";
 
 // Singleton object, to make it easier to identify in other .js files
 let threejsWorld = {
@@ -25,8 +15,9 @@ let threejsWorld = {
 
 };
 
-// Store camera position
-let lastCameraPosition = null;
+// Singleton map generator object
+let mapGen = new MapGen();
+let heatmap = new HeatmapVisualizer(mapGen.heatmap, threejsWorld);
 
 init();
 animate();
@@ -42,7 +33,6 @@ function init() {
     threejsWorld.camera.position.y = 100;
     threejsWorld.controls.keyPanSpeed = 100;
     threejsWorld.controls.update();
-    lastCameraPosition = threejsWorld.camera.position.clone();
 
     // CALL INIT OBJECT METHODS FROM HERE
     // initGround();
@@ -83,44 +73,8 @@ function initRoad() {
     // Visualize heatmap
     const x = threejsWorld.camera.position.x;
     const z = threejsWorld.camera.position.z;
-    drawHeatmap(x, z, terrainSize);
+    heatmap.drawHeatmap()
 
-}
-
-function drawHeatmap(x, z, maxDistance) {
-
-    // Remove old planes
-    for(let plane of planes) {
-        threejsWorld.scene.remove(plane);
-    }
-
-    // Calculate new planes
-    planes = mapGen.heatmap.visualize(x - maxDistance, x + maxDistance, z - maxDistance, z + maxDistance);
-
-    // Insert new planes
-    for(let plane of planes) {
-        threejsWorld.scene.add(plane);
-    }
-}
-
-function updateHeatmap() {
-
-    // Get x and z coordinate of the camera
-    const x = threejsWorld.camera.position.x;
-    const z = threejsWorld.camera.position.z;
-
-    const lastPos = [lastCameraPosition.x, lastCameraPosition.z];
-
-    // Determine if we are far enough from the center to generate a new part
-    if (Util.distance([x, z], lastPos) > terrainSize - terrainOffset) {
-
-        // Redraw the heatmap
-        drawHeatmap(x, z, terrainSize);
-
-        // Update new center
-        lastCameraPosition = threejsWorld.camera.position.clone();
-
-    }
 }
 
 //********** general methods ********** //
@@ -129,7 +83,7 @@ function animate() {
     requestAnimationFrame(animate);
     threejsWorld.controls.update();
     threejsWorld.renderer.render(threejsWorld.scene, threejsWorld.camera);
-    updateHeatmap();
+    heatmap.updateHeatmap();
     // console.log(threejsWorld.camera.position);
 }
 

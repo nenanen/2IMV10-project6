@@ -45,41 +45,4 @@ export default class Heatmap {
     static snapToGrid(val) {
         return Math.floor(val/config.TILE_SIZE) * config.TILE_SIZE;
     }
-
-    visualize(xMin, xMax, yMin, yMax) {
-
-        // Get the tile size
-        const tileSize = config.TILE_SIZE;
-
-        // Snap coordinates to grid
-        xMin = Heatmap.snapToGrid(xMin);
-        xMax = Heatmap.snapToGrid(xMax);
-        yMin = Heatmap.snapToGrid(yMin);
-        yMax = Heatmap.snapToGrid(yMax);
-
-        let planes = [];
-
-        for(let x = xMin; x <= xMax; x += tileSize) {
-            for(let y = yMin; y <= yMax; y += tileSize) {
-                const population = this.populationAtTile(x, y, tileSize);
-
-                const dense = population > config.ROADS.HIGHWAY.BRANCH_POPULATION_THRESHOLD;
-                const lightness = Math.trunc(population * 100);
-                const color = dense ? `hsl(0, 0%, ${lightness}%)` : `hsl(168, 100%, ${lightness}%)`;
-                const tColor = new THREE.Color(color);
-                const geometry = new THREE.PlaneBufferGeometry(tileSize, tileSize);
-                const material = new THREE.MeshBasicMaterial({color: tColor, side: THREE.DoubleSide});
-                const plane = new THREE.Mesh(geometry, material);
-
-                plane.rotateX(-0.5 * Math.PI);
-
-                plane.position.setX(x);
-                plane.position.setY(0);
-                plane.position.setZ(y);
-                planes.push(plane)
-            }
-        }
-        console.log(`Visualizing ${planes.length} planes`);
-        return planes
-    }
 }
