@@ -150,18 +150,22 @@ export default class MapGen {
                 // Create left branch with some probability
                 if (Math.random() > config.ROADS.HIGHWAY.BRANCH_PROBABILITY) {
                     let type = Math.random() > 0.9? config.ROADS.HIGHWAY : config.ROADS.URBAN;
+                    let delay = type === config.ROADS.HIGHWAY ? 0 : type.BRANCH_DELAY;
+
                     let angle = Util.randomAngle(config.BRANCH_ANGLE_LIMIT);
                     let leftBranch = SegmentFactory.branchLeft(segment, angle, type.LENGTH);
-                    let r = SegmentFactory.createRoad(leftBranch, this.time + type.BRANCH_DELAY, type);
+                    let r = SegmentFactory.createRoad(leftBranch, this.time + delay, type);
                     newBranches.push(r)
                 }
 
                 // Create right branch with some probability
                 if (Math.random() > config.ROADS.HIGHWAY.BRANCH_PROBABILITY) {
                     let type = Math.random() > 0.9? config.ROADS.HIGHWAY : config.ROADS.URBAN;
+                    let delay = type === config.ROADS.HIGHWAY ? 0 : type.BRANCH_DELAY;
+
                     let angle = Util.randomAngle(config.BRANCH_ANGLE_LIMIT);
                     let rightBranch = SegmentFactory.branchRight(segment, angle, type.LENGTH);
-                    let r = SegmentFactory.createRoad(rightBranch, this.time + type.BRANCH_DELAY, type);
+                    let r = SegmentFactory.createRoad(rightBranch, this.time + delay, type);
                     newBranches.push(r)
                 }
             } else {
