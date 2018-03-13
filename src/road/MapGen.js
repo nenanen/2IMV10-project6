@@ -89,35 +89,6 @@ export default class MapGen {
         if (vertex) {
             this.vertices.push(vertex);
         }
-        //
-        //
-        // if (intersections.length > 0) {
-        //
-        //     // Find first intersection
-        //     let firstIntersection = null;
-        //     let minDistance = Infinity;
-        //     for (let intersection of intersections) {
-        //         let distance = Util.distance(intersection, road.geometry.start.toVector2D());
-        //         if (distance < minDistance) {
-        //             minDistance = distance;
-        //             firstIntersection = intersection;
-        //         }
-        //     }
-        //
-        //     // Clip to first intersection
-        //     let end = road.geometry.end;
-        //     road.geometry.end = new Point(firstIntersection[0], end.y, firstIntersection[1]);
-        //     this.vertices.push(new Vertex(firstIntersection[0], end.y, firstIntersection[1]));
-        //     road.metadata.severed = true;
-
-        //     return {
-        //         accepted: true,
-        //         segment: road
-        //     }
-        // }
-
-        // Find ends that are close
-        // Util.distance();
 
 
         // if "ends close to an existing crossing" then "extend street, to reach the crossing".
@@ -164,11 +135,13 @@ export default class MapGen {
             if (popAngle > popStraight) {
                 let r = SegmentFactory.createRoad(continueStraight, this.time + 2, config.ROADS.HIGHWAY);
                 newBranches.push(r);
-                popRoad = popStraight;
+                // popRoad = popStraight;
+                popRoad = this.heatmap.populationAtEndTile(continueStraight);
             } else {
                 let r = SegmentFactory.createRoad(continueAngle, this.time + 2, config.ROADS.HIGHWAY);
                 newBranches.push(r);
-                popRoad = popAngle;
+                popRoad = this.heatmap.populationAtEndTile(continueAngle);
+                // popRoad = popAngle;
             }
 
             // Check if population high enough for branch
@@ -191,7 +164,8 @@ export default class MapGen {
                     let r = SegmentFactory.createRoad(rightBranch, this.time + type.BRANCH_DELAY, type);
                     newBranches.push(r)
                 }
-
+            } else {
+                roadSegment.metadata.color = config.ROADS.HIGHWAY.COLOR_LOW_POP;
             }
         }
 

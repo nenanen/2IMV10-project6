@@ -20,8 +20,11 @@ export default class RoadSegment {
         // Store metadata and fill in defaults if not set
         this.metadata = _.defaults(metadata, {
             type: config.ROADS.URBAN,
-            severed: false
-        })
+            severed: false,
+        });
+
+        // Get more information from the road type (so we can adjust it if needed)
+        this.metadata.color = this.metadata.type.COLOR;
 
     }
 
@@ -37,7 +40,7 @@ export default class RoadSegment {
         let road = this.metadata.type;
 
         let material = new THREE.LineBasicMaterial({
-            color: road.COLOR,
+            color: this.metadata.color,
             linewidth: road.SEGMENT_WIDTH,
         });
 
