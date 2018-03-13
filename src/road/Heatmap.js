@@ -33,22 +33,29 @@ export default class Heatmap {
 
     populationAtTile(x, y) {
 
-        // Get the tile size
-        const tileSize = config.TILE_SIZE;
-
         // Locate the middle of the tile where (x, y) is located
-        const xTile = Math.floor(x/tileSize) * tileSize;
-        const yTile = Math.floor(y/tileSize) * tileSize;
+        const xTile = Heatmap.snapToGrid(x);
+        const yTile = Heatmap.snapToGrid(y);
 
         // Return the population at the center of the tile
         return this.populationAt(xTile, yTile)
 
     }
 
+    static snapToGrid(val) {
+        return Math.floor(val/config.TILE_SIZE) * config.TILE_SIZE;
+    }
+
     visualize(xMin, xMax, yMin, yMax) {
 
         // Get the tile size
         const tileSize = config.TILE_SIZE;
+
+        // Snap coordinates to grid
+        xMin = Heatmap.snapToGrid(xMin);
+        xMax = Heatmap.snapToGrid(xMax);
+        yMin = Heatmap.snapToGrid(yMin);
+        yMax = Heatmap.snapToGrid(yMax);
 
         let planes = [];
 

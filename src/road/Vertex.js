@@ -8,7 +8,8 @@ export default class Vertex extends Point {
     }
 
     representation() {
-        let geometry = new THREE.SphereGeometry( 10, 32, 32 );
+        // let geometry = new THREE.SphereGeometry( 10, 32, 32 );
+        let geometry = new THREE.BoxGeometry(10, 10, 10);
         let material = new THREE.MeshBasicMaterial( {color: this.color} );
         let sphere = new THREE.Mesh( geometry, material );
 
