@@ -163,4 +163,29 @@ export default class Algebra {
     static getRandomArbitrary(min, max) {
         return Math.random() * (max - min) + min;
     }
+
+    /**
+     * Calculate the angle between two two-dimensional vectors.
+     * @param {Array} v1 - Two-dimensional vector
+     * @param {Array} v2 - Two-dimensional vector
+     * @returns {number} - The angle in degrees
+     */
+    static angleBetween(v1, v2) {
+        const x1 = v1[0];
+        const y1 = v1[1];
+        const x2 = v2[0];
+        const y2 = v2[1];
+        const angleRad = Math.acos((x1 * x2 + y1 * y2) / (this.length(v1) * this.length(v2)));
+        return angleRad * 180 / Math.PI
+    }
+
+    /**
+     * Calculates clockwise direction of vector.
+     * @param {Array} vec - Two-dimensional vector
+     * @returns {number} - The clockwise angle in degrees
+     */
+    static direction(vec) {
+        let direction = this.angleBetween([0, 1], vec);
+        return Math.sign(vec[0]) * direction
+    }
 }
