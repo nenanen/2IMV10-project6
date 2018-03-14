@@ -82,6 +82,18 @@ export default class MapGen {
                 road.geometry.end = new Point(e.x, e.y, e.z);
                 road.metadata.severed = true;
                 vertex = new Vertex(e.x, e.y, e.z, 0xffff00);
+
+                priority = 4;
+            }
+
+            if (priority < 4 && Util.distanceToRoad(road, match.o) < 20) {
+                const P = road.geometry.end.toVector2D();
+                const A = match.o.geometry.start.toVector2D();
+                const B = match.o.geometry.end.toVector2D();
+                const point = Util.projectOnLine(P, A, B);
+                road.geometry.end = new Point(point[0], road.geometry.end.y, point[1]);
+                road.metadata.severed = true;
+                vertex = new Vertex(point[0], road.geometry.end.y, point[1], 0xff0000);
             }
         }
 
@@ -132,7 +144,7 @@ export default class MapGen {
             let popRoad = 0;
 
             // Continue straight or with angle
-            if (popAngle > popStraight) {
+            if (popStraight > popAngle) {
                 let r = SegmentFactory.createRoad(continueStraight, this.time + 2, config.ROADS.HIGHWAY);
                 newBranches.push(r);
                 // popRoad = popStraight;

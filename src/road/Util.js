@@ -1,27 +1,8 @@
 import * as math from "mathjs";
 import * as _ from "lodash";
+import Algebra from "./Algebra";
 
 export default class Util {
-
-    // https://stackoverflow.com/questions/13937782/calculating-the-point-of-intersection-of-two-lines
-    static segmentsIntersect(x1, y1, x2, y2, x3, y3, x4, y4) {
-
-        let ua, ub, denominator = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
-        if (denominator === 0) {
-            return false;
-        }
-        ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / denominator;
-        ub = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / denominator;
-
-        let segment1OnLine = ua >= 0 && ua <= 1;
-        let segment2OnLine = ub >= 0 && ub <= 1;
-
-        if(segment1OnLine && segment2OnLine) {
-            return [x1 + ua * (x2 - x1), y1 + ua * (y2 - y1)]
-        }
-
-        return false;
-    }
 
     static doRoadsIntersect(r1, r2) {
         let start1 = r1.geometry.start.toVector2D();
@@ -33,7 +14,7 @@ export default class Util {
             return false
         }
 
-        return Util.segmentsIntersect(start1[0], start1[1], end1[0], end1[1], start2[0], start2[1], end2[0], end2[1])
+        return Algebra.segmentsIntersect(start1, end1, start2, end2);
     }
 
     static areRoadsInRange(r1, r2, range) {
@@ -41,6 +22,38 @@ export default class Util {
         let end2 = r2.geometry.end.toVector2D();
 
         return this.distance(end1, end2) < range;
+    }
+
+    static distanceToRoad(r1, r2) {
+        const P = r1.geometry.end.toVector2D();
+        const A = r2.geometry.start.toVector2D();
+        const B = r2.geometry.end.toVector2D();
+        let point = Algebra.projectOnSegment(P, A, B);
+        return Algebra.distance(P, point)
+    }
+
+    static distanceToLine(P, A, B) {
+        // https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line#Line_defined_by_two_points
+        const x0 = P[0], x1 = A[0], x2 = B[0];
+        const y0 = P[1], y1 = A[1], y2 = B[1];
+        const area = Math.abs((y2 - y1) * x0 - (x2 - x1) * y0 + x2 * y1 - y2 * x1);
+        const distAB = this.distance(A, B);
+
+        return area / distAB;
+    }
+
+    static projectOnLine(P, A, B) {
+        const vecAP = math.subtract(P, A);
+        const vecAB = math.subtract(B, A);
+        const projected = Util.project(vecAP, vecAB);
+        return math.add(A, projected);
+    }
+
+    static project(v, onto) {
+        // http://en.wikipedia.org/wiki/Vector_projection
+        // https://math.oregonstate.edu/home/programs/undergrad/CalculusQuestStudyGuides/vcalc/dotprod/dotprod.html
+        const component = math.dot(v, onto) / Math.pow(Util.vectorLength(onto), 2);
+        return math.multiply(component, onto)
     }
 
 
