@@ -4,6 +4,7 @@ import './sass/main.scss'
 import MapGen from "./road/MapGen"
 import HeatmapVisualizer from "./road/HeatmapVisualizer";
 import Menu from "./ui/menu";
+import BuidlingController from "./building/building";
 
 // Javascript to be used from HTML.
 window.ui = {
@@ -23,6 +24,7 @@ let threejsWorld = {
 // Singleton map generator object
 let mapGen = new MapGen();
 let heatmap = new HeatmapVisualizer(mapGen.heatmap, threejsWorld);
+let buildingController = new BuidlingController(threejsWorld);
 
 init();
 animate();
@@ -38,10 +40,12 @@ function init() {
     threejsWorld.camera.position.y = 100;
     threejsWorld.controls.keyPanSpeed = 100;
     threejsWorld.controls.update();
+    createLights();
 
     // CALL INIT OBJECT METHODS FROM HERE
     // initGround();
     initRoad();
+    initBuildings();
 
     // More ThreeJS initialization
     threejsWorld.renderer = new THREE.WebGLRenderer({alpha: true});
@@ -82,6 +86,10 @@ function initRoad() {
 
 }
 
+function initBuildings(){
+    buildingController.buildingBlob();
+}
+
 //********** general methods ********** //
 function animate() {
     // Per frame change
@@ -99,4 +107,32 @@ function windowResize() {
     threejsWorld.renderer.setSize(width, height);
     threejsWorld.camera.aspect = width / height;
     threejsWorld.camera.updateProjectionMatrix();
+}
+
+function createLights() {//light for buildings
+	var hemisphereLight = new THREE.HemisphereLight(0xaaaaaa,0x000000, .9)
+	var shadowLight = new THREE.DirectionalLight(0xffffff, .9);
+
+	// Set the direction of the light  
+	shadowLight.position.set(150, 350, 350);
+	
+	// Allow shadow casting 
+	shadowLight.castShadow = true;
+
+	// define the visible area of the projected shadow
+	shadowLight.shadow.camera.left = -400;
+	shadowLight.shadow.camera.right = 400;
+	shadowLight.shadow.camera.top = 400;
+	shadowLight.shadow.camera.bottom = -400;
+	shadowLight.shadow.camera.near = 1;
+	shadowLight.shadow.camera.far = 1000;
+
+	// define the resolution of the shadow; the higher the better, 
+	// but also the more expensive and less performant
+	shadowLight.shadow.mapSize.width = 2048;
+	shadowLight.shadow.mapSize.height = 2048;
+	
+	// to activate the lights, just add them to the scene
+	threejsWorld.scene.add(hemisphereLight);  
+	threejsWorld.scene.add(shadowLight);
 }
