@@ -78,7 +78,7 @@ export default class MapGen {
             }
 
             // Snap roads
-            if (priority < 5 && Util.areRoadsInRange(road, match.o, 20)){
+            if (priority < 5 && Util.areRoadsInRange(road, match.o, config.SNAP_DISTANCE)){
                 let e = match.o.geometry.end;
 
                 road.geometry.end = new Point(e.x, e.y, e.z);
@@ -92,7 +92,7 @@ export default class MapGen {
             if (priority < 4) {
                 const stretch = Util.distanceToRoad(road, match.o);
 
-                if (stretch.distance < 20) {
+                if (stretch.distance < config.STRETCH_DISTANCE) {
                     road.geometry.end = new Point(stretch.point[0], road.geometry.end.y, stretch.point[1]);
                     road.metadata.severed = true;
                     vertex = new Vertex(stretch.point[0], road.geometry.end.y, stretch.point[1], config.STRETCH_COLOR);
@@ -164,7 +164,7 @@ export default class MapGen {
 
                 // Create left branch with some probability
                 if (Math.random() > config.ROADS.HIGHWAY.BRANCH_PROBABILITY) {
-                    let type = Math.random() > 0.9? config.ROADS.HIGHWAY : config.ROADS.URBAN;
+                    let type = Math.random() > 0.85? config.ROADS.HIGHWAY : config.ROADS.URBAN;
                     let delay = type === config.ROADS.HIGHWAY ? 0 : type.BRANCH_DELAY;
 
                     let angle = Util.randomAngle(config.BRANCH_ANGLE_LIMIT);
@@ -175,7 +175,7 @@ export default class MapGen {
 
                 // Create right branch with some probability
                 if (Math.random() > config.ROADS.HIGHWAY.BRANCH_PROBABILITY) {
-                    let type = Math.random() > 0.9? config.ROADS.HIGHWAY : config.ROADS.URBAN;
+                    let type = Math.random() > 0.85? config.ROADS.HIGHWAY : config.ROADS.URBAN;
                     let delay = type === config.ROADS.HIGHWAY ? 0 : type.BRANCH_DELAY;
 
                     let angle = Util.randomAngle(config.BRANCH_ANGLE_LIMIT);

@@ -11,7 +11,7 @@ export default class HeatmapVisualizer {
      * @param terrainSize - The size of the terrain that is generated when the camera moves out
      * @param terrainOffset - Redraw terrain if we are this much away from the border
      */
-    constructor(heatmap, threejsWorld, terrainSize=5000, terrainOffset=1000) {
+    constructor(heatmap, threejsWorld, terrainSize=2000, terrainOffset=1000) {
         this.heatmap = heatmap;
         this.planes = [];
         this.world = threejsWorld;
