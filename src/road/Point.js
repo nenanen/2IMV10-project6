@@ -22,4 +22,8 @@ export default class Point {
     toVector2D() {
         return [this.x, this.z];
     }
+
+    static copy (point) {
+        return new Point(point.x, point.y, point.z);
+    }
 }

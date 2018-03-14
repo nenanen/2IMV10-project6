@@ -59,6 +59,7 @@ export default class MapGen {
 
         // Loop over matches
         for (let match of matches) {
+
             let point = Util.doRoadsIntersect(road, match.o);
 
             if (point) {
@@ -77,25 +78,49 @@ export default class MapGen {
                 }
             }
 
+            // Align roads
+            if (true) {
+                // If this road passes close to the end point of another road
+
+                // Project a point from the other road on this segment
+                const point = Algebra.projectOnSegment(match.o.geometry.end.toVector2D(),
+                    road.geometry.start.toVector2D(), road.geometry.end.toVector2D());
+
+                // Calculate distance from other point to projected point
+                const distance = Algebra.distance(match.o.geometry.end.toVector2D(), point);
+
+                if (distance > 0 && distance < config.SNAP_DISTANCE) {
+                    const newPoint = Point.copy(match.o.geometry.end);
+                    road.geometry.end = newPoint;
+                    road.metadata.severed = true;
+                    vertex = new Vertex(newPoint.x, newPoint.y, newPoint.z, config.ALIGN_COLOR);
+                    priority = 4;
+                }
+
+            }
+
             // Snap roads
-            if (priority < 5 && Util.areRoadsInRange(road, match.o, config.SNAP_DISTANCE)){
+            if (priority < 4 && Util.areRoadsInRange(road, match.o, config.SNAP_DISTANCE)){
+                console.log("Snap!");
                 let e = match.o.geometry.end;
 
                 road.geometry.end = new Point(e.x, e.y, e.z);
                 road.metadata.severed = true;
                 vertex = new Vertex(e.x, e.y, e.z, config.SNAP_COLOR);
 
-                priority = 4;
+                priority = 3;
             }
 
             // Stretch roads
-            if (priority < 4) {
+            if (priority < 3) {
                 const stretch = Util.distanceToRoad(road, match.o);
 
                 if (stretch.distance < config.STRETCH_DISTANCE) {
                     road.geometry.end = new Point(stretch.point[0], road.geometry.end.y, stretch.point[1]);
                     road.metadata.severed = true;
                     vertex = new Vertex(stretch.point[0], road.geometry.end.y, stretch.point[1], config.STRETCH_COLOR);
+
+                    priority = 2;
                 }
             }
         }
@@ -104,10 +129,6 @@ export default class MapGen {
         if (vertex) {
             this.vertices.push(vertex);
         }
-
-
-        // if "ends close to an existing crossing" then "extend street, to reach the crossing".
-        // if "close to intersecting" then "extend street to form intersection".
 
         return {
             accepted: true,

@@ -37,6 +37,7 @@ export const TILE_SIZE = 100;
 export const INTERSECT_COLOR = 0xd63031;
 export const SNAP_COLOR = 0x0984e3;
 export const STRETCH_COLOR = 0x00b894;
+export const ALIGN_COLOR = 0xdfe6e9;
 
 // Local constraints
 export const SNAP_DISTANCE = 25;
