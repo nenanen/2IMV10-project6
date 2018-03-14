@@ -32,6 +32,15 @@ export default class BuildingController {
             return this.replace(new RegExp(str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g,"\\$&"),(ignore?"gi":"g")),(typeof(str2)=="string")?str2.replace(/\$/g,"$$$$"):str2);
         } 
   }
+
+  generate(nrOfbuidlings = 1, width=100,height=100,depth=100, x=0,y=0,z=0){
+      var arrToReturn =[];
+      for (var i =0;i<nrOfbuidlings;i++)
+      {
+          arrToReturn.push(this.get2D("ur",width = 50,height = 50,depth =50));
+      }
+      return arrToReturn;
+  }
   
   buildingBlob(){
 
@@ -54,9 +63,8 @@ export default class BuildingController {
         this.get2D(newS,0,0,600);
     }
 
-    get2D(lsystemstring,x=0,y=0,z=0, symmetry =true)
+    get2D(lsystemstring,x=0,y=0,z=0, symmetry =true,width = 100,height = 100,depth =100)
     {
-        var width = 50,height = 50,depth =50;
         var cX = 0,cY = 0;
 
         var shape = new THREE.Shape();
@@ -121,7 +129,7 @@ export default class BuildingController {
 
         shape.lineTo(0,0);
         var extrudeSettings = { amount: 1, bevelEnabled: false, bevelSegments: 1, steps: 1, bevelSize: 0.2, bevelThickness: 0.1 };
-        this.addShape( shape,       extrudeSettings,   x, y, z, 0, 0, 0, 100,100,100 )
+        return this.addShape( shape,       extrudeSettings,   x, y, z, 0, 0, 0, width,height,depth )
     }
 
     addShape( shape, extrudeSettings, x, y, z, rx, ry, rz, sx,sy,sz ) {
@@ -133,14 +141,15 @@ export default class BuildingController {
 					var mesh = new THREE.Mesh( geometry, new THREE.MeshPhongMaterial({color:0xf25346, side: THREE.DoubleSide, shading:THREE.FlatShading}));//,wireframe :true}) );
 					//rx=0.5*Math.PI; //to rotate buidlings
                     var whd = geometry.boundingBox.getSize();
-                    mesh.position.set( x,y, z );
+                    mesh.position.set( x,y-sy/2, z );
 					mesh.rotation.set( rx, ry, rz );
 					mesh.scale.set( sx/whd.x, sy/whd.y, sz/whd.z );
 
 					this.threejsWorld.scene.add( mesh );
                     mesh.castShadow = true;
                     mesh.receiveShadow = true;
-				}
+                    return mesh;
+	}
 
     
     
@@ -154,16 +163,12 @@ export default class BuildingController {
             for(var ri =0; ri<lsystemWorld.rules.length;ri++)
             {
                 newaxiom = newaxiom.replaceAll(lsystemWorld.rules[ri].key,"|"+lsystemWorld.rules[ri].val+"|")
-                //console.log(newaxiom)
             }
 
             if(newaxiom!=axiom)
             {
                 changesMade = true;
                 axiom = newaxiom.replaceAll("|","");
-                //console.log("-----------------")
-                //console.log(newaxiom)
-                //console.log("-----------------")
             }
             counter++;
         }

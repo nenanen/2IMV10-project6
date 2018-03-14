@@ -87,7 +87,11 @@ function initRoad() {
 }
 
 function initBuildings(){
-    buildingController.buildingBlob();
+    //buildingController.buildingBlob(); //<- demo placed buidlings
+    
+    buildingController.generate(2)//generates 2 buildings
+    buildingController.generate(1)[0].position.set(300,0,0); //can position with generate parametres or in this with the mesh
+    buildingController.generate(2)[0].scale.set(100,300,200);  //scaleing
 }
 
 //********** general methods ********** //
