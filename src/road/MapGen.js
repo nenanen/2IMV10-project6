@@ -7,6 +7,7 @@ import SegmentFactory from "./SegmentFactory";
 import Segment from "./Segment";
 import Vertex from "./Vertex";
 import Quadtree from "../vendor/Quadtree";
+import Algebra from "./Algebra";
 
 export default class MapGen {
     constructor() {
@@ -62,7 +63,7 @@ export default class MapGen {
 
             if (point) {
                 // Calculate distance to intersection
-                let distance = Util.distance(road.geometry.start.toVector2D(), point);
+                let distance = Algebra.distance(road.geometry.start.toVector2D(), point);
 
                 // Update priority, so other mechanisms don't take over.
                 priority = 5;
@@ -88,14 +89,14 @@ export default class MapGen {
             }
 
             // Stretch roads
-            if (priority < 4 && Util.distanceToRoad(road, match.o) < 20) {
-                const P = road.geometry.end.toVector2D();
-                const A = match.o.geometry.start.toVector2D();
-                const B = match.o.geometry.end.toVector2D();
-                const point = Util.projectOnLine(P, A, B);
-                road.geometry.end = new Point(point[0], road.geometry.end.y, point[1]);
-                road.metadata.severed = true;
-                vertex = new Vertex(point[0], road.geometry.end.y, point[1], config.STRETCH_COLOR);
+            if (priority < 4) {
+                const stretch = Util.distanceToRoad(road, match.o);
+
+                if (stretch.distance < 20) {
+                    road.geometry.end = new Point(stretch.point[0], road.geometry.end.y, stretch.point[1]);
+                    road.metadata.severed = true;
+                    vertex = new Vertex(stretch.point[0], road.geometry.end.y, stretch.point[1], config.STRETCH_COLOR);
+                }
             }
         }
 

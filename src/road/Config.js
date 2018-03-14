@@ -22,8 +22,8 @@ export const ROADS = {
 };
 
 // Angles
-export const BRANCH_ANGLE_LIMIT = 3;
-export const FORWARD_ANGLE_LIMIT = 15;
+export const BRANCH_ANGLE_LIMIT = 10;
+export const FORWARD_ANGLE_LIMIT = 30;
 
 // Quad Tree
 export const QUADTREE_PARAMS = {x: -20000, y: -20000, width: 40000, height: 40000};

@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import Heatmap from "./Heatmap";
 import * as config from "./Config";
-import Util from "./Util";
+import Algebra from "./Algebra";
 
 export default class HeatmapVisualizer {
     /**
@@ -45,7 +45,7 @@ export default class HeatmapVisualizer {
     updateHeatmap() {
 
         // Determine if we are far enough from the center to generate a new part
-        if (Util.distance([this.world.camera.position.x, this.world.camera.position.z], this.lastRedrawCenter) >
+        if (Algebra.distance([this.world.camera.position.x, this.world.camera.position.z], this.lastRedrawCenter) >
             this.terrainSize - this.terrainOffset) {
 
             // Redraw the heatmap

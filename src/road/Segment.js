@@ -1,5 +1,6 @@
 import * as math from "mathjs";
 import Util from "./Util";
+import Algebra from "./Algebra";
 
 export default class Segment {
     /**
@@ -47,7 +48,7 @@ export default class Segment {
     length() {
         let startVector = this.start.toVector3D();
         let endVector = this.end.toVector3D();
-        return Util.distance(startVector, endVector);
+        return Algebra.distance(startVector, endVector);
     }
 
     /**
@@ -58,7 +59,7 @@ export default class Segment {
         let startVector = this.start.toVector2D();
         let endVector = this.end.toVector2D();
         let vector = math.subtract(endVector, startVector);
-        return Util.direction(vector);
+        return Algebra.direction(vector);
     }
 
     limits() {
