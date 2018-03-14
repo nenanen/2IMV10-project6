@@ -24,12 +24,13 @@
     <form>
 
       <h3>Highway</h3>
-
+      <hr>
       <h5>Segment length</h5>
       <div class="row">
         <div class="small-9 columns">
           <div class="slider" data-slider data-initial-start="150" data-end="500">
-            <span class="slider-handle" data-slider-handle role="slider" tabindex="1" aria-controls="sliderOutput1"></span>
+            <span class="slider-handle" data-slider-handle role="slider" tabindex="1"
+                  aria-controls="sliderOutput1"></span>
             <span class="slider-fill" data-slider-fill></span>
           </div>
         </div>
@@ -42,7 +43,8 @@
       <div class="row">
         <div class="small-9 columns">
           <div class="slider" data-slider data-initial-start="0" data-end="1" data-step="0.05">
-            <span class="slider-handle" data-slider-handle role="slider" tabindex="1" aria-controls="sliderOutput3"></span>
+            <span class="slider-handle" data-slider-handle role="slider" tabindex="1"
+                  aria-controls="sliderOutput3"></span>
             <span class="slider-fill" data-slider-fill></span>
           </div>
         </div>
@@ -55,7 +57,8 @@
       <div class="row">
         <div class="small-9 columns">
           <div class="slider" data-slider data-initial-start="0" data-end="10" data-step="1">
-            <span class="slider-handle" data-slider-handle role="slider" tabindex="1" aria-controls="sliderOutput4"></span>
+            <span class="slider-handle" data-slider-handle role="slider" tabindex="1"
+                  aria-controls="sliderOutput4"></span>
             <span class="slider-fill" data-slider-fill></span>
           </div>
         </div>
@@ -65,11 +68,13 @@
       </div>
 
       <h3>Urban road</h3>
+      <hr>
       <h5>Segment length</h5>
       <div class="row">
         <div class="small-9 columns">
           <div class="slider" data-slider data-initial-start="100" data-end="500">
-            <span class="slider-handle" data-slider-handle role="slider" tabindex="1" aria-controls="sliderOutput2"></span>
+            <span class="slider-handle" data-slider-handle role="slider" tabindex="1"
+                  aria-controls="sliderOutput2"></span>
             <span class="slider-fill" data-slider-fill></span>
           </div>
         </div>
@@ -82,7 +87,8 @@
       <div class="row">
         <div class="small-9 columns">
           <div class="slider" data-slider data-initial-start="0" data-end="1" data-step="0.05">
-            <span class="slider-handle" data-slider-handle role="slider" tabindex="1" aria-controls="sliderOutput5"></span>
+            <span class="slider-handle" data-slider-handle role="slider" tabindex="1"
+                  aria-controls="sliderOutput5"></span>
             <span class="slider-fill" data-slider-fill></span>
           </div>
         </div>
@@ -95,12 +101,73 @@
       <div class="row">
         <div class="small-9 columns">
           <div class="slider" data-slider data-initial-start="0" data-end="10" data-step="1">
-            <span class="slider-handle" data-slider-handle role="slider" tabindex="1" aria-controls="sliderOutput6"></span>
+            <span class="slider-handle" data-slider-handle role="slider" tabindex="1"
+                  aria-controls="sliderOutput6"></span>
             <span class="slider-fill" data-slider-fill></span>
           </div>
         </div>
         <div class="small-3 columns">
           <input type="number" id="sliderOutput6" name="ui.config.ROADS.URBAN.BRANCH_DELAY">
+        </div>
+      </div>
+
+      <h3>Local constraints</h3>
+      <hr>
+      <h5>Snap distance</h5>
+      <div class="row">
+        <div class="small-9 columns">
+          <div class="slider" data-slider data-initial-start="0" data-end="100" data-step="1">
+            <span class="slider-handle" data-slider-handle role="slider" tabindex="1"
+                  aria-controls="sliderOutput7"></span>
+            <span class="slider-fill" data-slider-fill></span>
+          </div>
+        </div>
+        <div class="small-3 columns">
+          <input type="number" id="sliderOutput7" name="ui.config.SNAP_DISTANCE">
+        </div>
+      </div>
+
+      <h5>Stretch distance</h5>
+      <div class="row">
+        <div class="small-9 columns">
+          <div class="slider" data-slider data-initial-start="0" data-end="100" data-step="1">
+            <span class="slider-handle" data-slider-handle role="slider" tabindex="1"
+                  aria-controls="sliderOutput8"></span>
+            <span class="slider-fill" data-slider-fill></span>
+          </div>
+        </div>
+        <div class="small-3 columns">
+          <input type="number" id="sliderOutput8" name="ui.config.STRETCH_DISTANCE">
+        </div>
+      </div>
+
+      <h3>Angles</h3>
+      <hr>
+      <h5>Maximum angle for branching</h5>
+      <div class="row">
+        <div class="small-9 columns">
+          <div class="slider" data-slider data-initial-start="0" data-end="90" data-step="1">
+            <span class="slider-handle" data-slider-handle role="slider" tabindex="1"
+                  aria-controls="sliderOutput9"></span>
+            <span class="slider-fill" data-slider-fill></span>
+          </div>
+        </div>
+        <div class="small-3 columns">
+          <input type="number" id="sliderOutput9" name="ui.config.BRANCH_ANGLE_LIMIT">
+        </div>
+      </div>
+
+      <h5>Maximum forward angle</h5>
+      <div class="row">
+        <div class="small-9 columns">
+          <div class="slider" data-slider data-initial-start="0" data-end="90" data-step="1">
+            <span class="slider-handle" data-slider-handle role="slider" tabindex="1"
+                  aria-controls="sliderOutput10"></span>
+            <span class="slider-fill" data-slider-fill></span>
+          </div>
+        </div>
+        <div class="small-3 columns">
+          <input type="number" id="sliderOutput10" name="ui.config.FORWARD_ANGLE_LIMIT">
         </div>
       </div>
 
