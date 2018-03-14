@@ -23,7 +23,9 @@
   <div id="menu">
     <form>
 
-      <h5>Highway segment length</h5>
+      <h3>Highway</h3>
+
+      <h5>Segment length</h5>
       <div class="row">
         <div class="small-9 columns">
           <div class="slider" data-slider data-initial-start="150" data-end="500">
@@ -36,7 +38,34 @@
         </div>
       </div>
 
-      <h5>Urban road segment length</h5>
+      <h5>Branch probability</h5>
+      <div class="row">
+        <div class="small-9 columns">
+          <div class="slider" data-slider data-initial-start="0" data-end="1" data-step="0.05">
+            <span class="slider-handle" data-slider-handle role="slider" tabindex="1" aria-controls="sliderOutput3"></span>
+            <span class="slider-fill" data-slider-fill></span>
+          </div>
+        </div>
+        <div class="small-3 columns">
+          <input type="number" id="sliderOutput3" name="ui.config.ROADS.HIGHWAY.BRANCH_PROBABILITY">
+        </div>
+      </div>
+
+      <h5>Branch delay</h5>
+      <div class="row">
+        <div class="small-9 columns">
+          <div class="slider" data-slider data-initial-start="0" data-end="10" data-step="1">
+            <span class="slider-handle" data-slider-handle role="slider" tabindex="1" aria-controls="sliderOutput4"></span>
+            <span class="slider-fill" data-slider-fill></span>
+          </div>
+        </div>
+        <div class="small-3 columns">
+          <input type="number" id="sliderOutput4" name="ui.config.ROADS.HIGHWAY.BRANCH_DELAY">
+        </div>
+      </div>
+
+      <h3>Urban road</h3>
+      <h5>Segment length</h5>
       <div class="row">
         <div class="small-9 columns">
           <div class="slider" data-slider data-initial-start="100" data-end="500">
@@ -48,6 +77,33 @@
           <input type="number" id="sliderOutput2" name="ui.config.ROADS.URBAN.LENGTH">
         </div>
       </div>
+
+      <h5>Branch probability</h5>
+      <div class="row">
+        <div class="small-9 columns">
+          <div class="slider" data-slider data-initial-start="0" data-end="1" data-step="0.05">
+            <span class="slider-handle" data-slider-handle role="slider" tabindex="1" aria-controls="sliderOutput5"></span>
+            <span class="slider-fill" data-slider-fill></span>
+          </div>
+        </div>
+        <div class="small-3 columns">
+          <input type="number" id="sliderOutput5" name="ui.config.ROADS.URBAN.BRANCH_PROBABILITY">
+        </div>
+      </div>
+
+      <h5>Branch delay</h5>
+      <div class="row">
+        <div class="small-9 columns">
+          <div class="slider" data-slider data-initial-start="0" data-end="10" data-step="1">
+            <span class="slider-handle" data-slider-handle role="slider" tabindex="1" aria-controls="sliderOutput6"></span>
+            <span class="slider-fill" data-slider-fill></span>
+          </div>
+        </div>
+        <div class="small-3 columns">
+          <input type="number" id="sliderOutput6" name="ui.config.ROADS.URBAN.BRANCH_DELAY">
+        </div>
+      </div>
+
     </form>
 
     <button class="button primary large expanded" onclick="ui.update(); ui.render()">Generate city</button>

@@ -3,7 +3,7 @@ import OrbitControls from './vendor/OrbitControls'
 import './sass/main.scss'
 import MapGen from "./road/MapGen"
 import HeatmapVisualizer from "./road/HeatmapVisualizer";
-import Menu from "./ui/menu";
+import Menu from "./ui/Menu";
 import config from "./ui/config";
 import $ from 'jquery';
 
@@ -14,7 +14,7 @@ window.$ = $;
 window.ui = {
     menu: Menu,
     config: config,
-    update: updateConfig,
+    update: Menu.updateConfig,
     render: reInit,
 };
 
@@ -35,18 +35,9 @@ let heatmap = new HeatmapVisualizer(mapGen.heatmap, threejsWorld, config);
 // Start the program
 init();
 animate();
-
+Menu.readConfig();
 
 //********** initialization methods ********** //
-
-function updateConfig() {
-    const serialized = $("form").serialize().replace("&", ";");
-    eval(serialized)
-}
-
-function initObjects() {
-    initRoad();
-}
 
 function init() {
     // Basic threejs init
@@ -61,7 +52,7 @@ function init() {
     threejsWorld.controls.update();
 
     // CALL INIT OBJECT METHODS FROM HERE
-    initObjects();
+    initAllObjects();
 
     // More ThreeJS initialization
     threejsWorld.renderer = new THREE.WebGLRenderer({alpha: true});
@@ -85,10 +76,14 @@ function reInit(updates) {
     heatmap = new HeatmapVisualizer(mapGen.heatmap, threejsWorld, config);
 
     // Initialize and animate
-    initObjects();
+    initAllObjects();
 }
 
 //********** initing objects methods **********//
+function initAllObjects() {
+    initRoad();
+}
+
 function initGround() {
     const geometry = new THREE.PlaneGeometry(2000, 2000, 5);
     const material = new THREE.MeshBasicMaterial({color: 0x68c3c0, side: THREE.DoubleSide});
