@@ -32,3 +32,8 @@ export const QUADTREE_MAX_LEVELS = 10;
 
 // Heatmap
 export const TILE_SIZE = 100;
+
+// Vertices
+export const INTERSECT_COLOR = 0xd63031;
+export const SNAP_COLOR = 0x0984e3;
+export const STRETCH_COLOR = 0x00b894;

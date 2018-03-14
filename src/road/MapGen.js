@@ -71,21 +71,23 @@ export default class MapGen {
                 if (distance < minDistance) {
                     road.geometry.end = new Point(point[0], road.geometry.end.y, point[1]);
                     road.metadata.severed = true;
-                    vertex = new Vertex(point[0], road.geometry.end.y, point[1], 0xffffff);
+                    vertex = new Vertex(point[0], road.geometry.end.y, point[1], config.INTERSECT_COLOR);
                     minDistance = distance;
                 }
             }
 
+            // Snap roads
             if (priority < 5 && Util.areRoadsInRange(road, match.o, 20)){
                 let e = match.o.geometry.end;
 
                 road.geometry.end = new Point(e.x, e.y, e.z);
                 road.metadata.severed = true;
-                vertex = new Vertex(e.x, e.y, e.z, 0xffff00);
+                vertex = new Vertex(e.x, e.y, e.z, config.SNAP_COLOR);
 
                 priority = 4;
             }
 
+            // Stretch roads
             if (priority < 4 && Util.distanceToRoad(road, match.o) < 20) {
                 const P = road.geometry.end.toVector2D();
                 const A = match.o.geometry.start.toVector2D();
@@ -93,7 +95,7 @@ export default class MapGen {
                 const point = Util.projectOnLine(P, A, B);
                 road.geometry.end = new Point(point[0], road.geometry.end.y, point[1]);
                 road.metadata.severed = true;
-                vertex = new Vertex(point[0], road.geometry.end.y, point[1], 0xff0000);
+                vertex = new Vertex(point[0], road.geometry.end.y, point[1], config.STRETCH_COLOR);
             }
         }
 
