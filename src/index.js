@@ -4,10 +4,18 @@ import './sass/main.scss'
 import MapGen from "./road/MapGen"
 import HeatmapVisualizer from "./road/HeatmapVisualizer";
 import Menu from "./ui/menu";
+import config from "./ui/config";
+import $ from 'jquery';
+
+window.jQuery = $;
+window.$ = $;
 
 // Javascript to be used from HTML.
 window.ui = {
-    menu: Menu
+    menu: Menu,
+    config: config,
+    update: updateConfig,
+    render: reInit,
 };
 
 // Singleton object, to make it easier to identify in other .js files
@@ -21,11 +29,24 @@ let threejsWorld = {
 };
 
 // Singleton map generator object
-let mapGen = new MapGen();
-let heatmap = new HeatmapVisualizer(mapGen.heatmap, threejsWorld);
+let mapGen = new MapGen(config);
+let heatmap = new HeatmapVisualizer(mapGen.heatmap, threejsWorld, config);
 
+// Start the program
 init();
 animate();
+
+
+//********** initialization methods ********** //
+
+function updateConfig() {
+    const serialized = $("form").serialize().replace("&", ";");
+    eval(serialized)
+}
+
+function initObjects() {
+    initRoad();
+}
 
 function init() {
     // Basic threejs init
@@ -40,8 +61,7 @@ function init() {
     threejsWorld.controls.update();
 
     // CALL INIT OBJECT METHODS FROM HERE
-    // initGround();
-    initRoad();
+    initObjects();
 
     // More ThreeJS initialization
     threejsWorld.renderer = new THREE.WebGLRenderer({alpha: true});
@@ -49,6 +69,23 @@ function init() {
 
     document.getElementById('world').appendChild(threejsWorld.renderer.domElement);
     window.addEventListener('resize', windowResize, false);
+}
+
+
+function reInit(updates) {
+    // Clear scene
+    while(threejsWorld.scene.children.length > 0){
+        threejsWorld.scene.remove(threejsWorld.scene.children[0]);
+    }
+
+    animate();
+
+    // Setup map generator and heatmap
+    mapGen = new MapGen(config);
+    heatmap = new HeatmapVisualizer(mapGen.heatmap, threejsWorld, config);
+
+    // Initialize and animate
+    initObjects();
 }
 
 //********** initing objects methods **********//

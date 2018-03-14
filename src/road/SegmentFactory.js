@@ -6,13 +6,13 @@ import * as _ from "lodash";
 
 export default class SegmentFactory {
 
-    static createRoad(segment, time, type) {
+    static createRoad(segment, time, type, config) {
          let metadata = _.defaults({
             type: type,
             severed: false
         });
 
-        return new RoadSegment(segment, time, metadata);
+        return new RoadSegment(segment, time, metadata, config);
     }
 
     static direction(start, direction, length) {

@@ -1,6 +1,5 @@
 import * as THREE from "three";
 import * as _ from "lodash";
-import * as config from "./Config"
 
 export default class RoadSegment {
     /**
@@ -8,8 +7,11 @@ export default class RoadSegment {
      * @param {Segment} geometry - A segment that determines the geometry.
      * @param {number} time - The time at which the segment is inserted.
      * @param {object} metadata - Additional metadata.
+     * @param {Array} config - Configuration array
      */
-    constructor(geometry, time, metadata) {
+    constructor(geometry, time, metadata, config) {
+
+        this.config = config;
 
         // Geometry of the road segment
         this.geometry = geometry;
@@ -19,7 +21,7 @@ export default class RoadSegment {
 
         // Store metadata and fill in defaults if not set
         this.metadata = _.defaults(metadata, {
-            type: config.ROADS.URBAN,
+            type: this.config.ROADS.URBAN,
             severed: false,
         });
 

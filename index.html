@@ -21,14 +21,39 @@
 
   <!-- menu -->
   <div id="menu">
+    <form>
 
+      <h5>Highway segment length</h5>
+      <div class="row">
+        <div class="small-9 columns">
+          <div class="slider" data-slider data-initial-start="150" data-end="500">
+            <span class="slider-handle" data-slider-handle role="slider" tabindex="1" aria-controls="sliderOutput1"></span>
+            <span class="slider-fill" data-slider-fill></span>
+          </div>
+        </div>
+        <div class="small-3 columns">
+          <input type="number" id="sliderOutput1" name="ui.config.ROADS.HIGHWAY.LENGTH">
+        </div>
+      </div>
+
+      <h5>Urban road segment length</h5>
+      <div class="row">
+        <div class="small-9 columns">
+          <div class="slider" data-slider data-initial-start="100" data-end="500">
+            <span class="slider-handle" data-slider-handle role="slider" tabindex="1" aria-controls="sliderOutput2"></span>
+            <span class="slider-fill" data-slider-fill></span>
+          </div>
+        </div>
+        <div class="small-3 columns">
+          <input type="number" id="sliderOutput2" name="ui.config.ROADS.URBAN.LENGTH">
+        </div>
+      </div>
+    </form>
+
+    <button class="button primary large expanded" onclick="ui.update(); ui.render()">Generate city</button>
   </div>
 
-</div>
-
-
-
-
-
+  <script src="static/foundation.min.js"></script>
+  <script>$(document).foundation();</script>
 </body>
 </html>
