@@ -2,8 +2,13 @@ import * as THREE from 'three'
 import OrbitControls from './vendor/OrbitControls'
 import './sass/main.scss'
 import MapGen from "./road/MapGen"
-import Util from "./road/Util";
 import HeatmapVisualizer from "./road/HeatmapVisualizer";
+import Menu from "./ui/menu";
+
+// Javascript to be used from HTML.
+window.ui = {
+    menu: Menu
+};
 
 // Singleton object, to make it easier to identify in other .js files
 let threejsWorld = {
@@ -27,8 +32,8 @@ function init() {
     threejsWorld.scene = new THREE.Scene();
     threejsWorld.scene.fog = new THREE.Fog(0xe4e0ba, 200, 3000);
 
-    threejsWorld.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
-    threejsWorld.controls = new OrbitControls(threejsWorld.camera);
+    threejsWorld.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 10000);
+    threejsWorld.controls = new OrbitControls(threejsWorld.camera, document.getElementById("world"));
     threejsWorld.camera.position.z = 500;
     threejsWorld.camera.position.y = 100;
     threejsWorld.controls.keyPanSpeed = 100;

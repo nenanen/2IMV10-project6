@@ -101,7 +101,6 @@ export default class MapGen {
 
             // Snap roads
             if (priority < 4 && Util.areRoadsInRange(road, match.o, config.SNAP_DISTANCE)){
-                console.log("Snap!");
                 let e = match.o.geometry.end;
 
                 road.geometry.end = new Point(e.x, e.y, e.z);

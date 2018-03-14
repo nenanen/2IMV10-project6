@@ -6,8 +6,28 @@
 </head>
 <body>
 
-<div id="world"></div>
-<script src="dist/main.js"></script>
+<div id="container">
+
+  <!-- canvas -->
+  <div id="world"></div>
+
+  <!-- Load script here, so that the css is loaded and tells the menu not to show up ;) -->
+  <script src="dist/main.js"></script>
+
+  <!-- menu toggle -->
+  <a href="#menu" id="toggle" onclick="ui.menu.toggle()">
+    <img src="static/settings.png" alt="settings"/>
+  </a>
+
+  <!-- menu -->
+  <div id="menu">
+
+  </div>
+
+</div>
+
+
+
 
 
 </body>
