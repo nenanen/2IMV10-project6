@@ -1,5 +1,4 @@
 import * as math from "mathjs";
-import Util from "./Util";
 import Algebra from "./Algebra";
 
 export default class Segment {

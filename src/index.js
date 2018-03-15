@@ -3,12 +3,20 @@ import OrbitControls from './vendor/OrbitControls'
 import './sass/main.scss'
 import MapGen from "./road/MapGen"
 import HeatmapVisualizer from "./road/HeatmapVisualizer";
-import Menu from "./ui/menu";
 import BuidlingController from "./building/building";
+import Menu from "./ui/Menu";
+import config from "./ui/config";
+import $ from 'jquery';
+
+window.jQuery = $;
+window.$ = $;
 
 // Javascript to be used from HTML.
 window.ui = {
-    menu: Menu
+    menu: Menu,
+    config: config,
+    update: Menu.updateConfig,
+    render: reInit,
 };
 
 // Singleton object, to make it easier to identify in other .js files
@@ -22,12 +30,16 @@ let threejsWorld = {
 };
 
 // Singleton map generator object
-let mapGen = new MapGen();
-let heatmap = new HeatmapVisualizer(mapGen.heatmap, threejsWorld);
+let mapGen = new MapGen(config);
+let heatmap = new HeatmapVisualizer(mapGen.heatmap, threejsWorld, config);
 let buildingController = new BuidlingController(threejsWorld);
 
+// Start the program
 init();
 animate();
+Menu.readConfig();
+
+//********** initialization methods ********** //
 
 function init() {
     // Basic threejs init
@@ -40,12 +52,10 @@ function init() {
     threejsWorld.camera.position.y = 100;
     threejsWorld.controls.keyPanSpeed = 100;
     threejsWorld.controls.update();
-    createLights();
 
     // CALL INIT OBJECT METHODS FROM HERE
     // initGround();
-    initRoad();
-    initBuildings();
+    initAllObjects();
 
     // More ThreeJS initialization
     threejsWorld.renderer = new THREE.WebGLRenderer({alpha: true});
@@ -56,7 +66,31 @@ function init() {
     window.addEventListener('resize', windowResize, false);
 }
 
+
+function reInit(updates) {
+    // Clear scene
+    while(threejsWorld.scene.children.length > 0){
+        threejsWorld.scene.remove(threejsWorld.scene.children[0]);
+    }
+
+    animate();
+
+    // Setup map generator and heatmap
+    mapGen = new MapGen(config);
+    heatmap = new HeatmapVisualizer(mapGen.heatmap, threejsWorld, config);
+
+    // Initialize and animate
+    initAllObjects();
+}
+
 //********** initing objects methods **********//
+function initAllObjects() {
+    createLights(); //has to be added when a new city is generated  
+
+    initRoad(); 
+    initBuildings();
+}
+
 function initGround() {
     const geometry = new THREE.PlaneGeometry(2000, 2000, 5);
     const material = new THREE.MeshBasicMaterial({color: 0x68c3c0, side: THREE.DoubleSide});
@@ -88,7 +122,7 @@ function initRoad() {
 }
 
 function initBuildings(){
-    //buildingController.buildingBlob(); //<- demo placed buidlings
+    //buildingController.buildingBlob(); //<- presentation placed buidlings
     
     buildingController.generate(2)//generates 2 buildings
     buildingController.generate(1)[0].position.set(300,0,0); //can position with generate parametres or in this with the mesh

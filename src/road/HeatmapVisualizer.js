@@ -1,6 +1,5 @@
 import * as THREE from "three";
 import Heatmap from "./Heatmap";
-import * as config from "./Config";
 import Algebra from "./Algebra";
 
 export default class HeatmapVisualizer {
@@ -8,16 +7,14 @@ export default class HeatmapVisualizer {
      *
      * @param heatmap - Heatmap object to visualize
      * @param threejsWorld - Three.JS World object
-     * @param terrainSize - The size of the terrain that is generated when the camera moves out
-     * @param terrainOffset - Redraw terrain if we are this much away from the border
+     * @param config - The configuration array
      */
-    constructor(heatmap, threejsWorld, terrainSize=2000, terrainOffset=1000) {
+    constructor(heatmap, threejsWorld, config) {
         this.heatmap = heatmap;
         this.planes = [];
         this.world = threejsWorld;
         this.lastRedrawCenter = null;
-        this.terrainSize = terrainSize;
-        this.terrainOffset = terrainOffset;
+        this.config = config;
     }
 
     drawHeatmap() {
@@ -30,7 +27,7 @@ export default class HeatmapVisualizer {
         // Calculate new planes
         const x = this.world.camera.position.x;
         const z = this.world.camera.position.z;
-        const size = this.terrainSize;
+        const size = this.config.TERRAIN_SIZE;
         this.planes = this.visualize(x - size, x + size, z - size, z + size);
 
         // Insert new planes
@@ -46,7 +43,7 @@ export default class HeatmapVisualizer {
 
         // Determine if we are far enough from the center to generate a new part
         if (Algebra.distance([this.world.camera.position.x, this.world.camera.position.z], this.lastRedrawCenter) >
-            this.terrainSize - this.terrainOffset) {
+            this.config.TERRAIN_SIZE - this.config.TERRAIN_OFFSET) {
 
             // Redraw the heatmap
             this.drawHeatmap();
@@ -57,13 +54,13 @@ export default class HeatmapVisualizer {
     visualize(xMin, xMax, yMin, yMax) {
 
         // Get the tile size
-        const tileSize = config.TILE_SIZE;
+        const tileSize = this.config.TILE_SIZE;
 
         // Snap coordinates to grid
-        xMin = Heatmap.snapToGrid(xMin);
-        xMax = Heatmap.snapToGrid(xMax);
-        yMin = Heatmap.snapToGrid(yMin);
-        yMax = Heatmap.snapToGrid(yMax);
+        xMin = Heatmap.snapToGrid(xMin, tileSize);
+        xMax = Heatmap.snapToGrid(xMax, tileSize);
+        yMin = Heatmap.snapToGrid(yMin, tileSize);
+        yMax = Heatmap.snapToGrid(yMax, tileSize);
 
         let planes = [];
 
@@ -71,7 +68,7 @@ export default class HeatmapVisualizer {
             for (let y = yMin; y <= yMax; y += tileSize) {
                 const population = this.heatmap.populationAtTile(x, y, tileSize);
 
-                const dense = population > config.ROADS.HIGHWAY.BRANCH_POPULATION_THRESHOLD;
+                const dense = population > this.config.ROADS.HIGHWAY.BRANCH_POPULATION_THRESHOLD;
                 const lightness = Math.trunc(population * 100);
                 const color = dense ? `hsl(0, 0%, ${lightness}%)` : `hsl(168, 100%, ${lightness}%)`;
                 const tColor = new THREE.Color(color);

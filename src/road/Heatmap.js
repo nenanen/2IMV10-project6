@@ -1,12 +1,10 @@
-import * as THREE from "three";
-import * as config from "./Config"
-
 let SimplexNoise = require('simplex-noise');
 
 export default class Heatmap {
-    constructor() {
+    constructor(config) {
         const seed = Math.random().toString();
-        this.noise = new SimplexNoise(seed)
+        this.noise = new SimplexNoise(seed);
+        this.config = config;
     }
 
     populationAtEnd(road) {
@@ -34,15 +32,15 @@ export default class Heatmap {
     populationAtTile(x, y) {
 
         // Locate the middle of the tile where (x, y) is located
-        const xTile = Heatmap.snapToGrid(x);
-        const yTile = Heatmap.snapToGrid(y);
+        const xTile = Heatmap.snapToGrid(x, this.config.TILE_SIZE);
+        const yTile = Heatmap.snapToGrid(y, this.config.TILE_SIZE);
 
         // Return the population at the center of the tile
         return this.populationAt(xTile, yTile)
 
     }
 
-    static snapToGrid(val) {
-        return Math.floor(val/config.TILE_SIZE) * config.TILE_SIZE;
+    static snapToGrid(val, tileSize) {
+        return Math.floor(val/tileSize) * tileSize;
     }
 }
