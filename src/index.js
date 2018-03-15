@@ -50,6 +50,7 @@ function init() {
     // More ThreeJS initialization
     threejsWorld.renderer = new THREE.WebGLRenderer({alpha: true});
     threejsWorld.renderer.setSize(window.innerWidth, window.innerHeight);
+    //threejsWorld.controls.addEventListener( 'change', animate );
 
     document.getElementById('world').appendChild(threejsWorld.renderer.domElement);
     window.addEventListener('resize', windowResize, false);
@@ -95,13 +96,12 @@ function initBuildings(){
 }
 
 //********** general methods ********** //
-function animate() {
-    // Per frame change
-    requestAnimationFrame(animate);
+//renders every instance <-fastest but highest computest power
+function animate(){
     threejsWorld.controls.update();
     threejsWorld.renderer.render(threejsWorld.scene, threejsWorld.camera);
     heatmap.updateHeatmap();
-    // console.log(threejsWorld.camera.position);
+    requestAnimationFrame(animate)//<--comment for slower but low cpu
 }
 
 function windowResize() {
