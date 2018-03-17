@@ -3,6 +3,7 @@ import OrbitControls from './vendor/OrbitControls'
 import './sass/main.scss'
 import MapGen from "./road/MapGen"
 import HeatmapVisualizer from "./road/HeatmapVisualizer";
+import BuidlingController from "./building/building";
 import Menu from "./ui/Menu";
 import config from "./ui/config";
 import $ from 'jquery';
@@ -31,6 +32,7 @@ let threejsWorld = {
 // Singleton map generator object
 let mapGen = new MapGen(config);
 let heatmap = new HeatmapVisualizer(mapGen.heatmap, threejsWorld, config);
+let buildingController = new BuidlingController(threejsWorld);
 
 // Start the program
 init();
@@ -52,11 +54,13 @@ function init() {
     threejsWorld.controls.update();
 
     // CALL INIT OBJECT METHODS FROM HERE
+    // initGround();
     initAllObjects();
 
     // More ThreeJS initialization
     threejsWorld.renderer = new THREE.WebGLRenderer({alpha: true});
     threejsWorld.renderer.setSize(window.innerWidth, window.innerHeight);
+    //threejsWorld.controls.addEventListener( 'change', animate );
 
     document.getElementById('world').appendChild(threejsWorld.renderer.domElement);
     window.addEventListener('resize', windowResize, false);
@@ -81,7 +85,10 @@ function reInit(updates) {
 
 //********** initing objects methods **********//
 function initAllObjects() {
-    initRoad();
+    createLights(); //has to be added when a new city is generated  
+
+    initRoad(); 
+    initBuildings();
 }
 
 function initGround() {
@@ -114,14 +121,21 @@ function initRoad() {
 
 }
 
+function initBuildings(){
+    //buildingController.buildingBlob(); //<- presentation placed buidlings
+    
+    buildingController.generate(2)//generates 2 buildings
+    buildingController.generate(1)[0].position.set(300,0,0); //can position with generate parametres or in this with the mesh
+    buildingController.generate(2)[0].scale.set(100,300,200);  //scaleing
+}
+
 //********** general methods ********** //
-function animate() {
-    // Per frame change
-    requestAnimationFrame(animate);
+//renders every instance <-fastest but highest computest power
+function animate(){
     threejsWorld.controls.update();
     threejsWorld.renderer.render(threejsWorld.scene, threejsWorld.camera);
     heatmap.updateHeatmap();
-    // console.log(threejsWorld.camera.position);
+    requestAnimationFrame(animate)//<--comment for slower but low cpu
 }
 
 function windowResize() {
@@ -131,4 +145,32 @@ function windowResize() {
     threejsWorld.renderer.setSize(width, height);
     threejsWorld.camera.aspect = width / height;
     threejsWorld.camera.updateProjectionMatrix();
+}
+
+function createLights() {//light for buildings
+	var hemisphereLight = new THREE.HemisphereLight(0xaaaaaa,0x000000, .9)
+	var shadowLight = new THREE.DirectionalLight(0xffffff, .9);
+
+	// Set the direction of the light  
+	shadowLight.position.set(150, 350, 350);
+	
+	// Allow shadow casting 
+	shadowLight.castShadow = true;
+
+	// define the visible area of the projected shadow
+	shadowLight.shadow.camera.left = -400;
+	shadowLight.shadow.camera.right = 400;
+	shadowLight.shadow.camera.top = 400;
+	shadowLight.shadow.camera.bottom = -400;
+	shadowLight.shadow.camera.near = 1;
+	shadowLight.shadow.camera.far = 1000;
+
+	// define the resolution of the shadow; the higher the better, 
+	// but also the more expensive and less performant
+	shadowLight.shadow.mapSize.width = 2048;
+	shadowLight.shadow.mapSize.height = 2048;
+	
+	// to activate the lights, just add them to the scene
+	threejsWorld.scene.add(hemisphereLight);  
+	threejsWorld.scene.add(shadowLight);
 }
