@@ -18,7 +18,9 @@ export default class Placer {
 
     placeBuildings(road) {
         // Just place one random building for each road now.
-        this.placeRandomBuilding(road)
+        for (let i = 0; i <= 3; i++) {
+            this.placeRandomBuilding(road);
+        }
     }
 
     placeRandomBuilding(road) {

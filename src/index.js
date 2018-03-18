@@ -109,7 +109,7 @@ function initRoad() {
 
     // Visualize segments
     for(let item of mapGen.segmentList) {
-        threejsWorld.scene.add(item.representation())
+        threejsWorld.scene.add(item.realistic())
     }
 
     // Visualize vertices

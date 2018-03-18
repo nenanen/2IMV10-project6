@@ -57,6 +57,22 @@ export default class RoadSegment {
         return new THREE.Line(geometry, material)
     }
 
+    realistic() {
+        let road = this.metadata.type;
+        let length = this.geometry.length();
+        let center = this.geometry.center();
+        let direction = this.geometry.direction();
+        let geometry = new THREE.PlaneGeometry(road.SEGMENT_WIDTH, length, 1);
+        let material = new THREE.MeshBasicMaterial( {color: road.COLOR, side: THREE.DoubleSide} );
+        let plane = new THREE.Mesh( geometry, material );
+        plane.position.x = center[0];
+        plane.position.y = 1;
+        plane.position.z = center[1];
+        plane.rotateX(-0.5 * Math.PI);
+        plane.rotateZ(direction / 180 * Math.PI);
+        return plane
+    }
+
     limits() {
         let limits = this.geometry.limits();
         limits.o = this;

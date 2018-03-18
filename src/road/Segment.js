@@ -65,6 +65,12 @@ export default class Segment {
         return [this.start.toVector2D(), this.end.toVector2D()];
     }
 
+    center() {
+        // const diff = math.subtract(this.start.toVector2D(), this.end.toVector2D());
+        // return math.add(this.start.toVector2D(), math.multiply(diff, 0.5));
+        return math.multiply(math.add(this.start.toVector2D(), this.end.toVector2D()), 0.5);
+    }
+
     limits() {
         return {
             x: this.minX,
