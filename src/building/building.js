@@ -38,8 +38,22 @@ export default class BuildingController {
         return arrToReturn;
     }
 
-    generate(width, height, depth, x, y, z) {
+    generateBoudingBox(width, height, depth, x, y, z) {
         return this.get2D("ur", x, y, z, true, width, height, depth)
+    }
+
+    generate(width, height, depth, x, y, z) {
+        return this.get2D(this.lsystem(this.randomString(),3), x, y, z, true, width, height, depth);
+    }
+
+    randomString(length=5)
+    {
+        var lstring = '';
+        var possible = this.lsystemWorld.variables;
+        for (var i = 0; i < length; i++) {
+            lstring += possible[Math.floor(Math.random() * possible.length)];
+        }
+        return lstring;
     }
 
     buildingBlob() {
