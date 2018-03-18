@@ -7,7 +7,7 @@ import HeatmapVisualizer from "./road/HeatmapVisualizer";
 import Menu from "./ui/Menu";
 import config from "./ui/config";
 import $ from 'jquery';
-import Placer from "./building/placer";
+import Placer from "./building/Placer";
 import BuildingController from "./building/building";
 
 window.jQuery = $;

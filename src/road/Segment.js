@@ -61,6 +61,10 @@ export default class Segment {
         return Algebra.direction(vector);
     }
 
+    toPolygon() {
+        return [this.start.toVector2D(), this.end.toVector2D()];
+    }
+
     limits() {
         return {
             x: this.minX,

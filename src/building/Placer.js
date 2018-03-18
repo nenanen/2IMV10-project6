@@ -22,30 +22,36 @@ export default class Placer {
     }
 
     placeRandomBuilding(road) {
-        const location = Placer.getRandomLocation(road);
+        const width = Algebra.getRandom(10, 20);
+        const location = Placer.getRandomLocation(road, width, width);
 
         const population = this.heatmap.populationAt(location.center[0], location.center[1]);
         const randomness = Math.random();
         const gaussian = Algebra.gaussianRange(0, 1);
         const factor = Math.max(Math.sqrt(population) * (randomness + gaussian) / 2, 0.1);
         const height = Math.pow(factor * 20, 1.5) * 3;
-        const width = Algebra.getRandom(10, 20);
         let building = this.controller.generate(width, height, width, location.center[0], 0, location.center[1]);
         building.rotateY(location.rotation);
         building.translateY(height/2);
     }
 
     // Get a random location next to the road
-    static getRandomLocation(road) {
+    static getRandomLocation(road, length, width) {
         // Get vector and perpendicular vector
         const vector = math.subtract(road.geometry.end.toVector2D(), road.geometry.start.toVector2D());
         const vectorPerpendicular = [-vector[1], vector[0]];
+        const vectorLength = Algebra.length(vectorPerpendicular);
 
         // Distance to road
-        const distance = Algebra.getRandom(-0.5, +0.5);
+        const roadOffset = (road.metadata.type.SEGMENT_WIDTH / 2) / vectorLength;
+        const rightOfRoad = width / vectorLength + roadOffset;
+        const leftOfRoad = 0 - roadOffset;
+        const randomLeft = Algebra.getRandom(-(1 - leftOfRoad), leftOfRoad);
+        const randomRight = Algebra.getRandom(rightOfRoad, 1);
+        const distance = Algebra.randomChoice([randomLeft, randomRight]);
 
         // Position along length of road
-        const lengthWise = Algebra.getRandom(0, 1);
+        const lengthWise = Algebra.getRandom(0, 1 - length/vectorLength);
 
         // Turn position and distance into vectors
         const posVector = math.multiply(lengthWise, vector);

@@ -10,6 +10,26 @@ export default class Algebra {
         return area / distAB;
     }
 
+    static polygonsIntersect(poly1, poly2) {
+
+        // I think we can use an algorithm to speed this up to O(n log n)
+        // Maybe the Bentley-Otmann algorithm will work, or else the separating axis theorem.
+
+        for (let line1 of poly1) {
+            for (let line2 of poly2) {
+                if (Algebra.segmentsIntersect(line1[0], line1[1], line2[0], line2[1])) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    static randomChoice(list) {
+        return list[Math.floor(Math.random() * list.length)];
+    }
+
     /**
      * Project a point on a line.
      * @param {Array} P - N-dimensional point
