@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "webpack": "webpack --mode development",
-    "watch": "webpack --mode development --watch"
+    "watch": "webpack --mode development --watch",
+    "start": "webpack-dev-server"
   },
   "repository": {
     "type": "git",
@@ -22,6 +23,7 @@
     "avl": "^1.4.1",
     "css-loader": "^0.28.10",
     "fast-simplex-noise": "^3.2.0",
+    "file-loader": "^1.1.11",
     "foundation-sites": "^6.4.4-rc1",
     "jquery": "^3.3.1",
     "lodash": "^4.17.5",
@@ -35,6 +37,7 @@
   },
   "devDependencies": {
     "webpack": "^4.0.1",
-    "webpack-cli": "^2.0.9"
+    "webpack-cli": "^2.0.9",
+    "webpack-dev-server": "^3.1.1"
   }
 }

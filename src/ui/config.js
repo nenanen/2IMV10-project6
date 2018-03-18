@@ -1,3 +1,7 @@
+import * as THREE from "three";
+let loader = new THREE.TextureLoader();
+loader.crossOrigin = "";
+
 let config = {
 
     // Road settings
@@ -9,6 +13,7 @@ let config = {
             BRANCH_DELAY: 5,
             SEGMENT_WIDTH: 16,
             COLOR: 0xdfe6e9,
+            TEXTURE: loader.load("static/textures/road.svg"),
             COLOR_LOW_POP: 0x2d3436
         },
         URBAN: {
@@ -16,7 +21,8 @@ let config = {
             BRANCH_PROBABILITY: 0.6,
             BRANCH_POPULATION_THRESHOLD: 0.1,
             BRANCH_DELAY: 1,
-            SEGMENT_WIDTH: 3,
+            SEGMENT_WIDTH: 8,
+            TEXTURE: loader.load("static/textures/urban-road.svg"),
             COLOR: 0xfdcb6e
         },
 

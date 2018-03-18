@@ -70,7 +70,7 @@ export default class HeatmapVisualizer {
 
                 const dense = population > this.config.ROADS.HIGHWAY.BRANCH_POPULATION_THRESHOLD;
                 const lightness = Math.trunc(population * 100);
-                const color = dense ? `hsl(0, 0%, ${lightness}%)` : `hsl(168, 100%, ${lightness}%)`;
+                const color = dense ? `hsl(16, 25%, ${lightness}%)` : `hsl(168, 100%, ${lightness}%)`;
                 const tColor = new THREE.Color(color);
                 const geometry = new THREE.PlaneBufferGeometry(tileSize, tileSize);
                 const material = new THREE.MeshBasicMaterial({color: tColor, side: THREE.DoubleSide});
