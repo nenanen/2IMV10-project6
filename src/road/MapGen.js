@@ -183,7 +183,7 @@ export default class MapGen {
             if (popRoad > this.config.ROADS.HIGHWAY.BRANCH_POPULATION_THRESHOLD) {
 
                 // Create left branch with some probability
-                if (Math.random() > this.config.ROADS.HIGHWAY.BRANCH_PROBABILITY) {
+                if (Math.random() < this.config.ROADS.HIGHWAY.BRANCH_PROBABILITY) {
                     let type = Math.random() > 0.85? this.config.ROADS.HIGHWAY : this.config.ROADS.URBAN;
                     let delay = type === this.config.ROADS.HIGHWAY ? 0 : type.BRANCH_DELAY;
 
@@ -194,7 +194,7 @@ export default class MapGen {
                 }
 
                 // Create right branch with some probability
-                if (Math.random() > this.config.ROADS.HIGHWAY.BRANCH_PROBABILITY) {
+                if (Math.random() < this.config.ROADS.HIGHWAY.BRANCH_PROBABILITY) {
                     let type = Math.random() > 0.85? this.config.ROADS.HIGHWAY : this.config.ROADS.URBAN;
                     let delay = type === this.config.ROADS.HIGHWAY ? 0 : type.BRANCH_DELAY;
 
@@ -213,7 +213,7 @@ export default class MapGen {
             if (popStraight > this.config.ROADS.URBAN.BRANCH_POPULATION_THRESHOLD) {
 
                 // Left branch
-                if (Math.random() > this.config.ROADS.URBAN.BRANCH_PROBABILITY) {
+                if (Math.random() < this.config.ROADS.URBAN.BRANCH_PROBABILITY) {
                     let angle = Util.randomAngle(this.config.BRANCH_ANGLE_LIMIT);
                     let leftBranch = SegmentFactory.branchLeft(segment, angle, this.config.ROADS.URBAN.LENGTH);
                     let r = SegmentFactory.createRoad(leftBranch, this.time + this.config.ROADS.URBAN.BRANCH_DELAY, this.config.ROADS.URBAN, this.config);
@@ -221,7 +221,7 @@ export default class MapGen {
                 }
 
                 // Right branch
-                if (Math.random() > this.config.ROADS.URBAN.BRANCH_PROBABILITY) {
+                if (Math.random() < this.config.ROADS.URBAN.BRANCH_PROBABILITY) {
                     let angle = Util.randomAngle(this.config.BRANCH_ANGLE_LIMIT);
                     let leftBranch = SegmentFactory.branchRight(segment, angle, this.config.ROADS.URBAN.LENGTH);
                     let r = SegmentFactory.createRoad(leftBranch, this.time + this.config.ROADS.URBAN.BRANCH_DELAY, this.config.ROADS.URBAN, this.config);

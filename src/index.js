@@ -3,10 +3,12 @@ import OrbitControls from './vendor/OrbitControls'
 import './sass/main.scss'
 import MapGen from "./road/MapGen"
 import HeatmapVisualizer from "./road/HeatmapVisualizer";
-import BuidlingController from "./building/building";
+// import BuidlingController from "./building/building";
 import Menu from "./ui/Menu";
 import config from "./ui/config";
 import $ from 'jquery';
+import Placer from "./building/placer";
+import BuildingController from "./building/building";
 
 window.jQuery = $;
 window.$ = $;
@@ -32,7 +34,8 @@ let threejsWorld = {
 // Singleton map generator object
 let mapGen = new MapGen(config);
 let heatmap = new HeatmapVisualizer(mapGen.heatmap, threejsWorld, config);
-let buildingController = new BuidlingController(threejsWorld);
+let placer = null;
+// let buildingController = new BuildingController(threejsWorld);
 
 // Start the program
 init();
@@ -44,7 +47,8 @@ Menu.readConfig();
 function init() {
     // Basic threejs init
     threejsWorld.scene = new THREE.Scene();
-    threejsWorld.scene.fog = new THREE.Fog(0xe4e0ba, 200, 3000);
+    // threejsWorld.scene.fog = new THREE.Fog(0xe4e0ba, 200, 3000);
+    threejsWorld.scene.fog = new THREE.Fog(0x121B35, 200, 3000);
 
     threejsWorld.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 10000);
     threejsWorld.controls = new OrbitControls(threejsWorld.camera, document.getElementById("world"));
@@ -115,18 +119,12 @@ function initRoad() {
     }
 
     // Visualize heatmap
-    const x = threejsWorld.camera.position.x;
-    const z = threejsWorld.camera.position.z;
     heatmap.drawHeatmap()
-
 }
 
 function initBuildings(){
-    //buildingController.buildingBlob(); //<- presentation placed buidlings
-    
-    buildingController.generate(2)//generates 2 buildings
-    buildingController.generate(1)[0].position.set(300,0,0); //can position with generate parametres or in this with the mesh
-    buildingController.generate(2)[0].scale.set(100,300,200);  //scaleing
+    placer = new Placer(mapGen.segmentList, threejsWorld, mapGen.heatmap);
+    placer.placeAllBuildings();
 }
 
 //********** general methods ********** //

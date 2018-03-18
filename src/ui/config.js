@@ -4,7 +4,7 @@ let config = {
     ROADS: {
         HIGHWAY: {
             LENGTH: 150,
-            BRANCH_PROBABILITY: 0.05,
+            BRANCH_PROBABILITY: 0.95,
             BRANCH_POPULATION_THRESHOLD: 0.1,
             BRANCH_DELAY: 5,
             SEGMENT_WIDTH: 16,
@@ -13,7 +13,7 @@ let config = {
         },
         URBAN: {
             LENGTH: 100,
-            BRANCH_PROBABILITY: 0.4,
+            BRANCH_PROBABILITY: 0.6,
             BRANCH_POPULATION_THRESHOLD: 0.1,
             BRANCH_DELAY: 1,
             SEGMENT_WIDTH: 3,

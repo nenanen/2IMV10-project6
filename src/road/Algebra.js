@@ -160,7 +160,7 @@ export default class Algebra {
     /**
      * Returns a random number between min (inclusive) and max (exclusive)
      */
-    static getRandomArbitrary(min, max) {
+    static getRandom(min, max) {
         return Math.random() * (max - min) + min;
     }
 
