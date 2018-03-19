@@ -134,16 +134,17 @@ export default class Algebra {
         // https://stackoverflow.com/questions/13937782/calculating-the-point-of-intersection-of-two-lines
         const x1 = A[0], x2 = B[0], x3 = C[0], x4 = D[0];
         const y1 = A[1], y2 = B[1], y3 = C[1], y4 = D[1];
+        const denominator = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
 
-        let ua, ub, denominator = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
         if (denominator === 0) {
             return false;
         }
-        ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / denominator;
-        ub = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / denominator;
 
-        let segment1OnLine = ua >= 0 && ua <= 1;
-        let segment2OnLine = ub >= 0 && ub <= 1;
+        const ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / denominator;
+        const ub = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / denominator;
+
+        const segment1OnLine = ua >= 0 && ua <= 1;
+        const segment2OnLine = ub >= 0 && ub <= 1;
 
         if(segment1OnLine && segment2OnLine) {
             return [x1 + ua * (x2 - x1), y1 + ua * (y2 - y1)]

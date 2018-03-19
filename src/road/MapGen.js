@@ -28,9 +28,6 @@ export default class MapGen {
     }
 
     generate() {
-        let t0 = performance.now();
-
-
         let limit = 1000;
         while (!this.queue.isEmpty()) {
             let segment = this.queue.pop();
@@ -45,9 +42,6 @@ export default class MapGen {
                 }
             }
         }
-
-        let t1 = performance.now();
-        console.log("City generation " + (t1 - t0) + " milliseconds.")
     }
 
     localConstraints(road) {
@@ -59,8 +53,15 @@ export default class MapGen {
 
         // Loop over matches
         for (let match of matches) {
+            let m = match.o;
 
-            let point = Util.doRoadsIntersect(road, match.o);
+            // Quick filter to remove roads that are not in range.
+            if (Algebra.distance(road.geometry.start.toVector2D(), m.geometry.start.toVector2D())
+                >= road.metadata.type.LENGTH + m.metadata.type.LENGTH) {
+                continue;
+            }
+
+            let point = Util.doRoadsIntersect(road, m);
 
             if (point) {
                 // Calculate distance to intersection
@@ -79,29 +80,20 @@ export default class MapGen {
             }
 
             // Align roads
-            if (true) {
-                // If this road passes close to the end point of another road
-
-                // Project a point from the other road on this segment
-                const point = Algebra.projectOnSegment(match.o.geometry.end.toVector2D(),
-                    road.geometry.start.toVector2D(), road.geometry.end.toVector2D());
-
-                // Calculate distance from other point to projected point
-                const distance = Algebra.distance(match.o.geometry.end.toVector2D(), point);
-
-                if (distance > 0 && distance < this.config.SNAP_DISTANCE) {
-                    const newPoint = Point.copy(match.o.geometry.end);
-                    road.geometry.end = newPoint;
+            if (priority < 5) {
+                const stretch = Util.distanceToRoad(m, road);
+                if (stretch.distance > 0 && stretch.distance < this.config.SNAP_DISTANCE) {
+                    const point = new Point(stretch.point[0], 1, stretch.point[1]);
+                    road.geometry.end = new Point(point.x, point.y, point.z);
                     road.metadata.severed = true;
-                    vertex = new Vertex(newPoint.x, newPoint.y, newPoint.z, this.config.ALIGN_COLOR);
+                    vertex = new Vertex(point.x, point.y, point.z, this.config.ALIGN_COLOR);
                     priority = 4;
                 }
-
             }
 
             // Snap roads
-            if (priority < 4 && Util.areRoadsInRange(road, match.o, this.config.SNAP_DISTANCE)){
-                let e = match.o.geometry.end;
+            if (priority < 4 && Util.areRoadsInRange(road, m, this.config.SNAP_DISTANCE)){
+                let e = m.geometry.end;
 
                 road.geometry.end = new Point(e.x, e.y, e.z);
                 road.metadata.severed = true;
@@ -112,9 +104,9 @@ export default class MapGen {
 
             // Stretch roads
             if (priority < 3) {
-                const stretch = Util.distanceToRoad(road, match.o);
+                const stretch = Util.distanceToRoad(road, m);
 
-                if (stretch.distance < this.config.STRETCH_DISTANCE) {
+                if (stretch.distance > 0 && stretch.distance < this.config.STRETCH_DISTANCE) {
                     road.geometry.end = new Point(stretch.point[0], road.geometry.end.y, stretch.point[1]);
                     road.metadata.severed = true;
                     vertex = new Vertex(stretch.point[0], road.geometry.end.y, stretch.point[1], this.config.STRETCH_COLOR);

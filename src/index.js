@@ -40,7 +40,6 @@ let placer = null;
 // Start the program
 init();
 animate();
-Menu.readConfig();
 
 //********** initialization methods ********** //
 
@@ -105,7 +104,10 @@ function initGround() {
 
 function initRoad() {
     mapGen.initialize();
+    let t0 = performance.now();
     mapGen.generate();
+    let t1 = performance.now();
+    console.log("Road generation " + (t1 - t0) + " milliseconds.");
 
     // Visualize segments
     for(let item of mapGen.segmentList) {
@@ -123,8 +125,11 @@ function initRoad() {
 }
 
 function initBuildings(){
+    let t0 = performance.now();
     placer = new Placer(mapGen.segmentList, threejsWorld, mapGen.heatmap);
     placer.placeAllBuildings();
+    let t1 = performance.now();
+    console.log("Building generation " + (t1 - t0) + " milliseconds.");
 }
 
 //********** general methods ********** //

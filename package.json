@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "webpack": "webpack --mode development",
     "watch": "webpack --mode development --watch",
-    "start": "webpack-dev-server"
+    "start": "webpack-dev-server",
+    "live": "live-server --wait=300"
   },
   "repository": {
     "type": "git",
@@ -25,7 +26,9 @@
     "fast-simplex-noise": "^3.2.0",
     "file-loader": "^1.1.11",
     "foundation-sites": "^6.4.4-rc1",
+    "http-server": "^0.11.1",
     "jquery": "^3.3.1",
+    "live-server": "^1.2.0",
     "lodash": "^4.17.5",
     "mathjs": "^4.0.0",
     "node-sass": "^4.7.2",
@@ -33,11 +36,13 @@
     "sass-loader": "^6.0.6",
     "simplex-noise": "^2.4.0",
     "style-loader": "^0.20.2",
-    "three": "^0.90.0"
+    "three": "^0.90.0",
+    "webpack-serve": "^0.2.0"
   },
   "devDependencies": {
     "webpack": "^4.0.1",
     "webpack-cli": "^2.0.9",
-    "webpack-dev-server": "^3.1.1"
+    "webpack-dev-server": "^3.1.1",
+    "webpack-watch-server": "^1.2.1"
   }
 }

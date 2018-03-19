@@ -18,8 +18,8 @@ export default class Util {
     }
 
     static areRoadsInRange(r1, r2, range) {
-        let end1 = r1.geometry.end.toVector2D();
-        let end2 = r2.geometry.end.toVector2D();
+        const end1 = r1.geometry.end.toVector2D();
+        const end2 = r2.geometry.end.toVector2D();
 
         return Algebra.distance(end1, end2) < range;
     }

@@ -11,9 +11,7 @@ export default class Placer {
     }
 
     placeAllBuildings() {
-        for (let road of this.roads) {
-            this.placeBuildings(road);
-        }
+        this.roads.forEach((road) => this.placeBuildings(road));
     }
 
     placeBuildings(road) {

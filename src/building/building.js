@@ -162,7 +162,7 @@ export default class BuildingController {
         let mesh = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial({
             color: 0x576574,
             side: THREE.DoubleSide,
-            shading: THREE.FlatShading
+            flatShading: THREE.FlatShading
         }));//,wireframe :true}) );
         //rx=0.5*Math.PI; //to rotate buildings
         let whd = geometry.boundingBox.getSize();
