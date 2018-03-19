@@ -33,7 +33,7 @@ export default class BuildingController {
     generateMultiple(nrOfbuidlings = 1, width = 100, height = 100, depth = 100, x = 0, y = 0, z = 0) {
         let arrToReturn = [];
         for (let i = 0; i < nrOfbuidlings; i++) {
-            arrToReturn.push(this.get2D("ur", x, y, z, true, width, height, depth));
+            arrToReturn.push(this.get2D(this.lsystem(this.randomString(),3), x, y, z, true, width, height, depth));
         }
         return arrToReturn;
     }
@@ -42,15 +42,18 @@ export default class BuildingController {
         return this.get2D("ur", x, y, z, true, width, height, depth)
     }
 
-    generate(width, height, depth, x, y, z) {
-        return this.get2D(this.lsystem(this.randomString(),3), x, y, z, true, width, height, depth);
-    }
+    generate(width, height, depth, x, y, z,L_iteration=3, L_lenghtmin =1, L_lenghtmax=4) {
+        return this.get2D(this.lsystem(this.randomString(L_lenghtmin,L_lenghtmax),L_iteration), x, y, z, true, width, height, depth);
+    } 
 
-    randomString(length=5)
+    randomString(L_lenghtmin =1, L_lenghtmax=4)
     {
         var lstring = '';
+        var length = Math.floor(Math.random()*L_lenghtmax)  + L_lenghtmin;
         var possible = this.lsystemWorld.variables;
-        for (var i = 0; i < length; i++) {
+        var possibleBegin = 'uuurab'
+        lstring +=possibleBegin[Math.floor(Math.random() * possibleBegin.length)];
+        for (var i = 0; lstring.length < length; i++) {
             lstring += possible[Math.floor(Math.random() * possible.length)];
         }
         return lstring;
