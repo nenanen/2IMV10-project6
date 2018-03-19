@@ -51,7 +51,6 @@ export default class BuildingController {
         var lstring = '';
         var length = Math.floor(Math.random()*L_lenghtmax)  + L_lenghtmin;
         var possible = this.lsystemWorld.variables;
-        var possibleBegin = 'ur'
         lstring +=possibleBegin[Math.floor(Math.random() * possibleBegin.length)];
         for (var i = 0; lstring.length < length; i++) {
             lstring += possible[Math.floor(Math.random() * possible.length)];
