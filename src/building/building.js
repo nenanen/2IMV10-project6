@@ -173,7 +173,7 @@ export default class BuildingController {
         mesh.rotation.set(rx, ry, rz);
         mesh.scale.set(sx / whd.x, sy / whd.y, sz / whd.z);
 
-        this.threejsWorld.scene.add(mesh);
+        // this.threejsWorld.scene.add(mesh);
         mesh.castShadow = true;
         mesh.receiveShadow = true;
         return mesh;

@@ -16,6 +16,10 @@ export default class Menu {
         window.groups.roads.visible = !window.groups.roads.visible;
     }
 
+    static toggleBuildings() {
+        window.groups.buildings.visible = !window.groups.buildings.visible;
+    }
+
     /**
      * Fill in input fields by evaluating their name.
      * The name should be something like ui.config.ROADS.HIGHWAY.LENGTH.

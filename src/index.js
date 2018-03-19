@@ -8,7 +8,6 @@ import Menu from "./ui/Menu";
 import config from "./ui/config";
 import $ from 'jquery';
 import Placer from "./building/Placer";
-import BuildingController from "./building/building";
 
 window.jQuery = $;
 window.$ = $;
@@ -22,8 +21,9 @@ window.ui = {
 };
 
 window.groups = {
-    vertices: new THREE.Object3D(),
-    roads: new THREE.Object3D(),
+    vertices: null,
+    roads: null,
+    buildings: null
 };
 
 // Singleton object, to make it easier to identify in other .js files
@@ -115,18 +115,20 @@ function initRoad() {
     console.log("Road generation " + (t1 - t0) + " milliseconds.");
 
     // Visualize segments
-    let roads = window.groups.roads;
+    let roads = new THREE.Object3D();
     for(let item of mapGen.segmentList) {
         roads.add(item.realistic())
     }
 
     // Visualize vertices
-    let vertices = window.groups.vertices;
+    let vertices = new THREE.Object3D();
     for(let item of mapGen.vertices) {
         let representation = item.representation();
         vertices.add(representation);
     }
 
+    window.groups.roads = roads;
+    window.groups.vertices = vertices;
     threejsWorld.scene.add(roads);
     threejsWorld.scene.add(vertices);
 
@@ -137,7 +139,9 @@ function initRoad() {
 function initBuildings(){
     let t0 = performance.now();
     placer = new Placer(mapGen.segmentList, threejsWorld, mapGen.heatmap);
-    placer.placeAllBuildings();
+    let buildings = placer.placeAllBuildings();
+    window.groups.buildings = buildings;
+    threejsWorld.scene.add(buildings);
     let t1 = performance.now();
     console.log("Building generation " + (t1 - t0) + " milliseconds.");
 }
