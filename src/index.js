@@ -21,6 +21,11 @@ window.ui = {
     render: reInit,
 };
 
+window.groups = {
+    vertices: new THREE.Object3D(),
+    roads: new THREE.Object3D(),
+};
+
 // Singleton object, to make it easier to identify in other .js files
 let threejsWorld = {
     camera: {},
@@ -110,15 +115,20 @@ function initRoad() {
     console.log("Road generation " + (t1 - t0) + " milliseconds.");
 
     // Visualize segments
+    let roads = window.groups.roads;
     for(let item of mapGen.segmentList) {
-        threejsWorld.scene.add(item.realistic())
+        roads.add(item.realistic())
     }
 
     // Visualize vertices
+    let vertices = window.groups.vertices;
     for(let item of mapGen.vertices) {
         let representation = item.representation();
-        threejsWorld.scene.add(representation);
+        vertices.add(representation);
     }
+
+    threejsWorld.scene.add(roads);
+    threejsWorld.scene.add(vertices);
 
     // Visualize heatmap
     heatmap.drawHeatmap()

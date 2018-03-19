@@ -83,7 +83,7 @@ export default class MapGen {
             if (priority < 5) {
                 const stretch = Util.distanceToRoad(m, road);
                 if (stretch.distance > 0 && stretch.distance < this.config.SNAP_DISTANCE) {
-                    const point = new Point(stretch.point[0], 1, stretch.point[1]);
+                    const point = m.geometry.end;
                     road.geometry.end = new Point(point.x, point.y, point.z);
                     road.metadata.severed = true;
                     vertex = new Vertex(point.x, point.y, point.z, this.config.ALIGN_COLOR);
