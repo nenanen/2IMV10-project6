@@ -165,7 +165,7 @@ export default class BuildingController {
         let mesh = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial({
             color: 0x576574,
             side: THREE.DoubleSide,
-            flatShading: THREE.FlatShading
+            // flatShading: THREE.FlatShading
         }));//,wireframe :true}) );
         //rx=0.5*Math.PI; //to rotate buildings
         let whd = geometry.boundingBox.getSize();
@@ -175,7 +175,9 @@ export default class BuildingController {
 
         // this.threejsWorld.scene.add(mesh);
         mesh.castShadow = true;
-        mesh.receiveShadow = true;
+
+        // Glitchy
+        // mesh.receiveShadow = true;
         return mesh;
     }
 

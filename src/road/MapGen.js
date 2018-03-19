@@ -74,7 +74,7 @@ export default class MapGen {
                 if (distance < minDistance) {
                     road.geometry.end = new Point(point[0], road.geometry.end.y, point[1]);
                     road.metadata.severed = true;
-                    vertex = new Vertex(point[0], road.geometry.end.y, point[1], this.config.INTERSECT_COLOR);
+                    vertex = new Vertex(point[0], road.geometry.end.y, point[1], this.config.INTERSECT_COLOR, road.geometry.direction());
                     minDistance = distance;
                 }
             }
@@ -86,7 +86,7 @@ export default class MapGen {
                     const point = m.geometry.end;
                     road.geometry.end = new Point(point.x, point.y, point.z);
                     road.metadata.severed = true;
-                    vertex = new Vertex(point.x, point.y, point.z, this.config.ALIGN_COLOR);
+                    vertex = new Vertex(point.x, point.y, point.z, this.config.ALIGN_COLOR, road.geometry.direction());
                     priority = 4;
                 }
             }
@@ -97,7 +97,7 @@ export default class MapGen {
 
                 road.geometry.end = new Point(e.x, e.y, e.z);
                 road.metadata.severed = true;
-                vertex = new Vertex(e.x, e.y, e.z, this.config.SNAP_COLOR);
+                vertex = new Vertex(e.x, e.y, e.z, this.config.SNAP_COLOR, road.geometry.direction());
 
                 priority = 3;
             }
@@ -109,7 +109,7 @@ export default class MapGen {
                 if (stretch.distance > 0 && stretch.distance < this.config.STRETCH_DISTANCE) {
                     road.geometry.end = new Point(stretch.point[0], road.geometry.end.y, stretch.point[1]);
                     road.metadata.severed = true;
-                    vertex = new Vertex(stretch.point[0], road.geometry.end.y, stretch.point[1], this.config.STRETCH_COLOR);
+                    vertex = new Vertex(stretch.point[0], road.geometry.end.y, stretch.point[1], this.config.STRETCH_COLOR, road.geometry.direction());
 
                     priority = 2;
                 }

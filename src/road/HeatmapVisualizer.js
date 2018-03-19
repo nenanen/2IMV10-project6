@@ -75,7 +75,7 @@ export default class HeatmapVisualizer {
                 const color = dense ? `hsl(16, 25%, ${lightness}%)` : `hsl(168, 100%, ${lightness}%)`;
                 const tColor = new THREE.Color(color);
                 const geometry = new THREE.PlaneBufferGeometry(tileSize, tileSize);
-                const material = new THREE.MeshBasicMaterial({color: tColor, side: THREE.DoubleSide});
+                const material = new THREE.MeshLambertMaterial({color: tColor, side: THREE.DoubleSide});
                 const plane = new THREE.Mesh(geometry, material);
 
                 plane.rotateX(-0.5 * Math.PI);
@@ -83,6 +83,7 @@ export default class HeatmapVisualizer {
                 plane.position.setX(x);
                 plane.position.setY(0);
                 plane.position.setZ(y);
+                plane.receiveShadow = true;
                 planes.push(plane)
             }
         }

@@ -68,13 +68,14 @@ export default class RoadSegment {
         // texture.repeat.set( 4, 4 );
         let geometry = new THREE.PlaneGeometry(road.SEGMENT_WIDTH, length, 1);
         // let material = new THREE.MeshBasicMaterial( {color: road.COLOR, side: THREE.DoubleSide} );
-        let material = new THREE.MeshBasicMaterial( {map: texture, side: THREE.DoubleSide} );
+        let material = new THREE.MeshPhongMaterial( {map: texture, side: THREE.DoubleSide} );
         let plane = new THREE.Mesh( geometry, material );
         plane.position.x = center[0];
         plane.position.y = 1;
         plane.position.z = center[1];
         plane.rotateX(-0.5 * Math.PI);
         plane.rotateZ(direction / 180 * Math.PI);
+        plane.receiveShadow = true;
         return plane
     }
 

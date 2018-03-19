@@ -68,6 +68,9 @@ function init() {
     // More ThreeJS initialization
     threejsWorld.renderer = new THREE.WebGLRenderer({alpha: true});
     threejsWorld.renderer.setSize(window.innerWidth, window.innerHeight);
+    threejsWorld.renderer.shadowMap.enabled = true;
+    threejsWorld.renderer.shadowMap.type = THREE.BasicShadowMap;
+    threejsWorld.renderer.shadowMapSoft = true;
     //threejsWorld.controls.addEventListener( 'change', animate );
 
     document.getElementById('world').appendChild(threejsWorld.renderer.domElement);
@@ -165,8 +168,10 @@ function windowResize() {
 }
 
 function createLights() {//light for buildings
-	var hemisphereLight = new THREE.HemisphereLight(0xaaaaaa,0x000000, .9)
-	var shadowLight = new THREE.DirectionalLight(0xffffff, .9);
+    	// let hemisphereLight = new THREE.HemisphereLight(0xaaaaaa,0x000000, .9);
+	// let shadowLight = new THREE.DirectionalLight(0xdfebff, 1);
+	let hemisphereLight = new THREE.HemisphereLight(0xaaaaaa,0x000000, .9);
+	let shadowLight = new THREE.DirectionalLight(0xffffff, .9);
 
 	// Set the direction of the light  
 	shadowLight.position.set(150, 350, 350);
@@ -175,10 +180,11 @@ function createLights() {//light for buildings
 	shadowLight.castShadow = true;
 
 	// define the visible area of the projected shadow
-	shadowLight.shadow.camera.left = -400;
-	shadowLight.shadow.camera.right = 400;
-	shadowLight.shadow.camera.top = 400;
-	shadowLight.shadow.camera.bottom = -400;
+    const d = 400;
+	shadowLight.shadow.camera.left = -d;
+	shadowLight.shadow.camera.right = d;
+	shadowLight.shadow.camera.top = d;
+	shadowLight.shadow.camera.bottom = -d;
 	shadowLight.shadow.camera.near = 1;
 	shadowLight.shadow.camera.far = 1000;
 
