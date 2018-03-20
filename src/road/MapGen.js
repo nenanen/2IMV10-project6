@@ -129,9 +129,6 @@ export default class MapGen {
 
     globalGoals(roadSegment) {
 
-        // Get segment
-        let segment = roadSegment.geometry;
-
         // Initialize branches
         let newBranches = [];
 
@@ -140,90 +137,69 @@ export default class MapGen {
             return newBranches
         }
 
-        // Generate random angles for branching roads and continuation of segment
-        let randomBranchAngle = Util.randomAngle(this.config.BRANCH_ANGLE_LIMIT);
-        let randomContinuationAngle = Util.randomAngle(this.config.FORWARD_ANGLE_LIMIT);
+        // Get segment and data
+        let segment = roadSegment.geometry;
+        let roadConfig = roadSegment.metadata.type;
+
+        // Handle roads that are going forward
+        if (!roadConfig.BRANCHING_ONLY) {
+            let route = MapGen.determineRoute(roadSegment, this.heatmap, this.config);
+            let r = SegmentFactory.createRoad(route.road, this.time + roadConfig.FORWARD_DELAY, roadConfig, this.config);
+            newBranches.push(r);
+        }
+
+        // Handle branching if population is high enough
+        if (this.heatmap.populationOnRoad(roadSegment.geometry) > roadConfig.BRANCH_POPULATION_THRESHOLD) {
+            const branchLeft = Math.random() > roadConfig.BRANCH_PROBABILITY;
+            const branchRight = Math.random() > roadConfig.BRANCH_PROBABILITY;
+
+            if (branchLeft) {
+                let type = this.config.ROADS[Algebra.randomWeightedKeyValue(roadConfig.BRANCH_PROBABILITY_TYPE)];
+                console.log(type.NAME);
+                let angle = Util.randomAngle(this.config.BRANCH_ANGLE_LIMIT);
+                let branch = SegmentFactory.branchLeft(segment, angle, type.LENGTH);
+                let r = SegmentFactory.createRoad(branch, this.time + roadConfig.BRANCH_DELAY, type, this.config);
+                newBranches.push(r)
+            }
+
+            if (branchRight) {
+                let type = this.config.ROADS[Algebra.randomWeightedKeyValue(roadConfig.BRANCH_PROBABILITY_TYPE)];
+                console.log(type.NAME);
+                let angle = Util.randomAngle(this.config.BRANCH_ANGLE_LIMIT);
+                let branch = SegmentFactory.branchRight(segment, angle, type.LENGTH);
+                let r = SegmentFactory.createRoad(branch, this.time + roadConfig.BRANCH_DELAY, type, this.config);
+                newBranches.push(r)
+            }
+        }
+        return newBranches
+    }
+
+    static determineRoute(road, heatmap, config) {
+
+        let segment = road.geometry;
+
+        // Generate random continuation angle
+        let randomContinuationAngle = Util.randomAngle(config.FORWARD_ANGLE_LIMIT);
 
         // Initialize continuations on the previous segment
-        let continueStraight = SegmentFactory.continue(segment, 0, roadSegment.metadata.type.LENGTH);
-        let continueAngle = SegmentFactory.continue(segment, randomContinuationAngle, roadSegment.metadata.type.LENGTH);
+        let continueStraight = SegmentFactory.continue(segment, 0, road.metadata.type.LENGTH);
+        let continueAngle = SegmentFactory.continue(segment, randomContinuationAngle, road.metadata.type.LENGTH);
 
         // Determine population on road if we continue straight
-        let popStraight = this.heatmap.populationAtEnd(continueStraight);
-        let popAngle = this.heatmap.populationAtEnd(continueAngle);
+        let popStraight = heatmap.populationAtEnd(continueStraight);
+        let popAngle = heatmap.populationAtEnd(continueAngle);
 
-        // Handle highways
-        if (roadSegment.metadata.type === this.config.ROADS.HIGHWAY) {
+        // Make a list of candidate roads and their population densities
+        let segments = [continueStraight, continueAngle];
+        let densities = [popStraight, popAngle];
 
-            // Initialize population of the new road
-            let popRoad = 0;
+        // Get road with highest density
+        const i = Algebra.argMax(densities);
 
-            // Continue straight or with angle
-            if (popStraight > popAngle) {
-                let r = SegmentFactory.createRoad(continueStraight, this.time + 2, this.config.ROADS.HIGHWAY, this.config);
-                newBranches.push(r);
-                // popRoad = popStraight;
-                popRoad = this.heatmap.populationAtEndTile(continueStraight);
-            } else {
-                let r = SegmentFactory.createRoad(continueAngle, this.time + 2, this.config.ROADS.HIGHWAY, this.config);
-                newBranches.push(r);
-                popRoad = this.heatmap.populationAtEndTile(continueAngle);
-                // popRoad = popAngle;
-            }
-
-            // Check if population high enough for branch
-            if (popRoad > this.config.ROADS.HIGHWAY.BRANCH_POPULATION_THRESHOLD) {
-
-                // Create left branch with some probability
-                if (Math.random() < this.config.ROADS.HIGHWAY.BRANCH_PROBABILITY) {
-                    let type = Math.random() > 0.85? this.config.ROADS.HIGHWAY : this.config.ROADS.URBAN;
-                    let delay = type === this.config.ROADS.HIGHWAY ? 0 : type.BRANCH_DELAY;
-
-                    let angle = Util.randomAngle(this.config.BRANCH_ANGLE_LIMIT);
-                    let leftBranch = SegmentFactory.branchLeft(segment, angle, type.LENGTH, this.config);
-                    let r = SegmentFactory.createRoad(leftBranch, this.time + delay, type, this.config);
-                    newBranches.push(r)
-                }
-
-                // Create right branch with some probability
-                if (Math.random() < this.config.ROADS.HIGHWAY.BRANCH_PROBABILITY) {
-                    let type = Math.random() > 0.85? this.config.ROADS.HIGHWAY : this.config.ROADS.URBAN;
-                    let delay = type === this.config.ROADS.HIGHWAY ? 0 : type.BRANCH_DELAY;
-
-                    let angle = Util.randomAngle(this.config.BRANCH_ANGLE_LIMIT);
-                    let rightBranch = SegmentFactory.branchRight(segment, angle, type.LENGTH, this.config);
-                    let r = SegmentFactory.createRoad(rightBranch, this.time + delay, type, this.config);
-                    newBranches.push(r)
-                }
-            } else {
-                roadSegment.metadata.color = this.config.ROADS.HIGHWAY.COLOR_LOW_POP;
-            }
+        return {
+            road: segments[i],
+            population: densities[i]
         }
-
-        // Handle urban roads
-        if (roadSegment.metadata.type === this.config.ROADS.URBAN) {
-            if (popStraight > this.config.ROADS.URBAN.BRANCH_POPULATION_THRESHOLD) {
-
-                // Left branch
-                if (Math.random() < this.config.ROADS.URBAN.BRANCH_PROBABILITY) {
-                    let angle = Util.randomAngle(this.config.BRANCH_ANGLE_LIMIT);
-                    let leftBranch = SegmentFactory.branchLeft(segment, angle, this.config.ROADS.URBAN.LENGTH);
-                    let r = SegmentFactory.createRoad(leftBranch, this.time + this.config.ROADS.URBAN.BRANCH_DELAY, this.config.ROADS.URBAN, this.config);
-                    newBranches.push(r)
-                }
-
-                // Right branch
-                if (Math.random() < this.config.ROADS.URBAN.BRANCH_PROBABILITY) {
-                    let angle = Util.randomAngle(this.config.BRANCH_ANGLE_LIMIT);
-                    let leftBranch = SegmentFactory.branchRight(segment, angle, this.config.ROADS.URBAN.LENGTH);
-                    let r = SegmentFactory.createRoad(leftBranch, this.time + this.config.ROADS.URBAN.BRANCH_DELAY, this.config.ROADS.URBAN, this.config);
-                    newBranches.push(r)
-                }
-            }
-        }
-
-
-        return newBranches
     }
 
 }

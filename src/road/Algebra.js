@@ -26,9 +26,45 @@ export default class Algebra {
         return false;
     }
 
+    /**
+     * Retrieve the array key corresponding to the largest element in the array.
+     * @param {Array.<number>} array - Input array
+     * @return {number} - Index of array element with largest value
+     */
+    static argMax(array) {
+        return array.map((x, i) => [x, i]).reduce((r, a) => (a[0] > r[0] ? a : r))[1];
+    }
+
     static randomChoice(list) {
         return list[Math.floor(Math.random() * list.length)];
     }
+
+    static randomWeightedKeyValue(array) {
+        return Algebra.randomWeighted(Object.keys(array), Object.values(array))
+    }
+
+    static randomWeighted(list, weights) {
+        const random = Math.random();
+        const summed = Algebra.cumSum(weights);
+
+        for (let i = 0; i < summed.length; i++) {
+            if(random < summed[i]) {
+                return list[i]
+            }
+        }
+
+        return previous;
+    }
+
+    static cumSum(a) {
+        let result = [a[0]];
+
+        for(let i = 1; i < a.length; i++) {
+          result[i] = result[i - 1] + a[i];
+        }
+
+        return result;
+    };
 
     /**
      * Project a point on a line.

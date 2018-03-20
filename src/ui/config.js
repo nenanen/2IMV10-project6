@@ -7,26 +7,58 @@ let config = {
     // Road settings
     ROADS: {
         HIGHWAY: {
+            NAME: "HIGHWAY",
             LENGTH: 150,
+            BRANCHING_ONLY: false,
+            FORWARD_DELAY: 2,
             BRANCH_PROBABILITY: 0.95,
+            BRANCH_PROBABILITY_TYPE: {
+                URBAN: 0,
+                PROVINCIAL: 0.9,
+                HIGHWAY: 0.1
+            },
             BRANCH_POPULATION_THRESHOLD: 0.1,
             BRANCH_DELAY: 5,
-            SEGMENT_WIDTH: 16,
+            SEGMENT_WIDTH: 32,
             COLOR: 0xdfe6e9,
-            TEXTURE: loader.load("static/textures/road.svg"),
+            TEXTURE: loader.load("static/textures/highway.svg"),
             COLOR_LOW_POP: 0x2d3436
         },
-        URBAN: {
+        PROVINCIAL: {
+            NAME: "PROVINCIAL",
             LENGTH: 100,
+            BRANCHING_ONLY: false,
+            FORWARD_DELAY: 2,
             BRANCH_PROBABILITY: 0.6,
+            BRANCH_PROBABILITY_TYPE: {
+                URBAN: 0.7,
+                PROVINCIAL: 0.2,
+                HIGHWAY: 0.1
+            },
+            BRANCH_POPULATION_THRESHOLD: 0.1,
+            BRANCH_DELAY: 1,
+            SEGMENT_WIDTH: 16,
+            TEXTURE: loader.load("static/textures/road.svg"),
+            COLOR: 0xfdcb6e
+        },
+
+        URBAN: {
+            NAME: "URBAN",
+            LENGTH: 100,
+            BRANCHING_ONLY: true,
+            FORWARD_DELAY: null,
+            BRANCH_PROBABILITY: 0.6,
+            BRANCH_PROBABILITY_TYPE: {
+                URBAN: 1,
+                PROVINCIAL: 0,
+                HIGHWAY: 0
+            },
             BRANCH_POPULATION_THRESHOLD: 0.1,
             BRANCH_DELAY: 1,
             SEGMENT_WIDTH: 8,
             TEXTURE: loader.load("static/textures/urban-road.svg"),
             COLOR: 0xfdcb6e
         },
-
-        PROVINCIAL: 2,
 
     },
 

@@ -194,6 +194,7 @@ function createLights() {//light for buildings
 	shadowLight.shadow.mapSize.height = 2048;
 	
 	// to activate the lights, just add them to the scene
-	threejsWorld.scene.add(hemisphereLight);  
+	threejsWorld.scene.add(hemisphereLight);
+	threejsWorld.scene.add(new THREE.DirectionalLightHelper( shadowLight, 5 ));
 	threejsWorld.scene.add(shadowLight);
 }
