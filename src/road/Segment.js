@@ -16,10 +16,13 @@ export default class Segment {
     }
 
     update() {
-        this.minX = Math.min(this._start.x, this._end.x);
-        this.minY = Math.min(this._start.y, this._end.y);
-        this.width = Math.abs(this._start.x - this._end.x);
-        this.height = Math.abs(this._start.y - this._end.y);
+        const geo = this;
+        this.minX = Math.min(geo.start.x, geo.end.x);
+        this.minY = Math.min(geo.start.z, geo.end.z);
+        this.maxX = Math.max(geo.start.x, geo.end.x);
+        this.maxY = Math.max(geo.start.z, geo.end.z);
+        this.width = this.maxX - this.minX;
+        this.height = this.maxY - this.minY;
     }
 
     set start(start) {
@@ -70,6 +73,24 @@ export default class Segment {
         // return math.add(this.start.toVector2D(), math.multiply(diff, 0.5));
         return math.multiply(math.add(this.start.toVector2D(), this.end.toVector2D()), 0.5);
     }
+
+    // limits() {
+    //     const geo = this;
+    //     const minX = Math.min(geo.start.x, geo.end.x);
+    //     const minY = Math.min(geo.start.z, geo.end.z);
+    //     const maxX = Math.max(geo.start.x, geo.end.x);
+    //     const maxY = Math.max(geo.start.z, geo.end.z);
+    //     const width = maxX - minX;
+    //     const height = maxY - minY;
+    //
+    //     return {
+    //         x: minX,
+    //         y: minY,
+    //         height: height,
+    //         width: width,
+    //         o: this
+    //     }
+    // }
 
     limits() {
         return {

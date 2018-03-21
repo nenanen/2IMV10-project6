@@ -15,14 +15,14 @@ export default class HeatmapVisualizer {
         this.world = threejsWorld;
         this.lastRedrawCenter = null;
         this.config = config;
+        this.group = new THREE.Object3D();
+        // this.world.scene.add(this.group);
     }
 
     drawHeatmap() {
 
         // Remove old planes
-        for(let plane of this.planes) {
-            this.world.scene.remove(plane);
-        }
+        this.world.scene.remove(this.group);
 
         // Calculate new planes
         const x = this.world.camera.position.x;
@@ -32,8 +32,10 @@ export default class HeatmapVisualizer {
 
         // Insert new planes
         for(let plane of this.planes) {
-            this.world.scene.add(plane);
+            this.group.add(plane);
         }
+
+        this.world.scene.add(this.group);
 
         // Update last redraw center
         this.lastRedrawCenter = [x, z];
@@ -73,7 +75,7 @@ export default class HeatmapVisualizer {
                 const color = dense ? `hsl(16, 25%, ${lightness}%)` : `hsl(168, 100%, ${lightness}%)`;
                 const tColor = new THREE.Color(color);
                 const geometry = new THREE.PlaneBufferGeometry(tileSize, tileSize);
-                const material = new THREE.MeshBasicMaterial({color: tColor, side: THREE.DoubleSide});
+                const material = new THREE.MeshLambertMaterial({color: tColor, side: THREE.DoubleSide});
                 const plane = new THREE.Mesh(geometry, material);
 
                 plane.rotateX(-0.5 * Math.PI);
@@ -81,6 +83,7 @@ export default class HeatmapVisualizer {
                 plane.position.setX(x);
                 plane.position.setY(0);
                 plane.position.setZ(y);
+                plane.receiveShadow = true;
                 planes.push(plane)
             }
         }

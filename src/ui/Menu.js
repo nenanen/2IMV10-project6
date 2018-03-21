@@ -8,6 +8,18 @@ export default class Menu {
         Menu.readConfig();
     }
 
+    static toggleVertices() {
+        window.groups.vertices.visible = !window.groups.vertices.visible;
+    }
+
+    static toggleRoads() {
+        window.groups.roads.visible = !window.groups.roads.visible;
+    }
+
+    static toggleBuildings() {
+        window.groups.buildings.visible = !window.groups.buildings.visible;
+    }
+
     /**
      * Fill in input fields by evaluating their name.
      * The name should be something like ui.config.ROADS.HIGHWAY.LENGTH.

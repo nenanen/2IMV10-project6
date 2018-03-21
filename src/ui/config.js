@@ -36,7 +36,7 @@ let config = {
 
     // Quadtree
     QUADTREE_PARAMS: {x: -20000, y: -20000, width: 40000, height: 40000},
-    QUADTREE_MAX_OBJECTS: 10,
+    QUADTREE_MAX_OBJECTS: 20,
     QUADTREE_MAX_LEVELS: 10,
 
     // Heatmap

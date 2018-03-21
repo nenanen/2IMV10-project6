@@ -1,6 +1,7 @@
 import Algebra from "../road/Algebra";
 import * as math from "mathjs";
 import BuildingController from "./building";
+import * as THREE from "three";
 
 export default class Placer {
 
@@ -8,18 +9,20 @@ export default class Placer {
         this.roads = roads;
         this.controller = new BuildingController(threejsWorld);
         this.heatmap = heatmap;
+        this.group = new THREE.Object3D();
     }
 
     placeAllBuildings() {
-        for (let road of this.roads) {
-            this.placeBuildings(road);
-        }
+        this.roads.forEach((road) => this.placeBuildings(road));
+        return this.group;
+
     }
 
     placeBuildings(road) {
         // Just place one random building for each road now.
         for (let i = 0; i <= 3; i++) {
-            this.placeRandomBuilding(road);
+            let obj = this.placeRandomBuilding(road);
+            this.group.add(obj);
         }
     }
 
@@ -35,6 +38,7 @@ export default class Placer {
         let building = this.controller.generate(width, height, width, location.center[0], 0, location.center[1]);
         building.rotateY(location.rotation);
         building.translateY(height/2);
+        return building
     }
 
     // Get a random location next to the road

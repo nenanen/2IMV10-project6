@@ -155,7 +155,7 @@ export default class BuildingController {
       var bmat = new THREE.MeshPhongMaterial({
             color: 0x576574,
             side: THREE.DoubleSide,
-            flatShading: THREE.FlatShading
+            //flatShading: THREE.FlatShading
         });
 	
     	//add all parts
@@ -248,7 +248,7 @@ export default class BuildingController {
       bmesh.position.y = 0-height/2;
       bmesh.position.z = z;
       //bmesh.scale.set(width / whd.x, height / whd.y, depth / whd.z);
-      this.threejsWorld.scene.add(bmesh);
+      //this.threejsWorld.scene.add(bmesh);
       bmesh.castShadow = true;
       bmesh.receiveShadow = true;
 
@@ -359,7 +359,7 @@ occurrences(string, subString) {
         let mesh = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial({
             color: 0x576574,
             side: THREE.DoubleSide,
-            flatShading: THREE.FlatShading
+            // flatShading: THREE.FlatShading
         }));//,wireframe :true}) );
         //rx=0.5*Math.PI; //to rotate buildings
         let whd = geometry.boundingBox.getSize();
@@ -367,12 +367,11 @@ occurrences(string, subString) {
         mesh.rotation.set(rx, ry, rz);
         mesh.scale.set(sx / whd.x, sy / whd.y, sz / whd.z);
 
-        if(place)
-        {
-          this.threejsWorld.scene.add(mesh);
-          mesh.castShadow = true;
-          mesh.receiveShadow = true;
-        }
+        // this.threejsWorld.scene.add(mesh);
+        mesh.castShadow = true;
+
+        // Glitchy
+        // mesh.receiveShadow = true;
         return mesh;
     }
 
