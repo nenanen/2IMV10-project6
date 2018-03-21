@@ -53,7 +53,7 @@ export default class Algebra {
             }
         }
 
-        return previous;
+        return list[list.length - 1];
     }
 
     static cumSum(a) {

@@ -70,7 +70,7 @@ export default class HeatmapVisualizer {
             for (let y = yMin; y <= yMax; y += tileSize) {
                 const population = this.heatmap.populationAtTile(x, y, tileSize);
 
-                const dense = population > this.config.ROADS.HIGHWAY.BRANCH_POPULATION_THRESHOLD;
+                const dense = population > this.config.ROADS.URBAN.BRANCH_POPULATION_THRESHOLD;
                 const lightness = Math.trunc(population * 100);
                 const color = dense ? `hsl(16, 25%, ${lightness}%)` : `hsl(168, 100%, ${lightness}%)`;
                 const tColor = new THREE.Color(color);

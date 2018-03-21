@@ -11,11 +11,11 @@ let config = {
             LENGTH: 150,
             BRANCHING_ONLY: false,
             FORWARD_DELAY: 2,
-            BRANCH_PROBABILITY: 0.95,
+            BRANCH_PROBABILITY: 0.1,
             BRANCH_PROBABILITY_TYPE: {
                 URBAN: 0,
-                PROVINCIAL: 0.9,
-                HIGHWAY: 0.1
+                PROVINCIAL: 0.99,
+                HIGHWAY: 0.01
             },
             BRANCH_POPULATION_THRESHOLD: 0.1,
             BRANCH_DELAY: 5,
@@ -29,14 +29,14 @@ let config = {
             LENGTH: 100,
             BRANCHING_ONLY: false,
             FORWARD_DELAY: 2,
-            BRANCH_PROBABILITY: 0.6,
+            BRANCH_PROBABILITY: 0.2,
             BRANCH_PROBABILITY_TYPE: {
-                URBAN: 0.7,
+                URBAN: 0.8,
                 PROVINCIAL: 0.2,
-                HIGHWAY: 0.1
+                HIGHWAY: 0
             },
             BRANCH_POPULATION_THRESHOLD: 0.1,
-            BRANCH_DELAY: 1,
+            BRANCH_DELAY: 5,
             SEGMENT_WIDTH: 16,
             TEXTURE: loader.load("static/textures/road.svg"),
             COLOR: 0xfdcb6e
@@ -47,7 +47,7 @@ let config = {
             LENGTH: 100,
             BRANCHING_ONLY: true,
             FORWARD_DELAY: null,
-            BRANCH_PROBABILITY: 0.6,
+            BRANCH_PROBABILITY: 0.8,
             BRANCH_PROBABILITY_TYPE: {
                 URBAN: 1,
                 PROVINCIAL: 0,

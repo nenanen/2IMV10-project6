@@ -20,11 +20,17 @@ export default class MapGen {
     }
 
     initialize() {
-        let start = new Point(0, 1, -500);
-        let end = new Point(0, 1, this.config.ROADS.HIGHWAY.LENGTH - 500);
-        let segment = new Segment(start, end);
-        let initial = SegmentFactory.createRoad(segment, 0, this.config.ROADS.HIGHWAY, this.config);
-        this.queue.push(initial);
+        let origin = new Point(0, 1, 0);
+        let next = new Point(0, 1, +this.config.ROADS.HIGHWAY.LENGTH);
+        let prev = new Point(0, 1, -this.config.ROADS.HIGHWAY.LENGTH);
+        let forward = new Segment(origin, next);
+        let backward = new Segment(origin, prev);
+        let highwayForward = SegmentFactory.createRoad(forward, 0, this.config.ROADS.HIGHWAY, this.config);
+        let highwayBackward = SegmentFactory.createRoad(backward, 1, this.config.ROADS.HIGHWAY, this.config);
+        this.queue.push(highwayForward);
+        this.queue.push(highwayBackward);
+        window.forward = highwayForward;
+        window.backward = highwayBackward;
     }
 
     generate() {
@@ -150,8 +156,8 @@ export default class MapGen {
 
         // Handle branching if population is high enough
         if (this.heatmap.populationOnRoad(roadSegment.geometry) > roadConfig.BRANCH_POPULATION_THRESHOLD) {
-            const branchLeft = Math.random() > roadConfig.BRANCH_PROBABILITY;
-            const branchRight = Math.random() > roadConfig.BRANCH_PROBABILITY;
+            const branchLeft = Math.random() < roadConfig.BRANCH_PROBABILITY;
+            const branchRight = Math.random() < roadConfig.BRANCH_PROBABILITY;
 
             if (branchLeft) {
                 let type = this.config.ROADS[Algebra.randomWeightedKeyValue(roadConfig.BRANCH_PROBABILITY_TYPE)];
