@@ -29,8 +29,8 @@ export default class MapGen {
         let highwayBackward = SegmentFactory.createRoad(backward, 1, this.config.ROADS.HIGHWAY, this.config);
         this.queue.push(highwayForward);
         this.queue.push(highwayBackward);
-        window.forward = highwayForward;
-        window.backward = highwayBackward;
+        console.log(highwayBackward.geometry.direction());
+        console.log(highwayForward.geometry.direction());
     }
 
     generate() {
@@ -161,7 +161,6 @@ export default class MapGen {
 
             if (branchLeft) {
                 let type = this.config.ROADS[Algebra.randomWeightedKeyValue(roadConfig.BRANCH_PROBABILITY_TYPE)];
-                console.log(type.NAME);
                 let angle = Util.randomAngle(this.config.BRANCH_ANGLE_LIMIT);
                 let branch = SegmentFactory.branchLeft(segment, angle, type.LENGTH);
                 let r = SegmentFactory.createRoad(branch, this.time + roadConfig.BRANCH_DELAY, type, this.config);
@@ -170,7 +169,6 @@ export default class MapGen {
 
             if (branchRight) {
                 let type = this.config.ROADS[Algebra.randomWeightedKeyValue(roadConfig.BRANCH_PROBABILITY_TYPE)];
-                console.log(type.NAME);
                 let angle = Util.randomAngle(this.config.BRANCH_ANGLE_LIMIT);
                 let branch = SegmentFactory.branchRight(segment, angle, type.LENGTH);
                 let r = SegmentFactory.createRoad(branch, this.time + roadConfig.BRANCH_DELAY, type, this.config);

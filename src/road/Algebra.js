@@ -243,6 +243,7 @@ export default class Algebra {
      */
     static direction(vec) {
         let direction = this.angleBetween([0, 1], vec);
-        return Math.sign(vec[0]) * direction
+        const sign = vec[0] >= 0 ? 1 : -1;
+        return sign * direction
     }
 }
