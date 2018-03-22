@@ -117,14 +117,7 @@ export default class BuildingController {
       var r =  this.occurrences(lsystemstring,'r');
       var l =  this.occurrences(lsystemstring,'l');
       var u =  this.occurrences(lsystemstring,'u') +a+ b;
-      /*if(r -l ==0)
-        {
-          console.log("meh")
-          return null;
-        }*/
-        //console.log('l'+l +' r' +r+' b'+b+' a'+a)
       if(l>r){//flip l en r
-          //console.log(lsystemstring);
         lsystemstring=lsystemstring.replace('r','x')
         lsystemstring=lsystemstring.replace('l','r')
         lsystemstring=lsystemstring.replace('x','l')
@@ -132,7 +125,6 @@ export default class BuildingController {
         r=l;
         l= temp;
       }
-        //console.log('l'+l +' r' +r+' b'+b+' a'+a)
 
       if(b+l>a+r){//flip a en b
         //console.log(lsystemstring);
@@ -143,7 +135,6 @@ export default class BuildingController {
         a=b;
         b= temp;
       }      
-       // console.log('l'+l +' r' +r+' b'+b+' a'+a)
       var wi = (width+1) / (r-l+ a-b);
       var hi = (height+1) / (u);
 
@@ -153,7 +144,7 @@ export default class BuildingController {
 
       //create material
       var bmat = new THREE.MeshPhongMaterial({
-            color: 0x576574,
+            color: 0xf25346,
             side: THREE.DoubleSide,
             //flatShading: THREE.FlatShading
         });
@@ -241,14 +232,9 @@ export default class BuildingController {
         ci+=1      
       }
 
-      
-      //let whd = new THREE.Box3().setFromObject(bmesh);//bmesh.geometry.boundingBox.getSize();
-      //bmesh.position.set(x, y - height / 2, z);
       bmesh.position.x = x;
       bmesh.position.y = 0-height/2;
       bmesh.position.z = z;
-      //bmesh.scale.set(width / whd.x, height / whd.y, depth / whd.z);
-      //this.threejsWorld.scene.add(bmesh);
       bmesh.castShadow = true;
       bmesh.receiveShadow = true;
 
