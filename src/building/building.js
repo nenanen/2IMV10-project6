@@ -23,7 +23,7 @@ export default class BuildingController {
                 {key: "ur", val: "urur"},
                 //{key: "ururb", val: "ururdr"},
             ] 
-        };*/
+        };//*/
         this.lsystemWorld = {
             variables: 'urldab',
             rules: [
@@ -41,7 +41,7 @@ export default class BuildingController {
                 {key: "ur", val: "urur"},
                 {key: "ururur", val: "ururdr"},
             ] 
-        };
+        };//*/
 
         // Sort rule keys from large to small
         this.lsystemWorld.rules = this.lsystemWorld.rules.sort(function (a, b) {
