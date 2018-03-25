@@ -1,10 +1,29 @@
 import * as THREE from "three";
+//import CSG from "three-js-csg"
 
 export default class BuildingController {
     constructor(threejsWorld) {
         this.threejsWorld = threejsWorld;
 
-        // L-system rules
+        // L-system rules fit 3D more, but more boring 2D?
+        /*this.lsystemWorld = {
+            variables: 'urldab',
+            rules: [
+                {key: "uuuu", val: "uuau"},
+                {key: "uuua", val: "uba"},
+                {key: "uu", val: "uuu"},
+                {key: "rl", val: "rdrul"},
+                {key: "lr", val: "ba"},
+                {key: "ud", val: "urd"},
+                //{key: "du", val: "du"},
+                {key: "a", val: "uar"},
+                //{key: "aaa", val: ""},
+                {key: "r", val: "rr"},
+                {key: "rrr", val: "arr"},
+                {key: "ur", val: "urur"},
+                //{key: "ururb", val: "ururdr"},
+            ] 
+        };//*/
         this.lsystemWorld = {
             variables: 'urldab',
             rules: [
@@ -21,14 +40,17 @@ export default class BuildingController {
                 {key: "rrr", val: "arr"},
                 {key: "ur", val: "urur"},
                 {key: "ururur", val: "ururdr"},
-            ]
-        };
+            ] 
+        };//*/
 
         // Sort rule keys from large to small
         this.lsystemWorld.rules = this.lsystemWorld.rules.sort(function (a, b) {
             return a.key.length < b.key.length;
         });
-    }
+
+
+}
+
 
     generateMultiple(nrOfbuidlings = 1, width = 100, height = 100, depth = 100, x = 0, y = 0, z = 0) {
         let arrToReturn = [];
@@ -42,20 +64,26 @@ export default class BuildingController {
         return this.get2D("ur", x, y, z, true, width, height, depth)
     }
 
-    generate(width, height, depth, x, y, z,L_iteration=3, L_lenghtmin =1, L_lenghtmax=4) {
-        return this.get2D(this.lsystem(this.randomString(L_lenghtmin,L_lenghtmax),L_iteration), x, y, z, true, width, height, depth);
+    generate(width, height, depth, x, y, z,L_iteration=3, L_lenghtmin =1, L_lenghtmax=4,chance3D=0.05) {
+      //return this.get3D('uuuuurruulluuuuurrr', x, y, z, true, width, height, depth);
+      if(Math.random()<=chance3D)
+        return this.get3D(this.lsystem(this.randomString(L_lenghtmin,L_lenghtmax),L_iteration), x, y, z, true, width, height, depth);
+      else return this.get2D(this.lsystem(this.randomString(L_lenghtmin,L_lenghtmax),L_iteration), x, y, z, true, width, height, depth);
     } 
 
     randomString(L_lenghtmin =1, L_lenghtmax=4)
     {
         var lstring = '';
+        do{
+          lstring='';
         var length = Math.floor(Math.random()*L_lenghtmax)  + L_lenghtmin;
-        var possible = this.lsystemWorld.variables;
-        var possibleBegin = 'uuurab'
+        var possible = this.lsystemWorld.variables+'uurr';
+        var possibleBegin = 'uuuab'
         lstring +=possibleBegin[Math.floor(Math.random() * possibleBegin.length)];
         for (var i = 0; lstring.length < length; i++) {
             lstring += possible[Math.floor(Math.random() * possible.length)];
         }
+        }while((!lstring.includes('r')&&!lstring.includes('a')&&!lstring.includes('b') ))
         return lstring;
     }
 
@@ -80,7 +108,159 @@ export default class BuildingController {
         this.get2D(newS, 0, 0, 600);
     }
 
-    get2D(lsystemstring, x = 0, y = 0, z = 0, symmetry = true, width = 100, height = 100, depth = 100) {
+    get3D(lsystemstring, x = 0, y = 0, z = 0, symmetry = true, width = 100, height = 100, depth = 100) {
+      //3D does not handle certain movements yet, thus filtered out
+      lsystemstring = lsystemstring.replace('d', '');
+
+      var a = this.occurrences(lsystemstring,'a');
+      var b =  this.occurrences(lsystemstring,'b');
+      var r =  this.occurrences(lsystemstring,'r');
+      var l =  this.occurrences(lsystemstring,'l');
+      var u =  this.occurrences(lsystemstring,'u') +a+ b;
+      if(l>r){//flip l en r
+        lsystemstring=lsystemstring.replace('r','x')
+        lsystemstring=lsystemstring.replace('l','r')
+        lsystemstring=lsystemstring.replace('x','l')
+        var temp = r;
+        r=l;
+        l= temp;
+      }
+
+      if(b+l>a+r){//flip a en b
+        //console.log(lsystemstring);
+        lsystemstring=lsystemstring.replace('a','x')
+        lsystemstring=lsystemstring.replace('b','a')
+        lsystemstring=lsystemstring.replace('x','b')
+        var temp = a;
+        a=b;
+        b= temp;
+      }      
+      var wi = (width+1) / (r-l+ a-b);
+      var hi = (height+1) / (u);
+
+      //create 3D
+      //create an empty container
+      var bmesh = new THREE.Object3D();
+
+      //create material
+      var bmat = new THREE.MeshPhongMaterial({
+            color: 0xf25346,
+            side: THREE.DoubleSide,
+            //flatShading: THREE.FlatShading
+        });
+	
+    	//add all parts
+    	var nBlocs = (u); //+a+b);
+      var cx = (l+b-a-r);
+      if(cx<0)
+        cx=0;
+      var cy = 0;
+      var ci = 0;
+    	while(ci <lsystemstring.length)   
+      {  
+        var charatci = lsystemstring.charAt(ci);
+        var bgeom;
+        var addlayer = false;
+        switch (charatci) {
+            case 'u':
+              bgeom = new THREE.BoxGeometry(width - cx*(wi),hi,width - cx*(wi));
+              addlayer=true;
+              cy+=1;
+              break;
+            case 'a':
+              bgeom = new THREE.BoxGeometry(width - cx*(wi),hi,width - cx*(wi),1,1,1);
+              bgeom.vertices[0].x-=wi/2;
+              bgeom.vertices[0].z-=wi/2;
+              bgeom.vertices[1].x-=wi/2;
+              bgeom.vertices[1].z+=wi/2;
+              bgeom.vertices[4].x+=wi/2;
+              bgeom.vertices[4].z+=wi/2;
+              bgeom.vertices[5].x+=wi/2;
+              bgeom.vertices[5].z-=wi/2;
+              cx= cx+1;
+              addlayer=true;
+              cy+=1;
+              break;
+            /*case 'b':
+              bgeom = new THREE.BoxGeometry(width - cx*(wi/2),hi,width - cx*(wi/2),1,1,1);//upside down a
+              bgeom.vertices[2].x-=wi/2;
+              bgeom.vertices[2].z-=wi/2;
+              bgeom.vertices[3].x-=wi/2;
+              bgeom.vertices[3].z+=wi/2;
+              bgeom.vertices[6].x+=wi/2;
+              bgeom.vertices[6].z+=wi/2;
+              bgeom.vertices[7].x+=wi/2;
+              bgeom.vertices[7].z-=wi/2;
+              cx= cx-2;
+              addlayer=true;
+              cy+=1;
+              break;*/
+            case 'b':
+            if (ci==0)cx+=1;
+              bgeom = new THREE.BoxGeometry(width - cx*(wi),hi,width - cx*(wi),1,1,1);
+              bgeom.vertices[0].x+=wi/2;
+              bgeom.vertices[0].z+=wi/2;
+              bgeom.vertices[1].x+=wi/2;
+              bgeom.vertices[1].z-=wi/2;
+              bgeom.vertices[4].x-=wi/2;
+              bgeom.vertices[4].z-=wi/2;
+              bgeom.vertices[5].x-=wi/2;
+              bgeom.vertices[5].z+=wi/2;
+              cx= cx-1;
+              addlayer=true;
+              cy+=1;
+              break;
+            case 'r':
+              cx = cx+1;
+              break;
+            case 'l':
+              cx= cx-1;
+              break;
+          }
+        if(addlayer)
+        {      
+	    	  var m = new THREE.Mesh(bgeom,bmat); 
+        
+	    	  // set the position and the rotation of each cube randomly
+	    	  m.position.x = width/2;//(width - cx*(wi/2))/2;
+	    	  m.position.y = cy*hi-hi/2;
+	    	  m.position.z = m.position.x ;
+
+	    	  // add the cube to the container we first created
+	    	  bmesh.add(m);
+        }
+        ci+=1      
+      }
+
+      bmesh.position.x = x;
+      bmesh.position.y = 0-height/2;
+      bmesh.position.z = z;
+      bmesh.castShadow = true;
+      bmesh.receiveShadow = true;
+
+      return bmesh;
+}
+occurrences(string, subString) {
+
+    string += "";
+    subString += "";
+    if (subString.length <= 0) return (string.length + 1);
+
+    var n = 0,
+        pos = 0,
+        step =  subString.length;
+
+    while (true) {
+        pos = string.indexOf(subString, pos);
+        if (pos >= 0) {
+            ++n;
+            pos += step;
+        } else break;
+    }
+    return n;
+}
+
+    get2D(lsystemstring, x = 0, y = 0, z = 0, symmetry = true, width = 100, height = 100, depth = 100,place = true) {
         let cX = 0, cY = 0;
 
         let shape = new THREE.Shape();
@@ -153,10 +333,10 @@ export default class BuildingController {
             bevelSize: 0.2,
             bevelThickness: 0.1
         };
-        return this.addShape(shape, extrudeSettings, x, y, z, 0, 0, 0, width, height, depth)
+        return this.addShape(shape, extrudeSettings, x, y, z, 0, 0, 0, width, height, depth,place)
     }
 
-    addShape(shape, extrudeSettings, x, y, z, rx, ry, rz, sx, sy, sz) {
+    addShape(shape, extrudeSettings, x, y, z, rx, ry, rz, sx, sy, sz,place= true) {
         // Extruded shape
         let geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
         geometry.computeBoundingBox();
@@ -203,4 +383,6 @@ export default class BuildingController {
         }
         return axiom;
     }
+
+    
 }

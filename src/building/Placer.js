@@ -14,6 +14,7 @@ export default class Placer {
 
     placeAllBuildings() {
         this.roads.forEach((road) => this.placeBuildings(road));
+
         return this.group;
 
     }
