@@ -8,6 +8,8 @@ import Menu from "./ui/Menu";
 import config from "./ui/config";
 import $ from 'jquery';
 import Placer from "./building/Placer";
+import "./ui/Slider";
+import * as ReactDOM from "react-dom";
 
 window.jQuery = $;
 window.$ = $;
@@ -79,6 +81,8 @@ function init() {
 
 
 function reInit(updates) {
+    console.log("Rerendering using", window.ui.config);
+
     // Clear scene
     while(threejsWorld.scene.children.length > 0){
         threejsWorld.scene.remove(threejsWorld.scene.children[0]);
@@ -141,7 +145,7 @@ function initRoad() {
 
 function initBuildings(){
     let t0 = performance.now();
-    placer = new Placer(mapGen.segmentList, threejsWorld, mapGen.heatmap);
+    placer = new Placer(mapGen.segmentList, threejsWorld, mapGen.heatmap, config);
     let buildings = placer.placeAllBuildings();
     window.groups.buildings = buildings;
     threejsWorld.scene.add(buildings);

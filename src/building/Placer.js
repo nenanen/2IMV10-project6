@@ -5,7 +5,8 @@ import * as THREE from "three";
 
 export default class Placer {
 
-    constructor(roads, threejsWorld, heatmap) {
+    constructor(roads, threejsWorld, heatmap, config) {
+        this.config = config;
         this.roads = roads;
         this.controller = new BuildingController(threejsWorld);
         this.heatmap = heatmap;
@@ -20,7 +21,7 @@ export default class Placer {
 
     placeBuildings(road) {
         // Just place one random building for each road now.
-        for (let i = 0; i <= 3; i++) {
+        for (let i = 0; i <= this.config.NUMBER_BUILDINGS_PER_ROAD; i++) {
             let obj = this.placeRandomBuilding(road);
             this.group.add(obj);
         }

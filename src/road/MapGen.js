@@ -88,7 +88,7 @@ export default class MapGen {
             // Align roads
             if (priority < 5) {
                 const stretch = Util.distanceToRoad(m, road);
-                if (stretch.distance > 0 && stretch.distance < this.config.SNAP_DISTANCE) {
+                if (stretch.distance > 0 && stretch.distance < this.config.ALIGN_DISTANCE) {
                     const point = m.geometry.end;
                     road.geometry.end = new Point(point.x, point.y, point.z);
                     road.metadata.severed = true;

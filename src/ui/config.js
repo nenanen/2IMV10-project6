@@ -7,7 +7,8 @@ let config = {
     // Road settings
     ROADS: {
         HIGHWAY: {
-            NAME: "HIGHWAY",
+            KEY: "HIGHWAY",
+            NAME: "Highway",
             LENGTH: 150,
             BRANCHING_ONLY: false,
             FORWARD_DELAY: 2,
@@ -25,7 +26,8 @@ let config = {
             COLOR_LOW_POP: 0x2d3436
         },
         PROVINCIAL: {
-            NAME: "PROVINCIAL",
+            KEY: "PROVINCIAL",
+            NAME: "Provincial road",
             LENGTH: 100,
             BRANCHING_ONLY: false,
             FORWARD_DELAY: 2,
@@ -43,10 +45,11 @@ let config = {
         },
 
         URBAN: {
-            NAME: "URBAN",
+            KEY: "URBAN",
+            NAME: "Urban road",
             LENGTH: 100,
             BRANCHING_ONLY: true,
-            FORWARD_DELAY: null,
+            FORWARD_DELAY: 0,
             BRANCH_PROBABILITY: 0.8,
             BRANCH_PROBABILITY_TYPE: {
                 URBAN: 1,
@@ -83,9 +86,12 @@ let config = {
     ALIGN_COLOR: 0xdfe6e9,
 
     // Local constraints
-    SNAP_DISTANCE: 25,
-    STRETCH_DISTANCE: 35,
+    SNAP_DISTANCE: 25,      // Distance from current road's endpoint to other road's endpoint
+    STRETCH_DISTANCE: 35,   // Distance from current road's endpoint to other road's segment
+    ALIGN_DISTANCE: 25,     // Distance from other road's endpoint to current road's segment
 
+    // Buildings
+    NUMBER_BUILDINGS_PER_ROAD: 3
 
 };
 

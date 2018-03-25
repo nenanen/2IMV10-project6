@@ -2,7 +2,7 @@
 @include foundation-typography;
 @include foundation-forms;
 @include foundation-button;
-//@include foundation-accordion;
+@include foundation-accordion;
 //@include foundation-accordion-menu;
 //@include foundation-badge;
 //@include foundation-breadcrumbs;
@@ -36,6 +36,7 @@
 //@include foundation-float-classes;
 @include foundation-flex-classes;
 @include foundation-flex-grid;
+@import "range";
 
 * {
   box-sizing: border-box;
@@ -44,9 +45,6 @@
 body {
   margin: 0;
   overflow: hidden;
-}
-
-.button {
   font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
 }
 

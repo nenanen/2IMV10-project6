@@ -8,6 +8,11 @@ module.exports = {
             {
                 test: [/\.png$/, /\.svg$/],
                 use: ["file-loader"]
+            },
+            {
+                test: [/\.js$/],
+                exclude: [/(node_modules|bower_components)/],
+                use: ["babel-loader"],
             }
         ]
     },

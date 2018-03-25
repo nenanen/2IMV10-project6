@@ -11,9 +11,6 @@
   <!-- canvas -->
   <div id="world"></div>
 
-  <!-- Load script here, so that the css is loaded and tells the menu not to show up ;) -->
-  <script src="dist/main.js"></script>
-
   <!-- menu toggle -->
   <a href="#menu" id="toggle" onclick="ui.menu.toggle()">
     <img src="static/settings.png" alt="settings"/>
@@ -60,164 +57,17 @@
 
       <!-- Tab 2 -->
       <div class="tabs-panel" id="panel2">
-        <form>
-
-          <h3>Highway</h3>
-          <hr>
-          <h5>Segment length</h5>
-          <div class="row">
-            <div class="small-9 columns">
-              <div class="slider" data-slider data-initial-start="150" data-end="500">
-            <span class="slider-handle" data-slider-handle role="slider" tabindex="1"
-                  aria-controls="sliderOutput1"></span>
-                <span class="slider-fill" data-slider-fill></span>
-              </div>
-            </div>
-            <div class="small-3 columns">
-              <input type="number" id="sliderOutput1" name="ui.config.ROADS.HIGHWAY.LENGTH">
-            </div>
-          </div>
-
-          <h5>Branch probability</h5>
-          <div class="row">
-            <div class="small-9 columns">
-              <div class="slider" data-slider data-initial-start="0" data-end="1" data-step="0.05">
-            <span class="slider-handle" data-slider-handle role="slider" tabindex="1"
-                  aria-controls="sliderOutput3"></span>
-                <span class="slider-fill" data-slider-fill></span>
-              </div>
-            </div>
-            <div class="small-3 columns">
-              <input type="number" id="sliderOutput3" name="ui.config.ROADS.HIGHWAY.BRANCH_PROBABILITY">
-            </div>
-          </div>
-
-          <h5>Branch delay</h5>
-          <div class="row">
-            <div class="small-9 columns">
-              <div class="slider" data-slider data-initial-start="0" data-end="10" data-step="1">
-            <span class="slider-handle" data-slider-handle role="slider" tabindex="1"
-                  aria-controls="sliderOutput4"></span>
-                <span class="slider-fill" data-slider-fill></span>
-              </div>
-            </div>
-            <div class="small-3 columns">
-              <input type="number" id="sliderOutput4" name="ui.config.ROADS.HIGHWAY.BRANCH_DELAY">
-            </div>
-          </div>
-
-          <h3>Urban road</h3>
-          <hr>
-          <h5>Segment length</h5>
-          <div class="row">
-            <div class="small-9 columns">
-              <div class="slider" data-slider data-initial-start="100" data-end="500">
-            <span class="slider-handle" data-slider-handle role="slider" tabindex="1"
-                  aria-controls="sliderOutput2"></span>
-                <span class="slider-fill" data-slider-fill></span>
-              </div>
-            </div>
-            <div class="small-3 columns">
-              <input type="number" id="sliderOutput2" name="ui.config.ROADS.URBAN.LENGTH">
-            </div>
-          </div>
-
-          <h5>Branch probability</h5>
-          <div class="row">
-            <div class="small-9 columns">
-              <div class="slider" data-slider data-initial-start="0" data-end="1" data-step="0.05">
-            <span class="slider-handle" data-slider-handle role="slider" tabindex="1"
-                  aria-controls="sliderOutput5"></span>
-                <span class="slider-fill" data-slider-fill></span>
-              </div>
-            </div>
-            <div class="small-3 columns">
-              <input type="number" id="sliderOutput5" name="ui.config.ROADS.URBAN.BRANCH_PROBABILITY">
-            </div>
-          </div>
-
-          <h5>Branch delay</h5>
-          <div class="row">
-            <div class="small-9 columns">
-              <div class="slider" data-slider data-initial-start="0" data-end="10" data-step="1">
-            <span class="slider-handle" data-slider-handle role="slider" tabindex="1"
-                  aria-controls="sliderOutput6"></span>
-                <span class="slider-fill" data-slider-fill></span>
-              </div>
-            </div>
-            <div class="small-3 columns">
-              <input type="number" id="sliderOutput6" name="ui.config.ROADS.URBAN.BRANCH_DELAY">
-            </div>
-          </div>
-
-          <h3>Local constraints</h3>
-          <hr>
-          <h5>Snap distance</h5>
-          <div class="row">
-            <div class="small-9 columns">
-              <div class="slider" data-slider data-initial-start="0" data-end="100" data-step="1">
-            <span class="slider-handle" data-slider-handle role="slider" tabindex="1"
-                  aria-controls="sliderOutput7"></span>
-                <span class="slider-fill" data-slider-fill></span>
-              </div>
-            </div>
-            <div class="small-3 columns">
-              <input type="number" id="sliderOutput7" name="ui.config.SNAP_DISTANCE">
-            </div>
-          </div>
-
-          <h5>Stretch distance</h5>
-          <div class="row">
-            <div class="small-9 columns">
-              <div class="slider" data-slider data-initial-start="0" data-end="100" data-step="1">
-            <span class="slider-handle" data-slider-handle role="slider" tabindex="1"
-                  aria-controls="sliderOutput8"></span>
-                <span class="slider-fill" data-slider-fill></span>
-              </div>
-            </div>
-            <div class="small-3 columns">
-              <input type="number" id="sliderOutput8" name="ui.config.STRETCH_DISTANCE">
-            </div>
-          </div>
-
-          <h3>Angles</h3>
-          <hr>
-          <h5>Maximum angle for branching</h5>
-          <div class="row">
-            <div class="small-9 columns">
-              <div class="slider" data-slider data-initial-start="0" data-end="90" data-step="1">
-            <span class="slider-handle" data-slider-handle role="slider" tabindex="1"
-                  aria-controls="sliderOutput9"></span>
-                <span class="slider-fill" data-slider-fill></span>
-              </div>
-            </div>
-            <div class="small-3 columns">
-              <input type="number" id="sliderOutput9" name="ui.config.BRANCH_ANGLE_LIMIT">
-            </div>
-          </div>
-
-          <h5>Maximum forward angle</h5>
-          <div class="row">
-            <div class="small-9 columns">
-              <div class="slider" data-slider data-initial-start="0" data-end="90" data-step="1">
-            <span class="slider-handle" data-slider-handle role="slider" tabindex="1"
-                  aria-controls="sliderOutput10"></span>
-                <span class="slider-fill" data-slider-fill></span>
-              </div>
-            </div>
-            <div class="small-3 columns">
-              <input type="number" id="sliderOutput10" name="ui.config.FORWARD_ANGLE_LIMIT">
-            </div>
-          </div>
-
-        </form>
-
-        <button class="button primary large expanded" onclick="ui.update(); ui.render()">Generate city</button>
+          <div id="config"></div>
       </div>
     </div>
   </div>
-
-  <script src="static/foundation.min.js"></script>
-  <script>$(document).foundation();</script>
+</div>
+  <!-- Load script here, so that the css is loaded and tells the menu not to show up ;) -->
+  <script src="dist/main.js"></script>
+  <script src="static/foundation.js"></script>
+  <script>
+      $(document).foundation();
+      // $(document).on('moved.zf.slider', ".slider", (event) => console.log($(event.currentTarget).parent().parent().find("input").trigger("change")))
+  </script>
 </body>
 </html>

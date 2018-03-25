@@ -1,4 +1,7 @@
 import $ from "jquery";
+import ReactDOM from "react-dom";
+import RoadsUI from "./RoadsUI";
+import React from "react";
 
 export default class Menu {
 
@@ -25,12 +28,11 @@ export default class Menu {
      * The name should be something like ui.config.ROADS.HIGHWAY.LENGTH.
      */
     static readConfig() {
-        for (let x of $("form input")) {
-            console.log($(x).attr("name") + ":" + eval($(x).attr("name")));
-            $(x).val(eval($(x).attr("name")));
-        }
-
-        $(".slider").foundation("_reflow")
+        ReactDOM.render(
+            <RoadsUI path={"window.ui.config"} config={window.ui.config} generate={() => window.ui.render()}/>,
+            document.getElementById("config")
+        );
+        $(document).foundation();
     }
 
     /**
@@ -38,9 +40,9 @@ export default class Menu {
      * If the input has for example name ui.config.ROADS.HIGHWAY.LENGTH and a value of 150, then we evaluate:
      *   "ui.config.ROADS.HIGHWAY.LENGTH = 150;"
      */
-    static updateConfig() {
-        const serialized = $("form").serialize().replace(/&/g, ";");
-        console.log(serialized);
-        eval(serialized)
-    }
+    // static updateConfig() {
+    //     const serialized = $("form").serialize().replace(/&/g, ";");
+    //     console.log(serialized);
+    //     eval(serialized)
+    // }
 }
