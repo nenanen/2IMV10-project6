@@ -40,8 +40,11 @@ export default class Placer {
         for (let road of roads) {
             const start = road.geometry.start.toVector2D();
             const end = road.geometry.start.toVector2D();
-            if (Algebra.intersectsPolygon(start, end, lot.coordinates)) {
-                return true;
+            const location = road.location();
+
+            // todo get coordinates of road.
+            if (Algebra.polygonsCollide(location.center, location.coordinates, lot.center, lot.coordinates)) {
+                return true
             }
         }
         return false;

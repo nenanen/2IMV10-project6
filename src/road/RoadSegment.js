@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import * as _ from "lodash";
+import Algebra from "./Algebra";
 
 export default class RoadSegment {
     /**
@@ -68,8 +69,8 @@ export default class RoadSegment {
         // texture.repeat.set( 4, 4 );
         let geometry = new THREE.PlaneGeometry(road.SEGMENT_WIDTH, length, 1);
         // let material = new THREE.MeshBasicMaterial( {color: road.COLOR, side: THREE.DoubleSide} );
-        let material = new THREE.MeshPhongMaterial( {map: texture, side: THREE.DoubleSide} );
-        let plane = new THREE.Mesh( geometry, material );
+        let material = new THREE.MeshPhongMaterial({map: texture, side: THREE.DoubleSide});
+        let plane = new THREE.Mesh(geometry, material);
         plane.position.x = center[0];
         plane.position.y = 1;
         plane.position.z = center[1];
@@ -77,6 +78,26 @@ export default class RoadSegment {
         plane.rotateZ(direction / 180 * Math.PI);
         plane.receiveShadow = true;
         return plane
+    }
+
+    location() {
+        let road = this.metadata.type;
+        let center = this.geometry.center();
+        let x = center[0];
+        let y = center[1];
+        let l = this.geometry.length() / 2;
+        let w = road.SEGMENT_WIDTH / 2;
+        let direction = this.geometry.direction();
+
+        return {
+            center: center,
+            coordinates: [
+                [x - w, y - l], // bottom left
+                [x - w, y + l], // top left
+                [x + w, y + l], // top right
+                [x - w, y - l], // bottom right
+            ].map(coord => Algebra.rotate(center, coord, direction))
+        }
     }
 
     limits() {

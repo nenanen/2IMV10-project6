@@ -1,4 +1,5 @@
 import * as math from "mathjs";
+import SAT from "../vendor/Sat";
 
 export default class Algebra {
     static distanceToLine(P, A, B) {
@@ -10,20 +11,24 @@ export default class Algebra {
         return area / distAB;
     }
 
-    static polygonsIntersect(poly1, poly2) {
+    static polygonsCollide(origin1, poly1, origin2, poly2) {
 
-        // I think we can use an algorithm to speed this up to O(n log n)
-        // Maybe the Bentley-Otmann algorithm will work, or else the separating axis theorem.
+        let V = SAT.Vector;
+        let P = SAT.Polygon;
 
-        for (let line1 of poly1) {
-            for (let line2 of poly2) {
-                if (Algebra.segmentsIntersect(line1[0], line1[1], line2[0], line2[1])) {
-                    return true;
-                }
-            }
-        }
+        let poly1Vectors = poly1.map(coord => new V(coord[0] - origin1[0], coord[1] - origin1[1]));
+        let poly2Vectors = poly2.map(coord => new V(coord[0] - origin2[0], coord[1] - origin2[1]));
 
-        return false;
+        // A square
+        let polygon1 = new P(new V(origin1[0], origin1[1]), poly1Vectors);
+
+        // A triangle
+        let polygon2 = new P(new V(origin2[0], origin2[1]), poly2Vectors);
+        let response = new SAT.Response();
+
+        // Return whether the collide
+        return SAT.testPolygonPolygon(polygon1, polygon2, response)
+
     }
 
     static magnitude(vector) {
@@ -109,7 +114,7 @@ export default class Algebra {
         const summed = Algebra.cumSum(weights);
 
         for (let i = 0; i < summed.length; i++) {
-            if(random < summed[i]) {
+            if (random < summed[i]) {
                 return list[i]
             }
         }
@@ -120,8 +125,8 @@ export default class Algebra {
     static cumSum(a) {
         let result = [a[0]];
 
-        for(let i = 1; i < a.length; i++) {
-          result[i] = result[i - 1] + a[i];
+        for (let i = 1; i < a.length; i++) {
+            result[i] = result[i - 1] + a[i];
         }
 
         return result;
@@ -191,7 +196,7 @@ export default class Algebra {
         // const component = math.dot(v, onto) / Math.pow(this.length(onto), 2);
         // return math.multiply(component, onto)
         const component = math.dot(v, onto);
-        const point = math.multiply(component / Math.pow(this.length(onto), 2), onto) ;
+        const point = math.multiply(component / Math.pow(this.length(onto), 2), onto);
         return {
             component: component,
             vector: point
@@ -243,7 +248,7 @@ export default class Algebra {
         const segment1OnLine = ua >= 0 && ua <= 1;
         const segment2OnLine = ub >= 0 && ub <= 1;
 
-        if(segment1OnLine && segment2OnLine) {
+        if (segment1OnLine && segment2OnLine) {
             return [x1 + ua * (x2 - x1), y1 + ua * (y2 - y1)]
         }
 
@@ -272,7 +277,7 @@ export default class Algebra {
             rand += Math.random();
         }
 
-      return rand / 6;
+        return rand / 6;
     }
 
     /**

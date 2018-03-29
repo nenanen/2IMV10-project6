@@ -74,24 +74,6 @@ export default class Segment {
         return math.multiply(math.add(this.start.toVector2D(), this.end.toVector2D()), 0.5);
     }
 
-    // limits() {
-    //     const geo = this;
-    //     const minX = Math.min(geo.start.x, geo.end.x);
-    //     const minY = Math.min(geo.start.z, geo.end.z);
-    //     const maxX = Math.max(geo.start.x, geo.end.x);
-    //     const maxY = Math.max(geo.start.z, geo.end.z);
-    //     const width = maxX - minX;
-    //     const height = maxY - minY;
-    //
-    //     return {
-    //         x: minX,
-    //         y: minY,
-    //         height: height,
-    //         width: width,
-    //         o: this
-    //     }
-    // }
-
     limits() {
         return {
             x: this.minX,
