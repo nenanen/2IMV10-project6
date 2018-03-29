@@ -19,27 +19,72 @@ export default class Placer {
 
     }
 
-    placeBuildings(road) {
+    placeBuildings(road, location) {
+
+        let lots = [];
+        while (lots.length < this.config.NUMBER_BUILDINGS_PER_ROAD) {
+            let lot = Placer.getRandomLot(road);
+            if (!Placer.lotIntersectsRoads(lot, this.roads)) {
+                lots.push(lot);
+            }
+        }
+
         // Just place one random building for each road now.
-        for (let i = 0; i <= this.config.NUMBER_BUILDINGS_PER_ROAD; i++) {
-            let obj = this.placeRandomBuilding(road);
+        for (let lot of lots) {
+            let obj = this.placeBuilding(road, lot);
             this.group.add(obj);
         }
     }
 
-    placeRandomBuilding(road) {
-        const width = Algebra.getRandom(10, 20);
-        const location = Placer.getRandomLocation(road, width, width);
+    static lotIntersectsRoads(lot, roads) {
+        for (let road of roads) {
+            const start = road.geometry.start.toVector2D();
+            const end = road.geometry.start.toVector2D();
+            if (Algebra.intersectsPolygon(start, end, lot.coordinates)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-        const population = this.heatmap.populationAt(location.center[0], location.center[1]);
+    placeBuilding(road, lot) {
+        const width = lot.side;
+
+        const population = this.heatmap.populationAt(lot.center[0], lot.center[1]);
         const randomness = Math.random();
         const gaussian = Algebra.gaussianRange(0, 1);
         const factor = Math.max(Math.sqrt(population) * (randomness + gaussian) / 2, 0.1);
         const height = Math.pow(factor * 20, 1.5) * 3;
-        let building = this.controller.generate(width, height, width, location.center[0], 0, location.center[1]);
-        building.rotateY(location.rotation);
+        let building = this.controller.generate(width, height, width, lot.center[0], 0, lot.center[1]);
+        building.rotateY(lot.rotation);
         building.translateY(height/2);
         return building
+    }
+
+    static getRandomLot(road) {
+        const width = Algebra.getRandom(10, 20);
+        const location = Placer.getRandomLocation(road, width, width);
+
+        // Get shorthands
+        const c = location.center;
+        const r = width / 2;
+        const x = c[0];
+        const y = c[1];
+
+        // Gets coordinates and applies rotation
+        const coordinates = [
+            [x - r, y - r], // bottom left
+            [x - r, y + r], // top left
+            [x + r, y + r], // top right
+            [x - r, y - r], // bottom right
+        ].map(coord => Algebra.rotate(c, coord, location.rotation));
+
+        return {
+            side: width,
+            center: location.center,
+            rotation: location.rotation,
+            coordinates: coordinates
+        }
     }
 
     // Get a random location next to the road

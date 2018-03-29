@@ -34,15 +34,4 @@ export default class Menu {
         );
         $(document).foundation();
     }
-
-    /**
-     * Update the config by serializing the form and evaluating the result.
-     * If the input has for example name ui.config.ROADS.HIGHWAY.LENGTH and a value of 150, then we evaluate:
-     *   "ui.config.ROADS.HIGHWAY.LENGTH = 150;"
-     */
-    // static updateConfig() {
-    //     const serialized = $("form").serialize().replace(/&/g, ";");
-    //     console.log(serialized);
-    //     eval(serialized)
-    // }
 }

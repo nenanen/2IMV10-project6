@@ -26,6 +26,67 @@ export default class Algebra {
         return false;
     }
 
+    static magnitude(vector) {
+        return Math.sqrt(math.dot(vector, vector))
+    }
+
+    static norm(vector) {
+        if (Algebra.magnitude(vector) === 0) {
+            return vector
+        }
+        const magnitude = Algebra.magnitude(vector);
+        return vector.map(i => i / magnitude)
+    }
+
+    static line_ray_intersection_point(ray_orig, ray_end, point_1, point_2) {
+        // Convert to numpy arrays
+        let direction = Algebra.norm(math.subtract(ray_end, ray_orig));
+
+        // Ray-Line Segment Intersection Test in 2D
+        // http://bit.ly/1CoxdrG
+        let v1 = math.subtract(ray_orig, point_1);
+        let v2 = math.subtract(point_2, point_1);
+        let v3 = [-direction[1], direction[0]];
+
+        if (math.dot(v2, v3) === 0) {
+            return []
+        }
+
+        let t1 = math.cross(v2, v1) / math.dot(v2, v3);
+        let t2 = math.dot(v1, v3) / math.dot(v2, v3);
+
+        if (t1 > 0.0 && 0.0 <= t2 <= 1.0) {
+            return math.add(ray_orig, math.multiply(direction, t1));
+        }
+
+        return []
+    }
+
+    static intersectsPolygon(segment_start, segment_end, coordinates) {
+        coordinates.push(coordinates[0]);
+        for (let i = 0; i < coordinates.length - 1; i++) {
+            const intersect = Algebra.segmentsIntersect(segment_start, segment_end, coordinates[i], coordinates[i + 1]);
+            if (intersect) {
+                return true;
+            }
+        }
+
+        return false
+    }
+
+    static rotate(center, point, angle) {
+        const p = center[0];
+        const q = center[1];
+        const x = point[0];
+        const y = point[1];
+        const radians = angle / 180 * Math.PI;
+        return [
+            (x - p) * Math.cos(radians) - (y - q) * Math.sin(radians) + p,
+            (x - p) * Math.sin(radians) + (y - q) * Math.cos(radians) + q
+        ]
+
+    }
+
     /**
      * Retrieve the array key corresponding to the largest element in the array.
      * @param {Array.<number>} array - Input array
