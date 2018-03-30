@@ -13,6 +13,7 @@ import PointerLockControls from './vendor/PointerLockControls';
 window.jQuery = $;
 window.$ = $;
 
+
 // Javascript to be used from HTML.
 window.ui = {
     menu: Menu,
@@ -34,10 +35,22 @@ let threejsWorld = {
     renderer: {},
     groundMesh: {},
     controls: {},
-    pointerlock :false,
-    raycaster :{},
-
+    pointerlock: false,
+    raycaster: {},
+    clickCaster: new THREE.Raycaster(),
+    mouse: new THREE.Vector2()
 };
+
+function onMouseMove(event) {
+
+    // calculate mouse position in normalized device coordinates
+    // (-1 to +1) for both components
+
+    threejsWorld.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    threejsWorld.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+}
+
+window.addEventListener('mousemove', onMouseMove, false);
 
 // Singleton map generator object
 let mapGen = new MapGen(config);
@@ -55,7 +68,7 @@ let canJump = false;
 let prevTime = performance.now();
 let velocity = new THREE.Vector3();
 let direction = new THREE.Vector3();
-let pointerlockchange={};
+let pointerlockchange = {};
 
 // Start the program
 init();
@@ -65,14 +78,14 @@ animate();
 //********** initialization methods ********** //
 
 function init() {
-    
+
     // Basic threejs init
     threejsWorld.scene = new THREE.Scene();
     // threejsWorld.scene.fog = new THREE.Fog(0xe4e0ba, 200, 3000);
     threejsWorld.scene.fog = new THREE.Fog(0x121B35, 200, 3000);
 
-    threejsWorld.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 10000);    
-    threejsWorld.camera.rotation.x= Math.PI/2;
+    threejsWorld.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 10000);
+    threejsWorld.camera.rotation.x = Math.PI / 2;
     threejsWorld.camera.position.z = 0;
     threejsWorld.camera.position.y = 100;
 
@@ -103,7 +116,7 @@ function init() {
 
 function reInit(updates) {
     // Clear scene
-    while(threejsWorld.scene.children.length > 0){
+    while (threejsWorld.scene.children.length > 0) {
         threejsWorld.scene.remove(threejsWorld.scene.children[0]);
     }
 
@@ -121,7 +134,7 @@ function reInit(updates) {
 function initAllObjects() {
     createLights(); //has to be added when a new city is generated  
 
-    initRoad(); 
+    initRoad();
     initBuildings();
 }
 
@@ -142,13 +155,13 @@ function initRoad() {
 
     // Visualize segments
     let roads = new THREE.Object3D();
-    for(let item of mapGen.segmentList) {
+    for (let item of mapGen.segmentList) {
         roads.add(item.realistic())
     }
 
     // Visualize vertices
     let vertices = new THREE.Object3D();
-    for(let item of mapGen.vertices) {
+    for (let item of mapGen.vertices) {
         let representation = item.representation();
         vertices.add(representation);
     }
@@ -162,7 +175,7 @@ function initRoad() {
     heatmap.drawHeatmap()
 }
 
-function initBuildings(){
+function initBuildings() {
     let t0 = performance.now();
     placer = new Placer(mapGen.segmentList, threejsWorld, mapGen.heatmap, mapGen.config, mapGen.qTree);
     let buildings = placer.placeAllLots();
@@ -174,109 +187,120 @@ function initBuildings(){
 
 //********** general methods ********** //
 //renders every instance <-fastest but highest computest power
-function animate(){
-    
-    if(!threejsWorld.pointerlock)
+function animate() {
+
+    // update the picking ray with the camera and mouse position
+    threejsWorld.clickCaster.setFromCamera(threejsWorld.mouse, threejsWorld.camera);
+
+    // calculate objects intersecting the picking ray
+    let intersectsBuildings = threejsWorld.clickCaster.intersectObjects(window.groups.buildings.children);
+    let intersectsRoads = threejsWorld.clickCaster.intersectObjects(window.groups.roads.children);
+    let intersects = intersectsBuildings.concat(intersectsRoads);
+
+    if (intersects.length > 0) {
+        console.log(intersects[0].object.position);
+    }
+
+    if (!threejsWorld.pointerlock)
         threejsWorld.controls.update();
-    else
-    {		
-            threejsWorld.raycaster.ray.origin.copy( threejsWorld.controls.getObject().position );
-			threejsWorld.raycaster.ray.origin.y -= 10;
-		    var time = performance.now();
-		    var delta = ( time - prevTime ) / 1000;
-		    velocity.x -= velocity.x * 10.0 * delta;
-		    velocity.z -= velocity.z * 10.0 * delta;
-		    velocity.y -= 9.8 * 100.0 * delta; // 100.0 = mass
-		    direction.z = Number( moveForward ) - Number( moveBackward );
-		    direction.x = Number( moveLeft ) - Number( moveRight );
-		    direction.normalize(); // this ensures consistent movements in all directions
-		    if ( moveForward || moveBackward ) velocity.z -= direction.z * 400.0 * delta;
-		    if ( moveLeft || moveRight ) velocity.x -= direction.x * 400.0 * delta;
-		    threejsWorld.controls.getObject().translateX( velocity.x * delta );
-		    threejsWorld.controls.getObject().translateY( velocity.y * delta );
-		    threejsWorld.controls.getObject().translateZ( velocity.z * delta );
-		    if ( threejsWorld.controls.getObject().position.y < 10 ) {
-		    	velocity.y = 0;
-		    	threejsWorld.controls.getObject().position.y = 10;
-		    	canJump = true;
-		    }
-		    prevTime = time;
+    else {
+
+
+        threejsWorld.raycaster.ray.origin.copy(threejsWorld.controls.getObject().position);
+        threejsWorld.raycaster.ray.origin.y -= 10;
+        var time = performance.now();
+        var delta = (time - prevTime) / 1000;
+        velocity.x -= velocity.x * 10.0 * delta;
+        velocity.z -= velocity.z * 10.0 * delta;
+        velocity.y -= 9.8 * 100.0 * delta; // 100.0 = mass
+        direction.z = Number(moveForward) - Number(moveBackward);
+        direction.x = Number(moveLeft) - Number(moveRight);
+        direction.normalize(); // this ensures consistent movements in all directions
+        if (moveForward || moveBackward) velocity.z -= direction.z * 400.0 * delta;
+        if (moveLeft || moveRight) velocity.x -= direction.x * 400.0 * delta;
+        threejsWorld.controls.getObject().translateX(velocity.x * delta);
+        threejsWorld.controls.getObject().translateY(velocity.y * delta);
+        threejsWorld.controls.getObject().translateZ(velocity.z * delta);
+        if (threejsWorld.controls.getObject().position.y < 10) {
+            velocity.y = 0;
+            threejsWorld.controls.getObject().position.y = 10;
+            canJump = true;
+        }
+        prevTime = time;
     }
     threejsWorld.renderer.render(threejsWorld.scene, threejsWorld.camera);
     heatmap.updateHeatmap();
     requestAnimationFrame(animate)//<--comment for single screenshot
 }
 
-function changeCameraMode()
-{
-    if(threejsWorld.pointerlock)
-    {        
+function changeCameraMode() {
+    if (threejsWorld.pointerlock) {
         threejsWorld.controls.dispose();
         threejsWorld.camera.position.y = 100;
         threejsWorld.controls = new OrbitControls(threejsWorld.camera, document.getElementById("world"));
         threejsWorld.controls.keyPanSpeed = 100;
         threejsWorld.controls.update();
         threejsWorld.pointerlock = false;
-		
-		
-        document.removeEventListener( 'keydown', onKeyDown, false );
-		document.removeEventListener( 'keyup', onKeyUp, false );
+
+
+        document.removeEventListener('keydown', onKeyDown, false);
+        document.removeEventListener('keyup', onKeyUp, false);
         console.log("camera to normal")
     }
-    else
-    {   
+    else {
         threejsWorld.controls.dispose();
-        var onKeyDown = function ( event ) {
-			switch ( event.keyCode ) {
-				case 38: // up
-				case 87: // w
-					moveForward = true;
-					break;
-				case 37: // left
-				case 65: // a
-					moveLeft = true; break;
-				case 40: // down
-				case 83: // s
-					moveBackward = true;
-					break;
-				case 39: // right
-				case 68: // d
-					moveRight = true;
-					break;
-				case 32: // space
-					if ( canJump === true ) velocity.y += 350;
-					canJump = false;
-					break;
-			}
-		};
-        var onKeyUp = function ( event ) {
-			switch( event.keyCode ) {
-				case 38: // up
-				case 87: // w
-					moveForward = false;
-					break;
-				case 37: // left
-				case 65: // a
-					moveLeft = false;
-					break;
-				case 40: // down
-				case 83: // s
-					moveBackward = false;
-					break;
-				case 39: // right
-				case 68: // d
-					moveRight = false;
-					break;
-			}
-		};
+        var onKeyDown = function (event) {
+            switch (event.keyCode) {
+                case 38: // up
+                case 87: // w
+                    moveForward = true;
+                    break;
+                case 37: // left
+                case 65: // a
+                    moveLeft = true;
+                    break;
+                case 40: // down
+                case 83: // s
+                    moveBackward = true;
+                    break;
+                case 39: // right
+                case 68: // d
+                    moveRight = true;
+                    break;
+                case 32: // space
+                    if (canJump === true) velocity.y += 350;
+                    canJump = false;
+                    break;
+            }
+        };
+        var onKeyUp = function (event) {
+            switch (event.keyCode) {
+                case 38: // up
+                case 87: // w
+                    moveForward = false;
+                    break;
+                case 37: // left
+                case 65: // a
+                    moveLeft = false;
+                    break;
+                case 40: // down
+                case 83: // s
+                    moveBackward = false;
+                    break;
+                case 39: // right
+                case 68: // d
+                    moveRight = false;
+                    break;
+            }
+        };
 
         threejsWorld.controls = new PointerLockControls(threejsWorld.camera);
-        threejsWorld.camera.position.y = 5;        
-        threejsWorld.camera.position.z = 0;     
+        threejsWorld.camera.position.y = 5;
+        threejsWorld.camera.position.z = 0;
         threejsWorld.camera.position.x = 0;
-        threejsWorld.scene.add( threejsWorld.controls.getObject() );
-		document.addEventListener( 'keydown', onKeyDown, false );
-		document.addEventListener( 'keyup', onKeyUp, false );
+        threejsWorld.scene.add(threejsWorld.controls.getObject());
+        document.addEventListener('keydown', onKeyDown, false);
+        document.addEventListener('keyup', onKeyUp, false);
         threejsWorld.pointerlock = true;
         console.log("camera to pointerlock")
     }
@@ -292,86 +316,85 @@ function windowResize() {
 }
 
 function createLights() {//light for buildings
-    	// let hemisphereLight = new THREE.HemisphereLight(0xaaaaaa,0x000000, .9);
-	// let shadowLight = new THREE.DirectionalLight(0xdfebff, 1);
-	let hemisphereLight = new THREE.HemisphereLight(0xaaaaaa,0x000000, .9);
-	let shadowLight = new THREE.DirectionalLight(0xffffff, .9);
+    // let hemisphereLight = new THREE.HemisphereLight(0xaaaaaa,0x000000, .9);
+    // let shadowLight = new THREE.DirectionalLight(0xdfebff, 1);
+    let hemisphereLight = new THREE.HemisphereLight(0xaaaaaa, 0x000000, .9);
+    let shadowLight = new THREE.DirectionalLight(0xffffff, .9);
 
-	// Set the direction of the light  
-	shadowLight.position.set(150, 350, 350);
-	
-	// Allow shadow casting 
-	shadowLight.castShadow = true;
+    // Set the direction of the light
+    shadowLight.position.set(150, 350, 350);
 
-	// define the visible area of the projected shadow
+    // Allow shadow casting
+    shadowLight.castShadow = true;
+
+    // define the visible area of the projected shadow
     const d = 400;
-	shadowLight.shadow.camera.left = -d;
-	shadowLight.shadow.camera.right = d;
-	shadowLight.shadow.camera.top = d;
-	shadowLight.shadow.camera.bottom = -d;
-	shadowLight.shadow.camera.near = 1;
-	shadowLight.shadow.camera.far = 1000;
+    shadowLight.shadow.camera.left = -d;
+    shadowLight.shadow.camera.right = d;
+    shadowLight.shadow.camera.top = d;
+    shadowLight.shadow.camera.bottom = -d;
+    shadowLight.shadow.camera.near = 1;
+    shadowLight.shadow.camera.far = 1000;
 
-	// define the resolution of the shadow; the higher the better, 
-	// but also the more expensive and less performant
-	shadowLight.shadow.mapSize.width = 2048;
-	shadowLight.shadow.mapSize.height = 2048;
-	
-	// to activate the lights, just add them to the scene
-	threejsWorld.scene.add(hemisphereLight);
-	threejsWorld.scene.add(new THREE.DirectionalLightHelper( shadowLight, 5 ));
-	threejsWorld.scene.add(shadowLight);
+    // define the resolution of the shadow; the higher the better,
+    // but also the more expensive and less performant
+    shadowLight.shadow.mapSize.width = 2048;
+    shadowLight.shadow.mapSize.height = 2048;
+
+    // to activate the lights, just add them to the scene
+    threejsWorld.scene.add(hemisphereLight);
+    threejsWorld.scene.add(new THREE.DirectionalLightHelper(shadowLight, 5));
+    threejsWorld.scene.add(shadowLight);
 }
 
-function initPointerLock()
-{
-	var blocker = document.getElementById( 'blocker' );
-	var instructions = document.getElementById( 'instructions' );
+function initPointerLock() {
+    var blocker = document.getElementById('blocker');
+    var instructions = document.getElementById('instructions');
     var havePointerLock = 'pointerLockElement' in document || 'mozPointerLockElement' in document || 'webkitPointerLockElement' in document;
-    threejsWorld.raycaster = new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3( 0, - 1, 0 ), 0, 10 );
-	if ( havePointerLock ) {
-		var element = document.body;
-		pointerlockchange = function ( event ) {    
-		    document.removeEventListener( 'pointerlockchange', pointerlockchange, false );
-		    document.removeEventListener( 'mozpointerlockchange', pointerlockchange, false );
-		    document.removeEventListener( 'webkitpointerlockchange', pointerlockchange, false );
+    threejsWorld.raycaster = new THREE.Raycaster(new THREE.Vector3(), new THREE.Vector3(0, -1, 0), 0, 10);
+    if (havePointerLock) {
+        var element = document.body;
+        pointerlockchange = function (event) {
+            document.removeEventListener('pointerlockchange', pointerlockchange, false);
+            document.removeEventListener('mozpointerlockchange', pointerlockchange, false);
+            document.removeEventListener('webkitpointerlockchange', pointerlockchange, false);
 
-			if ( document.pointerLockElement === element || document.mozPointerLockElement === element || document.webkitPointerLockElement === element) {
-				changeCameraMode();
-				threejsWorld.controls.enabled = true;
-				blocker.style.display = 'none';
-                
-			} else {
-				changeCameraMode();
-				threejsWorld.controls.enabled = true;
-				blocker.style.display = 'block';
-				instructions.style.display = '';
-			}
-            
-		    document.addEventListener( 'pointerlockchange', pointerlockchange, false );
-		    document.addEventListener( 'mozpointerlockchange', pointerlockchange, false );
-		    document.addEventListener( 'webkitpointerlockchange', pointerlockchange, false );
-		};
-		var pointerlockerror = function ( event ) {
-			instructions.style.display = '';
-		};
+            if (document.pointerLockElement === element || document.mozPointerLockElement === element || document.webkitPointerLockElement === element) {
+                changeCameraMode();
+                threejsWorld.controls.enabled = true;
+                blocker.style.display = 'none';
 
-        
-		instructions.addEventListener( 'click', function ( event ) {
-			instructions.style.display = 'none';
-			// Ask the browser to lock the pointer
-			element.requestPointerLock = element.requestPointerLock || element.mozRequestPointerLock || element.webkitRequestPointerLock;
-			element.requestPointerLock();
-		}, false );
+            } else {
+                changeCameraMode();
+                threejsWorld.controls.enabled = true;
+                blocker.style.display = 'block';
+                instructions.style.display = '';
+            }
 
-		// Hook pointer lock state change events
-		document.addEventListener( 'pointerlockchange', pointerlockchange, false );
-		document.addEventListener( 'mozpointerlockchange', pointerlockchange, false );
-		document.addEventListener( 'webkitpointerlockchange', pointerlockchange, false );
-		document.addEventListener( 'pointerlockerror', pointerlockerror, false );
-		document.addEventListener( 'mozpointerlockerror', pointerlockerror, false );
-		document.addEventListener( 'webkitpointerlockerror', pointerlockerror, false );
-	} else {
-		instructions.innerHTML = 'Your browser doesn\'t seem to support Pointer Lock API';
-	}
+            document.addEventListener('pointerlockchange', pointerlockchange, false);
+            document.addEventListener('mozpointerlockchange', pointerlockchange, false);
+            document.addEventListener('webkitpointerlockchange', pointerlockchange, false);
+        };
+        var pointerlockerror = function (event) {
+            instructions.style.display = '';
+        };
+
+
+        instructions.addEventListener('click', function (event) {
+            instructions.style.display = 'none';
+            // Ask the browser to lock the pointer
+            element.requestPointerLock = element.requestPointerLock || element.mozRequestPointerLock || element.webkitRequestPointerLock;
+            element.requestPointerLock();
+        }, false);
+
+        // Hook pointer lock state change events
+        document.addEventListener('pointerlockchange', pointerlockchange, false);
+        document.addEventListener('mozpointerlockchange', pointerlockchange, false);
+        document.addEventListener('webkitpointerlockchange', pointerlockchange, false);
+        document.addEventListener('pointerlockerror', pointerlockerror, false);
+        document.addEventListener('mozpointerlockerror', pointerlockerror, false);
+        document.addEventListener('webkitpointerlockerror', pointerlockerror, false);
+    } else {
+        instructions.innerHTML = 'Your browser doesn\'t seem to support Pointer Lock API';
+    }
 }

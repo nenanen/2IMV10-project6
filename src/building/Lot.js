@@ -5,7 +5,7 @@ import * as THREE from "three";
 const MAX_SIZE = 20;
 
 export default class Lot {
-    
+
     constructor(center, length, width, rotation) {
         this.center = center;
         this.length = length;
@@ -89,6 +89,7 @@ export default class Lot {
         let geometry = new THREE.PlaneGeometry(this.width, this.length, 32);
         let material = new THREE.MeshBasicMaterial({color: color, side: THREE.DoubleSide});
         let plane = new THREE.Mesh(geometry, material);
+        plane.name = "lot";
         plane.position.set(this.center[0], 1, this.center[1]);
         plane.rotateY(this.rotation.radians);
         plane.rotateX(-0.5 * Math.PI);
