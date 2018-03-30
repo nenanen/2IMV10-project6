@@ -12,19 +12,19 @@ export default class Algebra {
         return area / distAB;
     }
 
-    static polygonsCollide(origin1, poly1, origin2, poly2) {
+    static polygonsCollide(poly1, poly2) {
 
         let V = SAT.Vector;
         let P = SAT.Polygon;
 
-        let poly1Vectors = poly1.map(coord => new V(coord[0] - origin1[0], coord[1] - origin1[1]));
-        let poly2Vectors = poly2.map(coord => new V(coord[0] - origin2[0], coord[1] - origin2[1]));
+        let poly1Vectors = poly1.map(coord => new V(coord[0], coord[1]));
+        let poly2Vectors = poly2.map(coord => new V(coord[0], coord[1]));
 
         // A square
-        let polygon1 = new P(new V(origin1[0], origin1[1]), poly1Vectors);
+        let polygon1 = new P(new SAT.Vector(), poly1Vectors);
 
-        // A triangle
-        let polygon2 = new P(new V(origin2[0], origin2[1]), poly2Vectors);
+        // Another square
+        let polygon2 = new P(new SAT.Vector(), poly2Vectors);
         let response = new SAT.Response();
 
         // Return whether the collide

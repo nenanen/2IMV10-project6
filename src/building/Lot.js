@@ -2,7 +2,10 @@ import Algebra from "../road/Algebra";
 import * as math from "mathjs";
 import * as THREE from "three";
 
+const MAX_SIZE = 20;
+
 export default class Lot {
+    
     constructor(center, length, width, rotation) {
         this.center = center;
         this.length = length;
@@ -31,15 +34,15 @@ export default class Lot {
             center: c,
             original: [
                 [x - w, y - l], // bottom left
+                [x + w, y - l], // bottom right,
+                [x + w, y + l], // top right,
                 [x - w, y + l], // top left
-                [x + w, y + l], // top right
-                [x + w, y - l], // bottom right
             ],
             coordinates: [
                 [x - w, y - l], // bottom left
+                [x + w, y - l], // bottom right,
+                [x + w, y + l], // top right,
                 [x - w, y + l], // top left
-                [x + w, y + l], // top right
-                [x + w, y - l], // bottom right
             ].map(coord => Algebra.rotate(c, coord, direction))
         }
     }
@@ -58,12 +61,10 @@ export default class Lot {
         let matches = qTree.retrieve(this.limits());
 
         for (let match of matches) {
-            const location = match.o.location;
             const collision = this.collidesWith(match.o);
 
             if (collision) {
-                console.log(this, match.o);
-                return true;
+                return match.o;
             }
         }
 
@@ -72,13 +73,19 @@ export default class Lot {
 
     // Check if the lot collides with an object with a given center and coordinates.
     collidesWith(o) {
-        let l1 = this.calculateLocation();
-        let l2 = o.calculateLocation();
-        return Algebra.polygonsCollide(l1.center, l1.coordinates, l2.center, l2.coordinates)
+
+        // Check quickly if it definitely does not intersect
+        // if (Algebra.distance(this.center, o.geometry.start.toVector2D()) > MAX_SIZE / 2 + o.metadata.type.SEGMENT_WIDTH / 2 + o.metadata.type.LENGTH) {
+        //     return false;
+        // }
+
+        // TODO: this only checks if the planes are close. Use Axis Theorem.
+        let p = Algebra.projectOnSegment(this.center, o.geometry.start.toVector2D(), o.geometry.end.toVector2D());
+        return Algebra.distance(this.center, p) < MAX_SIZE / 2 + o.metadata.type.SEGMENT_WIDTH / 2;
     }
 
     // Make a plane
-    makePlane(color = 0xffff00) {
+    makePlane(color = 0x00ff00) {
         let geometry = new THREE.PlaneGeometry(this.width, this.length, 32);
         let material = new THREE.MeshBasicMaterial({color: color, side: THREE.DoubleSide});
         let plane = new THREE.Mesh(geometry, material);
@@ -97,8 +104,8 @@ export default class Lot {
 
     // Get a random lot area
     static getRandomSize() {
-        const width = Algebra.getRandom(10, 20);
-        const length = Algebra.getRandom(10, 20);
+        const width = Algebra.getRandom(10, MAX_SIZE);
+        const length = Algebra.getRandom(10, MAX_SIZE);
 
         return {
             width: width,

@@ -46,15 +46,15 @@ export default class RoadSegment {
             center: c,
             original: [
                 [x - w, y - l], // bottom left
+                [x + w, y - l], // bottom right,
+                [x + w, y + l], // top right,
                 [x - w, y + l], // top left
-                [x + w, y + l], // top right
-                [x + w, y - l], // bottom right
             ],
             coordinates: [
                 [x - w, y - l], // bottom left
+                [x + w, y - l], // bottom right,
+                [x + w, y + l], // top right,
                 [x - w, y + l], // top left
-                [x + w, y + l], // top right
-                [x + w, y - l], // bottom right
             ].map(coord => Algebra.rotate(c, coord, direction))
         }
     }

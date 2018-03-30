@@ -511,7 +511,7 @@ SAT['Box'] = Box;
 /**
  * @return {Polygon} A new Polygon that represents this box.
  */
-Box.prototype['toPolygon'] = Box.prototype.toPolygon = function () {
+Box.prototype['toSegment'] = Box.prototype.toPolygon = function () {
     let pos = this['pos'];
     let w = this['w'];
     let h = this['h'];

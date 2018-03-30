@@ -3,6 +3,7 @@ import * as math from "mathjs";
 import BuildingController from "./building";
 import * as THREE from "three";
 import Lot from "./Lot";
+import Vertex from "../road/Vertex";
 
 export default class Placer {
 
@@ -10,6 +11,7 @@ export default class Placer {
         this.config = config;
         this.roads = roads;
         this.controller = new BuildingController(threejsWorld);
+        this.threejsWorld = threejsWorld;
         this.heatmap = heatmap;
         this.group = new THREE.Object3D();
         this.qTree = qTree;
@@ -24,13 +26,41 @@ export default class Placer {
     }
 
     placeLots(road) {
+        let success = 0;
+        let tries = 0;
         let area = Lot.getRandomSize();
         let lot = Lot.getRandomLot(road, area);
-        let plane = lot.makePlane();
-        if (lot.collidesAny(this.qTree)) {
-            plane = lot.makePlane(0xff0000);
+        let collision = lot.collidesAny(this.qTree);
+
+        while (tries < 3) {
+
+            if (collision) {
+                tries += 1;
+                // let plane = lot.makePlane(0xff0000);
+                // this.group.add(plane);
+            } else {
+                tries += 1;
+                success += 1;
+                let building = this.placeBuilding(lot);
+                this.group.add(building);
+                let plane = lot.makePlane();
+                this.group.add(plane);
+            }
         }
-        this.group.add(plane);
+    }
+
+    placeBuilding(lot) {
+        const location = lot.location;
+        const population = this.heatmap.populationAt(location.center[0], location.center[1]);
+        const randomness = Math.random();
+        const gaussian = Algebra.gaussianRange(0, 1);
+        const factor = Math.max(Math.sqrt(population) * (randomness + gaussian) / 2, 0.1);
+        const height = Math.pow(factor * 20, 1.5) * 3;
+        let building = this.controller.generate(lot.width, height, lot.length, location.center[0], 0, location.center[1]);
+        building.rotateY(lot.rotation.radians);
+        building.translateY(height / 2);
+        return building
+
     }
 
 }

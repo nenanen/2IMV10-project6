@@ -65,7 +65,7 @@ export default class Segment {
         return Algebra.direction(vector);
     }
 
-    toPolygon() {
+    toSegment() {
         return [this.start.toVector2D(), this.end.toVector2D()];
     }
 
