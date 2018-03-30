@@ -1,5 +1,6 @@
 import * as math from "mathjs";
 import Algebra from "./Algebra";
+import Angle from "./Angle";
 
 export default class Segment {
     /**
@@ -55,7 +56,7 @@ export default class Segment {
 
     /**
      * Calculates the direction of the road segment.
-     * @returns {number}
+     * @returns {Angle}
      */
     direction() {
         let startVector = this.start.toVector2D();

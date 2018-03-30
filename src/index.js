@@ -164,8 +164,8 @@ function initRoad() {
 
 function initBuildings(){
     let t0 = performance.now();
-    placer = new Placer(mapGen.segmentList, threejsWorld, mapGen.heatmap, mapGen.config);
-    let buildings = placer.placeAllBuildings();
+    placer = new Placer(mapGen.segmentList, threejsWorld, mapGen.heatmap, mapGen.config, mapGen.qTree);
+    let buildings = placer.placeAllLots();
     window.groups.buildings = buildings;
     threejsWorld.scene.add(buildings);
     let t1 = performance.now();

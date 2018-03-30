@@ -75,7 +75,7 @@ export default class RoadSegment {
         plane.position.y = 1;
         plane.position.z = center[1];
         plane.rotateX(-0.5 * Math.PI);
-        plane.rotateZ(direction / 180 * Math.PI);
+        plane.rotateZ(direction.radians);
         plane.receiveShadow = true;
         return plane
     }
@@ -95,7 +95,7 @@ export default class RoadSegment {
                 [x - w, y - l], // bottom left
                 [x - w, y + l], // top left
                 [x + w, y + l], // top right
-                [x - w, y - l], // bottom right
+                [x + w, y - l], // bottom right
             ].map(coord => Algebra.rotate(center, coord, direction))
         }
     }

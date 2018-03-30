@@ -1,6 +1,7 @@
 import * as math from "mathjs";
 import * as _ from "lodash";
 import Algebra from "./Algebra";
+import Angle from "./Angle";
 
 export default class Util {
 
@@ -36,6 +37,6 @@ export default class Util {
     }
 
     static randomAngle(limit) {
-        return Algebra.gaussianRange(-limit, +limit);
+        return new Angle(Algebra.gaussianRange(-limit, +limit));
     }
 }

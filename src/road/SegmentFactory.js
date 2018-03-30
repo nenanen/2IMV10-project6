@@ -3,6 +3,7 @@ import Segment from "./Segment"
 import Point from "./Point";
 import * as math from "mathjs";
 import * as _ from "lodash";
+import Angle from "./Angle";
 
 export default class SegmentFactory {
 
@@ -16,28 +17,28 @@ export default class SegmentFactory {
     }
 
     static direction(start, direction, length) {
-        const x = start.x + length * math.sin(math.unit(direction, 'deg'));
-        const z = start.z + length * math.cos(math.unit(direction, 'deg'));
+        const x = start.x + length * Math.sin(direction.radians);
+        const z = start.z + length * Math.cos(direction.radians);
         const y = start.y;
         let end = new Point(x, y, z);
         return new Segment(start, end);
     }
 
-    static continue(segment, angle, length) {
+    static continue(segment, angle=new Angle(0), length) {
         let start = segment.end;
-        let direction = segment.direction() + angle;
+        let direction = new Angle(segment.direction().degrees + angle.degrees);
         return this.direction(start, direction, length)
     }
 
-    static branchLeft(segment, angle=0, length) {
+    static branchLeft(segment, angle=new Angle(0), length) {
         let start = segment.end;
-        let direction = segment.direction() - 90 + angle;
+        let direction = new Angle(segment.direction().degrees - 90 + angle.degrees);
         return this.direction(start, direction, length)
     }
 
-    static branchRight(segment, angle=0, length) {
+    static branchRight(segment, angle=new Angle(0), length) {
         let start = segment.end;
-        let direction = segment.direction() + 90 + angle;
+        let direction = new Angle(segment.direction().degrees + 90 + angle.degrees);
         return this.direction(start, direction, length)
     }
 

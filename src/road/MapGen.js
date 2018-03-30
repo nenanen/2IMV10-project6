@@ -7,6 +7,7 @@ import Segment from "./Segment";
 import Vertex from "./Vertex";
 import Quadtree from "../vendor/Quadtree";
 import Algebra from "./Algebra";
+import Angle from "./Angle";
 
 export default class MapGen {
     constructor(config) {
@@ -186,7 +187,7 @@ export default class MapGen {
         let randomContinuationAngle = Util.randomAngle(config.FORWARD_ANGLE_LIMIT);
 
         // Initialize continuations on the previous segment
-        let continueStraight = SegmentFactory.continue(segment, 0, road.metadata.type.LENGTH);
+        let continueStraight = SegmentFactory.continue(segment, new Angle(0), road.metadata.type.LENGTH);
         let continueAngle = SegmentFactory.continue(segment, randomContinuationAngle, road.metadata.type.LENGTH);
 
         // Determine population on road if we continue straight

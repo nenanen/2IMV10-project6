@@ -1,5 +1,6 @@
 import * as math from "mathjs";
 import SAT from "../vendor/Sat";
+import Angle from "./Angle";
 
 export default class Algebra {
     static distanceToLine(P, A, B) {
@@ -84,7 +85,7 @@ export default class Algebra {
         const q = center[1];
         const x = point[0];
         const y = point[1];
-        const radians = angle / 180 * Math.PI;
+        const radians = angle.radians;
         return [
             (x - p) * Math.cos(radians) - (y - q) * Math.sin(radians) + p,
             (x - p) * Math.sin(radians) + (y - q) * Math.cos(radians) + q
@@ -291,7 +292,7 @@ export default class Algebra {
      * Calculate the angle between two two-dimensional vectors.
      * @param {Array} v1 - Two-dimensional vector
      * @param {Array} v2 - Two-dimensional vector
-     * @returns {number} - The angle in degrees
+     * @returns {Angle} - The angle in degrees
      */
     static angleBetween(v1, v2) {
         const x1 = v1[0];
@@ -299,17 +300,17 @@ export default class Algebra {
         const x2 = v2[0];
         const y2 = v2[1];
         const angleRad = Math.acos((x1 * x2 + y1 * y2) / (this.length(v1) * this.length(v2)));
-        return angleRad * 180 / Math.PI
+        return new Angle(angleRad, false);
     }
 
     /**
      * Calculates clockwise direction of vector.
      * @param {Array} vec - Two-dimensional vector
-     * @returns {number} - The clockwise angle in degrees
+     * @returns {Angle} - The clockwise angle in degrees
      */
     static direction(vec) {
         let direction = this.angleBetween([0, 1], vec);
         const sign = vec[0] >= 0 ? 1 : -1;
-        return sign * direction
+        return new Angle(sign * direction.degrees, true);
     }
 }
