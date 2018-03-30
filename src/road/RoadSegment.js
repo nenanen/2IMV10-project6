@@ -29,6 +29,34 @@ export default class RoadSegment {
         // Get more information from the road type (so we can adjust it if needed)
         this.metadata.color = this.metadata.type.COLOR;
 
+        // Calculate location
+        this.location = this.calculateLocation();
+
+    }
+
+    calculateLocation() {
+        const c = this.geometry.center();
+        const w = this.metadata.type.SEGMENT_WIDTH / 2;
+        const l = this.geometry.length() / 2;
+        const x = c[0];
+        const y = c[1];
+        const direction = this.geometry.direction();
+
+        return {
+            center: c,
+            original: [
+                [x - w, y - l], // bottom left
+                [x - w, y + l], // top left
+                [x + w, y + l], // top right
+                [x + w, y - l], // bottom right
+            ],
+            coordinates: [
+                [x - w, y - l], // bottom left
+                [x - w, y + l], // top left
+                [x + w, y + l], // top right
+                [x + w, y - l], // bottom right
+            ].map(coord => Algebra.rotate(c, coord, direction))
+        }
     }
 
     get priority() {
@@ -78,26 +106,6 @@ export default class RoadSegment {
         plane.rotateZ(direction.radians);
         plane.receiveShadow = true;
         return plane
-    }
-
-    location() {
-        let road = this.metadata.type;
-        let center = this.geometry.center();
-        let x = center[0];
-        let y = center[1];
-        let l = this.geometry.length() / 2;
-        let w = road.SEGMENT_WIDTH / 2;
-        let direction = this.geometry.direction();
-
-        return {
-            center: center,
-            coordinates: [
-                [x - w, y - l], // bottom left
-                [x - w, y + l], // top left
-                [x + w, y + l], // top right
-                [x + w, y - l], // bottom right
-            ].map(coord => Algebra.rotate(center, coord, direction))
-        }
     }
 
     limits() {

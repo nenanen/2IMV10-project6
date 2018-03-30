@@ -10,23 +10,38 @@ export default class Lot {
         this.rotation = rotation;
 
         // Calculate coordinates
-        const c = center;
-        const w = width / 2;
-        const l = length / 2;
-        const x = c[0];
-        const y = c[1];
-        this.coordinates = [
-            [x - w, y - l], // bottom left
-            [x - w, y + l], // top left
-            [x + w, y + l], // top right
-            [x + w, y - l], // bottom right
-        ].map(coord => Algebra.rotate(c, coord, rotation));
+        this.location = this.calculateLocation();
 
         // Calculate properties
-        const xs = this.coordinates.map(coord => coord[0]);
-        const ys = this.coordinates.map(coord => coord[1]);
+        const xs = this.location.coordinates.map(coord => coord[0]);
+        const ys = this.location.coordinates.map(coord => coord[1]);
         this.minX = Math.min.apply(null, xs);
         this.minY = Math.min.apply(null, ys);
+    }
+
+    calculateLocation() {
+        const c = this.center;
+        const w = this.width / 2;
+        const l = this.length / 2;
+        const x = c[0];
+        const y = c[1];
+        const direction = this.rotation;
+
+        return {
+            center: c,
+            original: [
+                [x - w, y - l], // bottom left
+                [x - w, y + l], // top left
+                [x + w, y + l], // top right
+                [x + w, y - l], // bottom right
+            ],
+            coordinates: [
+                [x - w, y - l], // bottom left
+                [x - w, y + l], // top left
+                [x + w, y + l], // top right
+                [x + w, y - l], // bottom right
+            ].map(coord => Algebra.rotate(c, coord, direction))
+        }
     }
 
     limits() {
@@ -39,21 +54,15 @@ export default class Lot {
         }
     }
 
-    location() {
-        return {
-            center: this.center,
-            coordinates: this.coordinates
-        }
-    }
-
     collidesAny(qTree) {
         let matches = qTree.retrieve(this.limits());
 
         for (let match of matches) {
-            const location = match.o.location();
-            const collision = this.collidesWith(location.center, location.coordinates);
+            const location = match.o.location;
+            const collision = this.collidesWith(match.o);
 
             if (collision) {
+                console.log(this, match.o);
                 return true;
             }
         }
@@ -62,20 +71,20 @@ export default class Lot {
     }
 
     // Check if the lot collides with an object with a given center and coordinates.
-    collidesWith(center, coordinates) {
-        return Algebra.polygonsCollide(this.center, this.coordinates, center, coordinates)
+    collidesWith(o) {
+        let l1 = this.calculateLocation();
+        let l2 = o.calculateLocation();
+        return Algebra.polygonsCollide(l1.center, l1.coordinates, l2.center, l2.coordinates)
     }
 
     // Make a plane
-    makePlane(color=0xffff00) {
+    makePlane(color = 0xffff00) {
         let geometry = new THREE.PlaneGeometry(this.width, this.length, 32);
         let material = new THREE.MeshBasicMaterial({color: color, side: THREE.DoubleSide});
         let plane = new THREE.Mesh(geometry, material);
         plane.position.set(this.center[0], 1, this.center[1]);
         plane.rotateY(this.rotation.radians);
         plane.rotateX(-0.5 * Math.PI);
-
-        console.log(plane.matrix, this.location().center);
 
         return plane
     }

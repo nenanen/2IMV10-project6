@@ -90,7 +90,6 @@ export default class Algebra {
             (x - p) * Math.cos(radians) - (y - q) * Math.sin(radians) + p,
             (x - p) * Math.sin(radians) + (y - q) * Math.cos(radians) + q
         ]
-
     }
 
     /**

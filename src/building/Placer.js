@@ -9,7 +9,6 @@ export default class Placer {
     constructor(roads, threejsWorld, heatmap, config, qTree) {
         this.config = config;
         this.roads = roads;
-        this.objects = this.roads.map(road => road.location());
         this.controller = new BuildingController(threejsWorld);
         this.heatmap = heatmap;
         this.group = new THREE.Object3D();
