@@ -220,11 +220,13 @@ export default class BuildingController {
             }
             if (addlayer) {
                 var m = new THREE.Mesh(bgeom, bmat);
+                m.geometry.center();
 
                 // set the position and the rotation of each cube randomly
-                m.position.x = width / 2;//(width - cx*(wi/2))/2;
+                let p = BuildingController.computeProperties(bmesh);
+                m.position.x = p.center.x;
                 m.position.y = cy * hi - hi / 2;
-                m.position.z = m.position.x;
+                m.position.z = p.center.z;
 
                 // add the cube to the container we first created
                 bmesh.add(m);
@@ -232,9 +234,10 @@ export default class BuildingController {
             ci += 1
         }
 
-        bmesh.position.x = x + width / 2;
-        bmesh.position.y = 0 - height / 2;
-        bmesh.position.z = z + length / 2;
+        let props = BuildingController.computeProperties(bmesh);
+        bmesh.position.x = x;
+        bmesh.position.y = y;
+        bmesh.position.z = z;
         bmesh.castShadow = true;
         bmesh.receiveShadow = true;
 
@@ -339,10 +342,10 @@ export default class BuildingController {
 
     static computeProperties(mesh) {
         // Compute bounding box: has a min and max.
-        mesh.geometry.computeBoundingBox();
-        let boundingBox = mesh.geometry.boundingBox;
-        let min = boundingBox.min;
-        let max = boundingBox.max;
+        // mesh.geometry.computeBoundingBox();
+        // let boundingBox = mesh.geometry.boundingBox;
+        // let min = boundingBox.min;
+        // let max = boundingBox.max;
 
         // Calculate box from object: has a size and center
         let box = new THREE.Box3().setFromObject(mesh);
@@ -350,8 +353,8 @@ export default class BuildingController {
         let center = box.getCenter();
 
         return {
-            min: min,
-            max: max,
+            // min: min,
+            // max: max,
             size: size,
             center: center
         }
