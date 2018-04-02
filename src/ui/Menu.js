@@ -29,7 +29,7 @@ export default class Menu {
      */
     static readConfig() {
         ReactDOM.render(
-            <RoadsUI path={"window.ui.config"} config={window.ui.config} generate={() => window.ui.render()}/>,
+            <RoadsUI config={window.ui.config} generate={() => window.ui.render()}/>,
             document.getElementById("config")
         );
         $(document).foundation();
