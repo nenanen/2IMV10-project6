@@ -56,28 +56,20 @@ export default class Placer {
         const height = Math.pow(factor * 20, 1.5) * 3;
         let building = this.controller.generate(lot.width, height, lot.length, location.center[0], 0, location.center[1]);//,this.config['BUILDING']['RULES']);
 
-        var material = new THREE.LineBasicMaterial({
-            color: 0x0000ff
-        });
+        // var material = new THREE.LineBasicMaterial({
+        //     color: 0x0000ff
+        // });
+        //
+        // var geometry = new THREE.Geometry();
+        // geometry.vertices.push(
+        //     new THREE.Vector3(location.center[0], -10, location.center[1]),
+        //     new THREE.Vector3(location.center[0], 40, location.center[1]),
+        // );
+        //
+        // var line = new THREE.Line(geometry, material);
+        // this.threejsWorld.scene.add(line);
+        building.rotateY(lot.rotation.radians);
 
-        var geometry = new THREE.Geometry();
-        geometry.vertices.push(
-            new THREE.Vector3(location.center[0], -10, location.center[1]),
-            new THREE.Vector3(location.center[0], 40, location.center[1]),
-        );
-
-        var line = new THREE.Line(geometry, material);
-        this.threejsWorld.scene.add(line);
-        //building.rotateY(lot.rotation.radians);
-
-        //trying to change rotation point and then rotate around objects buildings its center
-        var axis = new THREE.Vector3(0, 1, 0);
-        var matrix = new THREE.Matrix4();
-        matrix.makeRotationAxis(axis.normalize(), lot.rotation.radians);
-        building.rotation.setFromRotationMatrix(matrix);
-
-
-        building.translateY(height / 2);
         return building
 
     }

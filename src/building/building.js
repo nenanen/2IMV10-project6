@@ -27,24 +27,23 @@ export default class BuildingController {
         this.lsystemWorld = {
             variables: 'urldab',
             rules: []
-        }
-        if(lsystem == {})
-        {
-            this.lsystemWorld.rules= [
-                    {key: "uuu", val: "uuua"},
-                    {key: "uua", val: "uuuba"},
-                    {key: "uu", val: "uuu"},
-                    {key: "rl", val: "rdrul"},
-                    {key: "lr", val: "ldlur"},
-                    {key: "ud", val: "urd"},
-                    {key: "du", val: "dru"},
-                    {key: "a", val: "aa"},
-                    {key: "aaa", val: "aua"},
-                    {key: "r", val: "rr"},
-                    {key: "rrr", val: "arr"},
-                    {key: "ur", val: "urur"},
-                    {key: "ururur", val: "ururdr"},
-                ]
+        };
+        if (lsystem === {}) {
+            this.lsystemWorld.rules = [
+                {key: "uuu", val: "uuua"},
+                {key: "uua", val: "uuuba"},
+                {key: "uu", val: "uuu"},
+                {key: "rl", val: "rdrul"},
+                {key: "lr", val: "ldlur"},
+                {key: "ud", val: "urd"},
+                {key: "du", val: "dru"},
+                {key: "a", val: "aa"},
+                {key: "aaa", val: "aua"},
+                {key: "r", val: "rr"},
+                {key: "rrr", val: "arr"},
+                {key: "ur", val: "urur"},
+                {key: "ururur", val: "ururdr"},
+            ]
         }
 
         // Sort rule keys from large to small
@@ -233,9 +232,9 @@ export default class BuildingController {
             ci += 1
         }
 
-        bmesh.position.x = x +width/2;
+        bmesh.position.x = x + width / 2;
         bmesh.position.y = 0 - height / 2;
-        bmesh.position.z = z +length/2;
+        bmesh.position.z = z + length / 2;
         bmesh.castShadow = true;
         bmesh.receiveShadow = true;
 
@@ -335,77 +334,69 @@ export default class BuildingController {
             bevelSize: 0.2,
             bevelThickness: 0.1
         };
-        return this.addShape(shape, extrudeSettings, x, y, z, 0, 0, 0, width, height, depth, place)
+        return this.addShape(shape, extrudeSettings, x, y, z, width, height, depth, place)
     }
 
-    addShape(shape, extrudeSettings, x, y, z, rx, ry, rz, sx, sy, sz, place = true) {
+    static computeProperties(mesh) {
+        // Compute bounding box: has a min and max.
+        mesh.geometry.computeBoundingBox();
+        let boundingBox = mesh.geometry.boundingBox;
+        let min = boundingBox.min;
+        let max = boundingBox.max;
+
+        // Calculate box from object: has a size and center
+        let box = new THREE.Box3().setFromObject(mesh);
+        let size = box.getSize();
+        let center = box.getCenter();
+
+        return {
+            min: min,
+            max: max,
+            size: size,
+            center: center
+        }
+    }
+
+    addShape(shape, extrudeSettings, x, y, z, width, height, depth) {
         // Extruded shape
         let geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
-        //let geometry = new THREE.BoxGeometry(sx,sy,sz)
-        geometry.computeBoundingBox();
 
         // Is pretty 0xf25346
         let mesh = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial({
             color: 0x576574,
             side: THREE.DoubleSide,
-            // flatShading: THREE.FlatShading
-        }));//,wireframe :true}) );
-        //rx=0.5*Math.PI; //to rotate buildings
-        
-        
-        var box = new THREE.Box3().setFromObject( mesh );
-        let whd  = box.getSize();
-        /*mesh.scale.x *= sx/whd.x;
-        mesh.scale.y *= sy/whd.y;
-        mesh.scale.z *= sz/whd.z;
-        mesh.position.set(x -sx/2 , y - sy/2 , z -sz/2);*/
-        mesh.scale.x *= sx/whd.x/2;
-        mesh.scale.y *= sy/whd.y;
-        mesh.scale.z *= sz/whd.z/2;
-        //mesh.position.set(x  + whd.x*(sx/whd.x)*2/4, y - whd.y* (sy/whd.y)/2, z +whd.z*(sz/whd.z)*2/4 );          
-        mesh.position.set(x , y - whd.y* (sy/whd.y)/2, z);     
-        mesh.rotation.set(rx, ry, rz);
+        }));
 
-        /*var mat = new THREE.MeshPhongMaterial({//original box
-            color: 0x00ff00,
-            wireframe:true});
-        var objj = new THREE.Mesh(new THREE.BoxGeometry(whd.x+2,whd.y+2,whd.z+2),mat);
-        //objj.scale.set(sx / whd.x, sy / whd.y, sz / whd.z);
-        objj.scale.x *= (sx/whd.x)/2;
-        objj.scale.y *= (sy/whd.y)/4;
-        objj.scale.z *= (sz/whd.z)/2;
-        //objj.position.set(x +whd.x*(sx/whd.x), y + whd.y* (sy/whd.y)/2, z +whd.z*(sz/whd.z));  
-        objj.position.set(x , y + whd.y* (sy/whd.y)/2, z );              
-        this.threejsWorld.scene.add(objj);//*/
+        // https://stackoverflow.com/questions/28848863/threejs-how-to-rotate-around-objects-own-center-instead-of-world-center
+        mesh.geometry.center();
 
-        /*var mat = new THREE.MeshPhongMaterial({// goal bounding box
-            color: 0xff0000,
-            wireframe:true});
-        var objj = new THREE.Mesh(new THREE.BoxGeometry(sx+2,sy+2,sz+2),mat);
-        //objj.scale.set(sx , sy, sz);
-        objj.position.set(x -1, y +sy/2 -1, z -1);        
-        this.threejsWorld.scene.add(objj);//*/
-        // this.threejsWorld.scene.add(mesh);
-        mesh.castShadow = true;
+        let props = BuildingController.computeProperties(mesh);
+        let center = props.center;
+        let scaleX = width / props.size.x;
+        let scaleY = height / props.size.y;
 
-        // Glitchy
-        // mesh.receiveShadow = true;
+        let scaleZ = depth / props.size.z;
+        mesh.position.set(x - center.x * scaleX, y - center.y * scaleY + height / 2, z - center.z * scaleZ);
+        mesh.scale.x *= scaleX;
+        mesh.scale.y *= scaleY;
+
+        mesh.scale.z *= scaleZ;
         return mesh;
     }
 
-    originToBottom ( geometry ) {
+    originToBottom(geometry) {
 
         //1. Find the lowest `y` coordinate
         var shift = geometry.boundingBox ? geometry.boundingBox.min.y : geometry.computeBoundingBox().min.y;
-    
+
         //2. Then you translate all your vertices up 
         //so the vertical origin is the bottom of the feet :
-        for ( var i = 0 ; i < geometry.vertices.length ; i++ ) {
-            geometry.vertices[ i ].y -= shift;
+        for (var i = 0; i < geometry.vertices.length; i++) {
+            geometry.vertices[i].y -= shift;
         }
         //or as threejs implements (WestLangley's answer) : 
-        geometry.translate( 0, -shift, 0);
-    
+        geometry.translate(0, -shift, 0);
+
         //finally
         geometry.verticesNeedUpdate = true;
     }
