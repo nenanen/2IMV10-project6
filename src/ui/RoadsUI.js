@@ -38,6 +38,12 @@ export default class RoadsUI extends React.Component {
                         path={get_path("FORWARD_ANGLE_LIMIT")} />
 
                     <hr/>
+
+                    <h3>Buildings</h3>
+                    <hr/>
+                    <textarea title={"Rules"} name="comment">
+                    Enter text here...
+                    </textarea>
                 </form>
                 <button className="button primary large expanded" onClick={() => this.props.generate()}>Generate city</button>
             </div>

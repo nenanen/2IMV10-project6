@@ -68,7 +68,7 @@ export default class BuildingController {
         return this.get2D("ur", x, y, z, true, width, height, depth)
     }
 
-    generate(width, height, depth, x, y, z, L_iteration = 3, L_lenghtmin = 1, L_lenghtmax = 4, chance3D = 0.05) {
+    generate(width, height, depth, x, y, z, L_iteration = 3, L_lenghtmin = 2, L_lenghtmax = 6, chance3D = 0.05) {
         //return this.get3D('uuuuurruulluuuuurrr', x, y, z, true, width, height, depth);
         if (Math.random() <= chance3D)
             return this.get3D(this.lsystem(this.randomString(L_lenghtmin, L_lenghtmax), L_iteration), x, y, z, true, width, height, depth);
@@ -233,9 +233,9 @@ export default class BuildingController {
             ci += 1
         }
 
-        bmesh.position.x = x; //-width/2;
+        bmesh.position.x = x +width/2;
         bmesh.position.y = 0 - height / 2;
-        bmesh.position.z = z; //-length/2;
+        bmesh.position.z = z +length/2;
         bmesh.castShadow = true;
         bmesh.receiveShadow = true;
 
@@ -359,13 +359,14 @@ export default class BuildingController {
         mesh.scale.y *= sy/whd.y;
         mesh.scale.z *= sz/whd.z;
         mesh.position.set(x -sx/2 , y - sy/2 , z -sz/2);*/
-        mesh.scale.x *= sx/whd.x;
+        mesh.scale.x *= sx/whd.x/2;
         mesh.scale.y *= sy/whd.y;
-        mesh.scale.z *= sz/whd.z;
-        mesh.position.set(x  - whd.x*(sx/whd.x)*2/4, y - whd.y* (sy/whd.y)/2, z -whd.z*(sz/whd.z)*2/4 );           
+        mesh.scale.z *= sz/whd.z/2;
+        //mesh.position.set(x  + whd.x*(sx/whd.x)*2/4, y - whd.y* (sy/whd.y)/2, z +whd.z*(sz/whd.z)*2/4 );          
+        mesh.position.set(x , y - whd.y* (sy/whd.y)/2, z);     
         mesh.rotation.set(rx, ry, rz);
 
-        var mat = new THREE.MeshPhongMaterial({//original box
+        /*var mat = new THREE.MeshPhongMaterial({//original box
             color: 0x00ff00,
             wireframe:true});
         var objj = new THREE.Mesh(new THREE.BoxGeometry(whd.x+2,whd.y+2,whd.z+2),mat);
@@ -377,7 +378,7 @@ export default class BuildingController {
         objj.position.set(x , y + whd.y* (sy/whd.y)/2, z );              
         this.threejsWorld.scene.add(objj);//*/
 
-       var mat = new THREE.MeshPhongMaterial({// goal bounding box
+        /*var mat = new THREE.MeshPhongMaterial({// goal bounding box
             color: 0xff0000,
             wireframe:true});
         var objj = new THREE.Mesh(new THREE.BoxGeometry(sx+2,sy+2,sz+2),mat);

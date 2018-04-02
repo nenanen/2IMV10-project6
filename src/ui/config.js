@@ -3,7 +3,9 @@ let loader = new THREE.TextureLoader();
 loader.crossOrigin = "";
 
 let config = {
-
+    BUILDINGS:{
+        RULES: "all rules?"
+    },
     // Road settings
     ROADS: {
         HIGHWAY: {
