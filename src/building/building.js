@@ -359,10 +359,10 @@ export default class BuildingController {
         mesh.scale.y *= sy/whd.y;
         mesh.scale.z *= sz/whd.z;
         mesh.position.set(x -sx/2 , y - sy/2 , z -sz/2);*/
-        mesh.scale.x *= sx/whd.x/2;
-        mesh.scale.y *= sy/whd.y/2;
-        mesh.scale.z *= sz/whd.z/2;
-        mesh.position.set(x , y - whd.y* (sy/whd.y)/2, z );           
+        mesh.scale.x *= sx/whd.x;
+        mesh.scale.y *= sy/whd.y;
+        mesh.scale.z *= sz/whd.z;
+        mesh.position.set(x  - whd.x*(sx/whd.x)*2/4, y - whd.y* (sy/whd.y)/2, z -whd.z*(sz/whd.z)*2/4 );           
         mesh.rotation.set(rx, ry, rz);
 
         var mat = new THREE.MeshPhongMaterial({//original box
