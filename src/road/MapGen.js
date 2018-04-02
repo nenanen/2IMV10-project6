@@ -175,6 +175,8 @@ export default class MapGen {
                 let r = SegmentFactory.createRoad(branch, this.time + roadConfig.BRANCH_DELAY, type, this.config);
                 newBranches.push(r)
             }
+        } else {
+            roadSegment.metadata.color = roadSegment.metadata.type.COLOR_LOW_POP;
         }
         return newBranches
     }

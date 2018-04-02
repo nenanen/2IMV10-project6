@@ -23,8 +23,8 @@ let config = {
             BRANCH_POPULATION_THRESHOLD: 0.1,
             BRANCH_DELAY: 5,
             SEGMENT_WIDTH: 32,
-            COLOR: 0xdfe6e9,
             TEXTURE: loader.load("static/textures/highway.svg"),
+            COLOR: 0xdfe6e9,
             COLOR_LOW_POP: 0x2d3436
         },
         PROVINCIAL: {
@@ -43,7 +43,8 @@ let config = {
             BRANCH_DELAY: 5,
             SEGMENT_WIDTH: 16,
             TEXTURE: loader.load("static/textures/road.svg"),
-            COLOR: 0xe17055
+            COLOR: 0xe17055,
+            COLOR_LOW_POP: 0x2d3436
         },
 
         URBAN: {
@@ -62,7 +63,8 @@ let config = {
             BRANCH_DELAY: 1,
             SEGMENT_WIDTH: 8,
             TEXTURE: loader.load("static/textures/urban-road.svg"),
-            COLOR: 0xfdcb6e
+            COLOR: 0xfdcb6e,
+            COLOR_LOW_POP: 0x2d3436
         },
 
     },
