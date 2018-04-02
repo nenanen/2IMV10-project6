@@ -93,7 +93,10 @@ let config = {
     ALIGN_DISTANCE: 25,     // Distance from other road's endpoint to current road's segment
 
     // Buildings
-    NUMBER_BUILDINGS_PER_ROAD: 3
+    NUMBER_BUILDINGS_PER_ROAD: 3,
+
+    // Building rules
+    RULES: ""
 
 };
 
