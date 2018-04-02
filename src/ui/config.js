@@ -43,7 +43,7 @@ let config = {
             BRANCH_DELAY: 5,
             SEGMENT_WIDTH: 16,
             TEXTURE: loader.load("static/textures/road.svg"),
-            COLOR: 0xfdcb6e
+            COLOR: 0xe17055
         },
 
         URBAN: {

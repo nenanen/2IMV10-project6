@@ -5,11 +5,11 @@
   <meta charset="utf-8"/>
 </head>
 <body>
-  <div id="blocker" style="position:absolute;top: 30px; left:30px;">
+<div id="blocker" style="position:absolute;top: 30px; left:30px;">
 
-			<div id="instructions">
-        <img src="static/camera.ico" height="75px" width="75px"/>
-			</div>
+  <div id="instructions">
+    <img src="static/camera.ico" height="75px" width="75px"/>
+  </div>
 
 </div>
 
@@ -38,6 +38,14 @@
       <!-- Tab 1 -->
       <div class="tabs-panel is-active" id="panel1">
         <h5>Show vertices</h5>
+        <ul>
+          <li> Red vertex: intersection</li>
+          <li> Green vertex: extension</li>
+          <li> Blue vertex: snapped road ends</li>
+          <li> White vertex: connected to close by road end (other road's end was close to somewhere along the current
+            road)
+          </li>
+        </ul>
         <div class="switch">
           <input class="switch-input" id="vertices" onclick="ui.menu.toggleVertices()" type="checkbox"
                  name="exampleSwitch"
@@ -56,26 +64,36 @@
 
         <h5>Show buildings</h5>
         <div class="switch">
-          <input class="switch-input" id="buildings" onclick="ui.menu.toggleBuildings()" type="checkbox" name="exampleSwitch"
+          <input class="switch-input" id="buildings" onclick="ui.menu.toggleBuildings()" type="checkbox"
+                 name="exampleSwitch"
                  checked>
           <label class="switch-paddle" for="buildings">
+          </label>
+        </div>
+
+        <h5>Show road lines</h5>
+        <div class="switch">
+          <input class="switch-input" id="roadLines" onclick="ui.menu.toggleRoadStyle()" type="checkbox"
+                 name="exampleSwitch"
+          >
+          <label class="switch-paddle" for="roadLines">
           </label>
         </div>
       </div>
 
       <!-- Tab 2 -->
       <div class="tabs-panel" id="panel2">
-          <div id="config"></div>
+        <div id="config"></div>
       </div>
     </div>
   </div>
 </div>
-  <!-- Load script here, so that the css is loaded and tells the menu not to show up ;) -->
-  <script src="dist/main.js"></script>
-  <script src="static/foundation.js"></script>
-  <script>
-      $(document).foundation();
-      // $(document).on('moved.zf.slider', ".slider", (event) => console.log($(event.currentTarget).parent().parent().find("input").trigger("change")))
-  </script>
+<!-- Load script here, so that the css is loaded and tells the menu not to show up ;) -->
+<script src="dist/main.js"></script>
+<script src="static/foundation.js"></script>
+<script>
+    $(document).foundation();
+    // $(document).on('moved.zf.slider', ".slider", (event) => console.log($(event.currentTarget).parent().parent().find("input").trigger("change")))
+</script>
 </body>
 </html>

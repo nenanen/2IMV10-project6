@@ -4,7 +4,6 @@ import RoadsUI from "./RoadsUI";
 import React from "react";
 
 export default class Menu {
-
     static toggle() {
         document.querySelector('#menu').classList.toggle('active');
         document.querySelector('#toggle').classList.toggle('active');
@@ -16,7 +15,17 @@ export default class Menu {
     }
 
     static toggleRoads() {
-        window.groups.roads.visible = !window.groups.roads.visible;
+        let roadsVisible = !(window.groups.roads.visible || window.groups.roadLines.visible);
+        let realRoads = typeof window.realRoads !== 'undefined'? window.realRoads : true;
+        window.groups.roads.visible = roadsVisible && realRoads;
+        window.groups.roadLines.visible = roadsVisible && !realRoads;
+    }
+
+    static toggleRoadStyle() {
+        let roadsVisible = window.groups.roads.visible || window.groups.roadLines.visible;
+        window.realRoads = typeof window.realRoads !== 'undefined'? !window.realRoads : false;
+        window.groups.roads.visible = roadsVisible && window.realRoads;
+        window.groups.roadLines.visible = roadsVisible && !window.realRoads;
     }
 
     static toggleBuildings() {

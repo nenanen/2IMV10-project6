@@ -25,6 +25,7 @@ window.ui = {
 window.groups = {
     vertices: null,
     roads: null,
+    roadLines: null,
     buildings: null
 };
 
@@ -155,8 +156,10 @@ function initRoad() {
 
     // Visualize segments
     let roads = new THREE.Object3D();
+    let roadLines = new THREE.Object3D();
     for (let item of mapGen.segmentList) {
-        roads.add(item.realistic())
+        roads.add(item.realistic());
+        roadLines.add(item.representation());
     }
 
     // Visualize vertices
@@ -167,9 +170,12 @@ function initRoad() {
     }
 
     window.groups.roads = roads;
+    window.groups.roadLines = roadLines;
+    roadLines.visible = false;
     window.groups.vertices = vertices;
     threejsWorld.scene.add(roads);
     threejsWorld.scene.add(vertices);
+    threejsWorld.scene.add(roadLines);
 
     // Visualize heatmap
     heatmap.drawHeatmap()
