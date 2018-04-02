@@ -197,9 +197,9 @@ function animate() {
     let intersectsRoads = threejsWorld.clickCaster.intersectObjects(window.groups.roads.children);
     let intersects = intersectsBuildings.concat(intersectsRoads);
 
-    if (intersects.length > 0) {
+    /*if (intersects.length > 0) {
         console.log(intersects[0].object.position);
-    }
+    }*/
 
     if (!threejsWorld.pointerlock)
         threejsWorld.controls.update();

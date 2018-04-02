@@ -2,7 +2,7 @@ import * as THREE from "three";
 //import CSG from "three-js-csg"
 
 export default class BuildingController {
-    constructor(threejsWorld) {
+    constructor(threejsWorld, lsystem = {}) {
         this.threejsWorld = threejsWorld;
 
         // L-system rules fit 3D more, but more boring 2D?
@@ -26,22 +26,26 @@ export default class BuildingController {
         };//*/
         this.lsystemWorld = {
             variables: 'urldab',
-            rules: [
-                {key: "uuu", val: "uuua"},
-                {key: "uua", val: "uuuba"},
-                {key: "uu", val: "uuu"},
-                {key: "rl", val: "rdrul"},
-                {key: "lr", val: "ldlur"},
-                {key: "ud", val: "urd"},
-                {key: "du", val: "dru"},
-                {key: "a", val: "aa"},
-                {key: "aaa", val: "aua"},
-                {key: "r", val: "rr"},
-                {key: "rrr", val: "arr"},
-                {key: "ur", val: "urur"},
-                {key: "ururur", val: "ururdr"},
-            ]
-        };//*/
+            rules: []
+        }
+        if(lsystem == {})
+        {
+            this.lsystemWorld.rules= [
+                    {key: "uuu", val: "uuua"},
+                    {key: "uua", val: "uuuba"},
+                    {key: "uu", val: "uuu"},
+                    {key: "rl", val: "rdrul"},
+                    {key: "lr", val: "ldlur"},
+                    {key: "ud", val: "urd"},
+                    {key: "du", val: "dru"},
+                    {key: "a", val: "aa"},
+                    {key: "aaa", val: "aua"},
+                    {key: "r", val: "rr"},
+                    {key: "rrr", val: "arr"},
+                    {key: "ur", val: "urur"},
+                    {key: "ururur", val: "ururdr"},
+                ]
+        }
 
         // Sort rule keys from large to small
         this.lsystemWorld.rules = this.lsystemWorld.rules.sort(function (a, b) {
@@ -229,9 +233,9 @@ export default class BuildingController {
             ci += 1
         }
 
-        bmesh.position.x = x;
+        bmesh.position.x = x; //-width/2;
         bmesh.position.y = 0 - height / 2;
-        bmesh.position.z = z;
+        bmesh.position.z = z; //-length/2;
         bmesh.castShadow = true;
         bmesh.receiveShadow = true;
 
@@ -337,6 +341,7 @@ export default class BuildingController {
     addShape(shape, extrudeSettings, x, y, z, rx, ry, rz, sx, sy, sz, place = true) {
         // Extruded shape
         let geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+        //let geometry = new THREE.BoxGeometry(sx,sy,sz)
         geometry.computeBoundingBox();
 
         // Is pretty 0xf25346
@@ -346,17 +351,62 @@ export default class BuildingController {
             // flatShading: THREE.FlatShading
         }));//,wireframe :true}) );
         //rx=0.5*Math.PI; //to rotate buildings
-        let whd = geometry.boundingBox.getSize();
-        mesh.position.set(x, y - sy / 2, z);
+        
+        
+        var box = new THREE.Box3().setFromObject( mesh );
+        let whd  = box.getSize();
+        /*mesh.scale.x *= sx/whd.x;
+        mesh.scale.y *= sy/whd.y;
+        mesh.scale.z *= sz/whd.z;
+        mesh.position.set(x -sx/2 , y - sy/2 , z -sz/2);*/
+        mesh.scale.x *= sx/whd.x/2;
+        mesh.scale.y *= sy/whd.y/2;
+        mesh.scale.z *= sz/whd.z/2;
+        mesh.position.set(x , y - whd.y* (sy/whd.y)/2, z );           
         mesh.rotation.set(rx, ry, rz);
-        mesh.scale.set(sx / whd.x, sy / whd.y, sz / whd.z);
 
+        var mat = new THREE.MeshPhongMaterial({//original box
+            color: 0x00ff00,
+            wireframe:true});
+        var objj = new THREE.Mesh(new THREE.BoxGeometry(whd.x+2,whd.y+2,whd.z+2),mat);
+        //objj.scale.set(sx / whd.x, sy / whd.y, sz / whd.z);
+        objj.scale.x *= (sx/whd.x)/2;
+        objj.scale.y *= (sy/whd.y)/4;
+        objj.scale.z *= (sz/whd.z)/2;
+        //objj.position.set(x +whd.x*(sx/whd.x), y + whd.y* (sy/whd.y)/2, z +whd.z*(sz/whd.z));  
+        objj.position.set(x , y + whd.y* (sy/whd.y)/2, z );              
+        this.threejsWorld.scene.add(objj);//*/
+
+       var mat = new THREE.MeshPhongMaterial({// goal bounding box
+            color: 0xff0000,
+            wireframe:true});
+        var objj = new THREE.Mesh(new THREE.BoxGeometry(sx+2,sy+2,sz+2),mat);
+        //objj.scale.set(sx , sy, sz);
+        objj.position.set(x -1, y +sy/2 -1, z -1);        
+        this.threejsWorld.scene.add(objj);//*/
         // this.threejsWorld.scene.add(mesh);
         mesh.castShadow = true;
 
         // Glitchy
         // mesh.receiveShadow = true;
         return mesh;
+    }
+
+    originToBottom ( geometry ) {
+
+        //1. Find the lowest `y` coordinate
+        var shift = geometry.boundingBox ? geometry.boundingBox.min.y : geometry.computeBoundingBox().min.y;
+    
+        //2. Then you translate all your vertices up 
+        //so the vertical origin is the bottom of the feet :
+        for ( var i = 0 ; i < geometry.vertices.length ; i++ ) {
+            geometry.vertices[ i ].y -= shift;
+        }
+        //or as threejs implements (WestLangley's answer) : 
+        geometry.translate( 0, -shift, 0);
+    
+        //finally
+        geometry.verticesNeedUpdate = true;
     }
 
 

@@ -58,6 +58,19 @@ export default class Placer {
         const height = Math.pow(factor * 20, 1.5) * 3;
         let building = this.controller.generate(lot.width, height, lot.length, location.center[0], 0, location.center[1]);
         building.rotateY(lot.rotation.radians);
+
+        var material = new THREE.LineBasicMaterial({
+            color: 0x0000ff
+        });
+        
+        var geometry = new THREE.Geometry();
+        geometry.vertices.push(
+            new THREE.Vector3( location.center[0], -10, location.center[1] ),
+            new THREE.Vector3( location.center[0], 40, location.center[1] ),
+        );
+        
+        var line = new THREE.Line( geometry, material );
+        this.threejsWorld.scene.add( line );
         building.translateY(height / 2);
         return building
 
