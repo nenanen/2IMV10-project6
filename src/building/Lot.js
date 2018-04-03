@@ -85,7 +85,7 @@ export default class Lot {
     }
 
     // Make a plane
-    makePlane(color = 0x00ff00) {
+    makePlane(color = 0x2d3436) {
         let geometry = new THREE.PlaneGeometry(this.width, this.length, 32);
         let material = new THREE.MeshBasicMaterial({color: color, side: THREE.DoubleSide});
         let plane = new THREE.Mesh(geometry, material);

@@ -184,9 +184,12 @@ function initRoad() {
 function initBuildings() {
     let t0 = performance.now();
     placer = new Placer(mapGen.segmentList, threejsWorld, mapGen.heatmap, mapGen.config, mapGen.qTree);
-    let buildings = placer.placeAllLots();
-    window.groups.buildings = buildings;
-    threejsWorld.scene.add(buildings);
+    let lots = placer.placeAllLots();
+    window.groups.buildings = lots.buildings;
+    window.groups.lots = lots.lots;
+    window.groups.lots.visible = false;
+    threejsWorld.scene.add(lots.buildings);
+    threejsWorld.scene.add(lots.lots);
     let t1 = performance.now();
     console.log("Building generation " + (t1 - t0) + " milliseconds.");
 }

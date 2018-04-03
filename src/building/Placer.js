@@ -11,7 +11,8 @@ export default class Placer {
         this.controller = new BuildingController(threejsWorld);
         this.threejsWorld = threejsWorld;
         this.heatmap = heatmap;
-        this.group = new THREE.Object3D();
+        this.buildingsGroup = new THREE.Object3D();
+        this.lotsGroup = new THREE.Object3D();
         this.qTree = qTree;
     }
 
@@ -20,7 +21,10 @@ export default class Placer {
             this.placeLots(road)
         }
 
-        return this.group;
+        return {
+            buildings: this.buildingsGroup,
+            lots: this.lotsGroup
+        }
     }
 
     placeLots(road) {
@@ -40,9 +44,9 @@ export default class Placer {
                 tries += 1;
                 success += 1;
                 let building = this.placeBuilding(lot);
-                this.group.add(building);
+                this.buildingsGroup.add(building);
                 let plane = lot.makePlane();
-                this.group.add(plane);
+                this.lotsGroup.add(plane);
             }
         }
     }

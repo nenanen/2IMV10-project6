@@ -10,6 +10,10 @@ export default class Menu {
         Menu.readConfig();
     }
 
+    static toggleLots() {
+        window.groups.lots.visible = !window.groups.lots.visible;
+    }
+
     static toggleVertices() {
         window.groups.vertices.visible = !window.groups.vertices.visible;
     }

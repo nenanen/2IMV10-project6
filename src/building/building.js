@@ -382,7 +382,7 @@ export default class BuildingController {
         mesh.position.set(x - center.x * scaleX, y - center.y * scaleY + height / 2, z - center.z * scaleZ);
         mesh.scale.x *= scaleX;
         mesh.scale.y *= scaleY;
-
+        mesh.castShadow = true;
         mesh.scale.z *= scaleZ;
         return mesh;
     }
