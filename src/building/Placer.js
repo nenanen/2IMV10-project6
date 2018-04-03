@@ -54,10 +54,20 @@ export default class Placer {
     placeBuilding(lot) {
         const location = lot.location;
         const population = this.heatmap.populationAt(location.center[0], location.center[1]);
-        const randomness = Math.random();
-        const gaussian = Algebra.gaussianRange(0, 1);
-        const factor = Math.max(Math.sqrt(population) * (randomness + gaussian) / 2, 0.1);
-        const height = Math.pow(factor * 20, 1.5) * 3;
+        // const randomness = Math.random();
+        // const gaussian = Algebra.gaussianRange(0, 1);
+        // const factor = Math.max(Math.sqrt(population) * (randomness + gaussian) / 2, 0.1);
+        // const height = Math.pow(factor * 20, 1.5) * 3;
+
+        const popFactor = Math.pow(population + 1, 4);  // between 1 and 16
+        const randomFactor = Algebra.getRandom(50, 150) / 100;  // between 0.5 and 1.5
+        const base = 10;
+        const factor = 1.3;
+        const height = Math.pow(base * popFactor * randomFactor, factor);
+
+
+        // const height = Math.min(Math.max(10, randomFactor * popFactor), 250);
+        // console.log(popFactor, randomFactor, popFactor * randomFactor);
         let building = this.controller.generate(lot.width, height, lot.length, location.center[0], 0, location.center[1]);//,this.config['BUILDING']['RULES']);
 
         // var material = new THREE.LineBasicMaterial({
