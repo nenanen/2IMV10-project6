@@ -38,20 +38,22 @@
       <!-- Tab 1 -->
       <div class="tabs-panel is-active" id="panel1">
         <h5>Show vertices</h5>
-        <ul>
-          <li> Red vertex: intersection</li>
-          <li> Green vertex: extension</li>
-          <li> Blue vertex: snapped road ends</li>
-          <li> White vertex: connected to close by road end (other road's end was close to somewhere along the current
-            road)
-          </li>
-        </ul>
         <div class="switch">
           <input class="switch-input" id="vertices" onclick="ui.menu.toggleVertices()" type="checkbox"
                  name="exampleSwitch"
                  checked>
           <label class="switch-paddle" for="vertices">
           </label>
+        </div>
+        <div class="callout">
+          <p>
+            <span class="square square--red"></span> Intersection<br/>
+            <span class="square square--green"></span> Extension<br/>
+            <span class="square square--blue"></span> Snapped road ends<br/>
+            <span class="square square--white"></span> Connected to close by road end (other road's end was close to
+            somewhere along the current
+            road)
+          </p>
         </div>
 
         <h5>Show roads</h5>
@@ -60,6 +62,11 @@
                  checked>
           <label class="switch-paddle" for="roads">
           </label>
+        </div>
+        <div class="callout">
+          <p><img src="static/textures/highway.svg" style="width: 1rem"/> Highway</p>
+          <p><img src="static/textures/road.svg" style="width: 1rem"/> Provincial road</p>
+          <p><img src="static/textures/urban-road.svg" style="width: 1rem"/> Urban road</p>
         </div>
 
         <h5>Show buildings</h5>
@@ -70,6 +77,12 @@
           <label class="switch-paddle" for="buildings">
           </label>
         </div>
+        <div class="callout">
+          <p>
+            <span class="square square--gray"></span> 2D Buildings<br/>
+            <span class="square square--red"></span> 3D Buildings<br/>
+          </p>
+        </div>
 
         <h5>Show road lines</h5>
         <div class="switch">
@@ -79,16 +92,17 @@
           <label class="switch-paddle" for="roadLines">
           </label>
         </div>
-
-        <h5>Show building lots</h5>
-        <div class="switch">
-          <input class="switch-input" id="buildingLots" onclick="ui.menu.toggleLots()" type="checkbox"
-                 name="exampleSwitch"
-          >
-          <label class="switch-paddle" for="buildingLots">
-          </label>
+        <div class="callout">
+          <p>
+            <span class="square square--white"></span> Highway<br/>
+            <span class="square square--orange"></span> Provincial road<br/>
+            <span class="square square--yellow"></span> Urban road<br/>
+            <span class="square square--black"></span> Road that cannot branch because population is too low in that
+            area
+          </p>
         </div>
       </div>
+
 
       <!-- Tab 2 -->
       <div class="tabs-panel" id="panel2">

@@ -7,7 +7,7 @@
 //@include foundation-badge;
 //@include foundation-breadcrumbs;
 //@include foundation-button-group;
-//@include foundation-callout;
+@include foundation-callout;
 //@include foundation-card;
 //@include foundation-close-button;
 //@include foundation-menu;
@@ -37,6 +37,7 @@
 @include foundation-flex-classes;
 @include foundation-flex-grid;
 @import "range";
+@import "squares";
 
 * {
   box-sizing: border-box;

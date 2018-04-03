@@ -10,10 +10,6 @@ export default class Menu {
         Menu.readConfig();
     }
 
-    static toggleLots() {
-        window.groups.lots.visible = !window.groups.lots.visible;
-    }
-
     static toggleVertices() {
         window.groups.vertices.visible = !window.groups.vertices.visible;
     }
@@ -33,7 +29,9 @@ export default class Menu {
     }
 
     static toggleBuildings() {
-        window.groups.buildings.visible = !window.groups.buildings.visible;
+        let showBuildings = !window.groups.buildings.visible;
+        window.groups.buildings.visible = showBuildings;
+        window.groups.lots.visible = !showBuildings;
     }
 
     /**
