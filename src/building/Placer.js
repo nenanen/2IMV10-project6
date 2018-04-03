@@ -8,7 +8,7 @@ export default class Placer {
     constructor(roads, threejsWorld, heatmap, config, qTree) {
         this.config = config;
         this.roads = roads;
-        this.controller = new BuildingController(threejsWorld);
+        this.controller = new BuildingController(threejsWorld,this.config.RULES)
         this.threejsWorld = threejsWorld;
         this.heatmap = heatmap;
         this.buildingsGroup = new THREE.Object3D();
@@ -17,7 +17,7 @@ export default class Placer {
     }
 
     placeAllLots() {        
-        this.controller = new BuildingController(this.threejsWorld,this.config.RULES)
+        //this.controller = new BuildingController(this.threejsWorld
         for (let road of this.roads) {
             this.placeLots(road)
         }

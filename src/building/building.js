@@ -10,7 +10,7 @@ export default class BuildingController {
             rules: []
         };
         
-        if (lsystem !=""&& !new RegExp("[^\n\s>" + this.lsystemWorld.variables + "]").test(lsystem)) {
+        if (lsystem !=""&&!new RegExp("[^\n\s>" + this.lsystemWorld.variables + "]").test(lsystem)){
             try{
                 this.lsystemWorld.rules = this.processRules(lsystem)
             }
