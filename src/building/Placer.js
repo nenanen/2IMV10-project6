@@ -31,7 +31,7 @@ export default class Placer {
         let success = 0;
         let tries = 0;
 
-        while (tries < 3) {
+        while (tries < this.config.NUMBER_BUILDINGS_PER_ROAD) {
             let area = Lot.getRandomSize();
             let lot = Lot.getRandomLot(road, area);
             let collision = lot.collidesAny(this.qTree);

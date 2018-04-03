@@ -58,6 +58,12 @@ export default class RoadsUI extends React.Component {
 
                     <h3>Buildings</h3>
                     <hr/>
+                    <Slider title={"Number of buildings per road."} id={"config" + ++i}
+                            initial={this.config.NUMBER_BUILDINGS_PER_ROAD} step="1" min={0} max={10}
+                            update={(value) => this.config.NUMBER_BUILDINGS_PER_ROAD = parseFloat(value)}/>
+                    <span className="comment">The number of trials the algorithm has to randomly place a building that does not intersect anything.</span>
+                    <br/><br/>
+
                     <textarea name={"Rules"} id={"config" + ++i} defaultValue={this.config.RULES}
                               onChange={(event) => this.config.RULES = event.currentTarget.value}/>
                 </form>
