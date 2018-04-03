@@ -65,9 +65,10 @@ export default class RoadsUI extends React.Component {
                     <br/><br/>
 
                     <textarea spellCheck="false" name={"Rules"} id={"config" + ++i} defaultValue={this.config.RULES}
-                              onChange={(event) => this.config.RULES = event.currentTarget.value}/>
+                              onChange={(event) => this.config.RULES = event.currentTarget.value} style={{height: "10rem"}}/>
                     <span className="comment">The building L-system rules, having as language: r=right, l=left, u=up, d=down, a=rightup, b=leftup.</span>
                 </form>
+                <hr/>
                 <button className="button primary large expanded" onClick={() => this.props.generate()}>
                     Generate city
                 </button>
