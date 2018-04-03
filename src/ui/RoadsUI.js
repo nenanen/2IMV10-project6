@@ -30,24 +30,29 @@ export default class RoadsUI extends React.Component {
                     <Slider title={"Snap distance"} id={"config" + ++i}
                             initial={this.config.SNAP_DISTANCE} step="1" min={0} max={90}
                             update={(value) => this.config.SNAP_DISTANCE = parseFloat(value)}/>
+                    <span className="comment">Distance from current road's endpoint to other road's endpoint</span>
 
                     <Slider title={"Stretch distance"} id={"config" + ++i}
                             initial={this.config.STRETCH_DISTANCE} step="1" min={0} max={90}
                             update={(value) => this.config.STRETCH_DISTANCE = parseFloat(value)}/>
+                    <span className="comment">Distance from current road's endpoint to other road's segment</span>
 
                     <Slider title={"Align distance"} id={"config" + ++i}
                             initial={this.config.ALIGN_DISTANCE} step="1" min={0} max={90}
                             update={(value) => this.config.ALIGN_DISTANCE = parseFloat(value)}/>
+                    <span className="comment">Distance from other road's endpoint to current road's segment</span>
 
                     <h3>Angles</h3>
                     <hr/>
                     <Slider title={"Branch angle limit"} id={"config" + ++i}
                             initial={this.config.BRANCH_ANGLE_LIMIT} step="1" min={0} max={90}
                             update={(value) => this.config.BRANCH_ANGLE_LIMIT = parseFloat(value)}/>
+                    <span className="comment">Maximum angle for branching roads. The random angle makes use of the normal distribution.</span>
 
                     <Slider title={"Forward angle limit"} id={"config" + ++i}
                             initial={this.config.FORWARD_ANGLE_LIMIT} step="1" min={0} max={90}
                             update={(value) => this.config.FORWARD_ANGLE_LIMIT = parseFloat(value)}/>
+                    <span className="comment">Maximum angle for continuation segments. The random angle makes use of the normal distribution.</span>
 
                     <hr/>
 
