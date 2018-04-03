@@ -98,7 +98,7 @@ let config = {
     NUMBER_BUILDINGS_PER_ROAD: 3,
 
     // Building rules
-    RULES: ""
+    RULES: "uuu>uuua\nuua>uuuba\nuu>uuu\nrl>rdrul\nlr>ldlur\nud>urd\ndu>dru\na>aa\naaa>aua\nr>rr\nrrr>arr\nur>urur\nururur>ururdr"
 
 };
 

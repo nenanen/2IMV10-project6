@@ -64,8 +64,9 @@ export default class RoadsUI extends React.Component {
                     <span className="comment">The number of trials the algorithm has to randomly place a building that does not intersect anything.</span>
                     <br/><br/>
 
-                    <textarea name={"Rules"} id={"config" + ++i} defaultValue={this.config.RULES}
+                    <textarea spellCheck="false" name={"Rules"} id={"config" + ++i} defaultValue={this.config.RULES}
                               onChange={(event) => this.config.RULES = event.currentTarget.value}/>
+                    <span className="comment">The building L-system rules, having as language: r=right, l=left, u=up, d=down, a=rightup, b=leftup.</span>
                 </form>
                 <button className="button primary large expanded" onClick={() => this.props.generate()}>
                     Generate city

@@ -16,7 +16,8 @@ export default class Placer {
         this.qTree = qTree;
     }
 
-    placeAllLots() {
+    placeAllLots() {        
+        this.controller = new BuildingController(this.threejsWorld,this.config.RULES)
         for (let road of this.roads) {
             this.placeLots(road)
         }
@@ -68,7 +69,7 @@ export default class Placer {
 
         // const height = Math.min(Math.max(10, randomFactor * popFactor), 250);
         // console.log(popFactor, randomFactor, popFactor * randomFactor);
-        let building = this.controller.generate(lot.width, height, lot.length, location.center[0], 0, location.center[1]);//,this.config['BUILDING']['RULES']);
+        let building = this.controller.generate(lot.width, height, lot.length, location.center[0], 0, location.center[1]);
 
         // var material = new THREE.LineBasicMaterial({
         //     color: 0x0000ff

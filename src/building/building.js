@@ -2,48 +2,27 @@ import * as THREE from "three";
 //import CSG from "three-js-csg"
 
 export default class BuildingController {
-    constructor(threejsWorld, lsystem = {}) {
+    constructor(threejsWorld, lsystem = "") {
         this.threejsWorld = threejsWorld;
 
-        // L-system rules fit 3D more, but more boring 2D?
-        /*this.lsystemWorld = {
-            variables: 'urldab',
-            rules: [
-                {key: "uuuu", val: "uuau"},
-                {key: "uuua", val: "uba"},
-                {key: "uu", val: "uuu"},
-                {key: "rl", val: "rdrul"},
-                {key: "lr", val: "ba"},
-                {key: "ud", val: "urd"},
-                //{key: "du", val: "du"},
-                {key: "a", val: "uar"},
-                //{key: "aaa", val: ""},
-                {key: "r", val: "rr"},
-                {key: "rrr", val: "arr"},
-                {key: "ur", val: "urur"},
-                //{key: "ururb", val: "ururdr"},
-            ] 
-        };//*/
         this.lsystemWorld = {
             variables: 'urldab',
             rules: []
         };
-        if (lsystem === {}) {
-            this.lsystemWorld.rules = [
-                {key: "uuu", val: "uuua"},
-                {key: "uua", val: "uuuba"},
-                {key: "uu", val: "uuu"},
-                {key: "rl", val: "rdrul"},
-                {key: "lr", val: "ldlur"},
-                {key: "ud", val: "urd"},
-                {key: "du", val: "dru"},
-                {key: "a", val: "aa"},
-                {key: "aaa", val: "aua"},
-                {key: "r", val: "rr"},
-                {key: "rrr", val: "arr"},
-                {key: "ur", val: "urur"},
-                {key: "ururur", val: "ururdr"},
-            ]
+        
+        if (lsystem !=""&& !new RegExp("[^\n\s>" + this.lsystemWorld.variables + "]").test(lsystem)) {
+            try{
+                this.lsystemWorld.rules = this.processRules(lsystem)
+            }
+            catch(err)
+            {
+                console.log('could not process given rules: '+err)
+                console.log('default rules are used')
+            }
+        }
+        else{//no given rules or known invalid
+            this.lsystemWorld.rules = this.getDefaultRules();
+            console.log('given rules where invalid, default are used');
         }
 
         // Sort rule keys from large to small
@@ -52,6 +31,19 @@ export default class BuildingController {
         });
 
 
+    }
+
+    processRules(rawRules){
+        var lines = rawRules.split('\n');
+        var newRules = [];
+        var lineswords;
+        for(var i = 0; i< lines.length;i++)
+        {
+            lineswords = lines[i].split('>');
+            if (lineswords.length ==2)
+                newRules.push({key:lineswords[0], val:lineswords[1]});
+        }
+        return newRules
     }
 
 
@@ -67,7 +59,7 @@ export default class BuildingController {
         return this.get2D("ur", x, y, z, true, width, height, depth)
     }
 
-    generate(width, height, depth, x, y, z, L_iteration = 3, L_lenghtmin = 2, L_lenghtmax = 6, chance3D = 0.05) {
+    generate(width, height, depth, x, y, z,rules = {}, L_iteration = 3, L_lenghtmin = 2, L_lenghtmax = 6, chance3D = 0.05) {
         //return this.get3D('uuuuurruulluuuuurrr', x, y, z, true, width, height, depth);
         if (Math.random() <= chance3D)
             return this.get3D(this.lsystem(this.randomString(L_lenghtmin, L_lenghtmax), L_iteration), x, y, z, true, width, height, depth);
@@ -424,6 +416,43 @@ export default class BuildingController {
             counter++;
         }
         return axiom;
+    }
+
+    getDefaultRules(){//kept in array form, it is easier to read
+        return [
+            {key: "uuu", val: "uuua"},
+            {key: "uua", val: "uuuba"},
+            {key: "uu", val: "uuu"},
+            {key: "rl", val: "rdrul"},
+            {key: "lr", val: "ldlur"},
+            {key: "ud", val: "urd"},
+            {key: "du", val: "dru"},
+            {key: "a", val: "aa"},
+            {key: "aaa", val: "aua"},
+            {key: "r", val: "rr"},
+            {key: "rrr", val: "arr"},
+            {key: "ur", val: "urur"},
+            {key: "ururur", val: "ururdr"},
+        ];
+         // L-system rules fit 3D more, but more boring 2D?
+        /*this.lsystemWorld = {
+            variables: 'urldab',
+            rules: [
+                {key: "uuuu", val: "uuau"},
+                {key: "uuua", val: "uba"},
+                {key: "uu", val: "uuu"},
+                {key: "rl", val: "rdrul"},
+                {key: "lr", val: "ba"},
+                {key: "ud", val: "urd"},
+                //{key: "du", val: "du"},
+                {key: "a", val: "uar"},
+                //{key: "aaa", val: ""},
+                {key: "r", val: "rr"},
+                {key: "rrr", val: "arr"},
+                {key: "ur", val: "urur"},
+                //{key: "ururb", val: "ururdr"},
+            ] 
+        };//*/
     }
 
 
