@@ -41,7 +41,7 @@
     "sass-loader": "^6.0.7",
     "simplex-noise": "^2.4.0",
     "style-loader": "^0.20.2",
-    "three": "^0.90.0",
+    "three": "^0.125.0",
     "webpack-serve": "^0.2.0"
   },
   "devDependencies": {
